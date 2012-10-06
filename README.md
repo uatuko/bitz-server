@@ -12,6 +12,7 @@ A simple C++ socket library
 
 First you need to initialise the autotools
 
+	$ libtoolize (glibtoolize in OS X)
 	$ aclocal
 	$ autoheader
 	$ autoconf
