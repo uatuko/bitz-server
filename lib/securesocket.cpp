@@ -146,7 +146,7 @@ unsigned short SecureCommunicatingSocket::getForeignPort() throw (SocketExceptio
 
 void SecureCommunicatingSocket::initialise_ctx(void) throw (SocketException) {
 
-	SSL_METHOD *ssl_method;						// The method describes which SSL protocol we will be using.
+	const SSL_METHOD *ssl_method;						// The method describes which SSL protocol we will be using.
 	
 	ssl_method = SSLv23_client_method();		// Compatible with SSLv2, SSLv3 and TLSv1
 	ssl_ctx = SSL_CTX_new(ssl_method);			// Create new context from method
@@ -197,7 +197,7 @@ SecureTCPSocket *SecureTCPServerSocket::accept() throw (SocketException) {
 
 void SecureTCPServerSocket::initialise_ctx(void) throw (SocketException) {
 
-	SSL_METHOD *ssl_method;						// The method describes which SSL protocol we will be using.
+	const SSL_METHOD *ssl_method;						// The method describes which SSL protocol we will be using.
 
 	ssl_method = SSLv23_server_method();		// Compatible with SSLv2, SSLv3 and TLSv1
 	ssl_ctx = SSL_CTX_new(ssl_method);			// Create new context from method
