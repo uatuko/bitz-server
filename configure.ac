@@ -53,9 +53,11 @@ AC_LANG(C++)
 # Checks for libraries
 AM_PROG_LIBTOOL
 
+AC_CHECK_LIB([pthread], [pthread_create],, AC_MSG_ERROR([usable pthread library now found]))
+
 PKG_PROG_PKG_CONFIG
-PKG_CHECK_MODULES([openssl], [openssl >= 0.9.8],, 
-	AC_MSG_ERROR([openssl 0.9.8 or newer not found.])
+PKG_CHECK_MODULES([openssl], [openssl >= 1.0.1],, 
+	AC_MSG_ERROR([openssl 1.0.1 or newer not found.])
 )
 
 
