@@ -1,0 +1,3 @@
+## /src
+sbin_PROGRAMS  = server
+server_SOURCES = server.cpp
