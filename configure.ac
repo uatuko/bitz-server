@@ -28,7 +28,7 @@ AC_CONFIG_HEADERS([include/config.h])
 # +1 : ? : +1  == new interface that does not break old one
 # +1 : ? : 0   == new interface that breaks old one
 #  ? : ? : 0   == no new interfaces, but breaks apps
-#  ? :+1 : ?   == just some internal changes, nothing breaks but might work 
+#  ? :+1 : ?   == just some internal changes, nothing breaks but might work
 #                 better
 # CURRENT : REVISION : AGE
 
@@ -56,7 +56,7 @@ AM_PROG_LIBTOOL
 AC_CHECK_LIB([pthread], [pthread_create],, AC_MSG_ERROR([usable pthread library now found]))
 
 PKG_PROG_PKG_CONFIG
-PKG_CHECK_MODULES([openssl], [openssl >= 1.0.1],, 
+PKG_CHECK_MODULES([openssl], [openssl >= 1.0.1],,
 	AC_MSG_ERROR([openssl 1.0.1 or newer not found.])
 )
 
