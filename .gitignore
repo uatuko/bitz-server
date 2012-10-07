@@ -22,6 +22,8 @@ configure
 Makefile.in
 
 # eclipse
+.project
+.cproject
 .settings/*
 
 # swap files
