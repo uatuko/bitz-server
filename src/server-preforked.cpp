@@ -9,8 +9,9 @@
 #include <socket.h>
 #include <unistd.h>
 
-#define PORT "4040"
+#define PORT 4040
 #define NUM_CHILDREN 5
+#define MAXLEN 1024
 
 using namespace std;
 using namespace socketlibrary;
@@ -19,6 +20,11 @@ int main() {
 
 	int i = 0;
 	pid_t pid;
+
+	TCPSocket * client_sock;
+	TCPServerSocket * server_sock;
+
+	server_sock = new TCPServerSocket( PORT );
 
 	for ( i = 0; i < NUM_CHILDREN; i++ ) {
 
@@ -29,14 +35,39 @@ int main() {
 		}
 
 		if ( pid == 0 ) {
+
 			// we are inside a child
 			cout << "child " << i << ", pid: " << pid << endl;
 
+			int  line_len;
+			char line[MAXLEN];
+
 			for (;;) {
-				// wait and accept connections
-				// read and echo...
-				// exit after closing the connection
+
+				cout << "Waiting for a new connection [" << i << "]..." << endl;
+
+				try {
+
+					client_sock = server_sock->accept();
+					cout << "[" << i << "] New connection accepted on " << client_sock->getForeignAddress() << ":" << client_sock->getForeignPort() << endl;
+
+					// read
+					line_len = client_sock->readline( line, MAXLEN );
+					if ( line_len == -1) {
+						cout << "[" << i << "] Failed to read from connection" << endl;
+					}
+
+					// echo back
+					client_sock->send( line, line_len );
+
+					// destroy / close connection
+					delete client_sock;
+
+				} catch( SocketException &e ) {
+					cout << "[" << i << "] ERROR: " << e.what() << endl;
+				}
 			}
+
 		}
 
 	}
