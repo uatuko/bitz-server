@@ -182,6 +182,17 @@ public:
 	int recv(void *buffer, int bufferLen) throw(SocketException);
 
 	/**
+	 * Read a line into the given buffer from this socket.
+	 * Call connect() before calling recv()
+	 *
+	 * @param buffer buffer to receive the data
+	 * @param maxlen maximum number of bytes to read into buffer
+	 * @return number of bytes read, 0 for EOF, and -1 for error
+	 * @exception SocketException thrown if unable to receive data
+	 */
+	int readline(char *buffer, int maxlen) throw(SocketException);
+
+	/**
 	*   Get the foreign address.  Call connect() before calling recv()
 	*   @return foreign address
 	*   @exception SocketException thrown if unable to fetch foreign address

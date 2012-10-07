@@ -205,6 +205,33 @@ int CommunicatingSocket::recv(void *buffer, int bufferLen) throw(SocketException
 	return rtn;
 }
 
+int CommunicatingSocket::readline(char *buffer, int maxlen) throw(SocketException) {
+
+	int n, rc;
+	char c;
+
+	for (n = 1; n < maxlen; n++) {
+		if ( ( rc = read( sock, &c, 1 ) ) == 1 ) {
+			*buffer++ = c;
+			if (c == '\n') {
+				break;
+			}
+		} else if (rc == 0) {
+			if (n == 1) {
+				return 0; // EOF, no data read
+			} else {
+				break; // EOF, read some data
+			}
+		} else {
+			throw SocketException("Failed to read data from socket ", true);
+		}
+	}
+
+	*buffer = '\0';
+	return n;
+
+}
+
 string CommunicatingSocket::getForeignAddress() throw(SocketException) {
 	sockaddr_in addr;
 	unsigned int addr_len = sizeof(addr);
