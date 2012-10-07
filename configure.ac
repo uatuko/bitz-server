@@ -5,7 +5,7 @@ AC_PREREQ([2.68])
 AC_INIT([socket-library], [0.0.1], [https://github.com/uditha-atukorala/socket-library/issues])
 AC_CONFIG_AUX_DIR([aux-build])
 AC_CONFIG_MACRO_DIR([aux-build/m4])
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([include/config.h])
 
 # Versioning rules ( C:R:A )
 #
