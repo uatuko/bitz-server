@@ -10,6 +10,9 @@
 #include <string>
 #include <sstream>
 
+#define PORT 4040
+#define MAXLEN 1024
+
 using namespace std;
 
 #include <socket.h>
@@ -19,7 +22,7 @@ int main(int argc, char *argv[]) {
 
 	string usr_input, s;
 	int    i, k, p;
-	char   *r;
+	char   r[MAXLEN];
 
 	cout << "Welcome to my awesome client. type a command or help for the list of commands available." << endl;
 
@@ -35,27 +38,26 @@ int main(int argc, char *argv[]) {
 			stringstream(s) >> k;
 			for (i = 0; i < k; i++) {
 				try {
-					cout << "in for" << endl;
-					server_socket->connect("localhost", 4040);
+					server_socket->connect("localhost", PORT);
 					server_socket->send("spam\n", 5);
-					server_socket->recv(r, 1024);
-					cout << r << endl;
+					server_socket->readline(r, MAXLEN);
+					cout << "[server] " << r;
 					delete server_socket;
+					server_socket = new TCPSocket();
 				} catch( SocketException &e) {
 					cout << e.what() << endl;
 				}
 			}
 		} else {
 			try {
-				server_socket->connect("localhost", 4040);
+				server_socket->connect("localhost", PORT);
 				server_socket->send("cmd\n", 4);
-				server_socket->recv(r, 1024);
-				cout << r << endl;
-
+				server_socket->readline(r, MAXLEN);
+				cout << "[server] " << r;
 			} catch( SocketException &e) {
 				cout << e.what() << endl;
 			}
 		}
-		//delete server_socket;
+		delete server_socket;
 	}
 }
