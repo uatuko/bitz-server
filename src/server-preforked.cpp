@@ -8,6 +8,7 @@
 #include <iostream>
 #include <socket.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #define PORT 4040
 #define NUM_CHILDREN 5
@@ -55,10 +56,14 @@ int main() {
 					line_len = client_sock->readline( line, MAXLEN );
 					if ( line_len == -1) {
 						cout << "[" << i << "] Failed to read from connection" << endl;
-					}
+					} else {
 
-					// echo back
-					client_sock->send( line, line_len );
+						cout << "[" << i << "] client said: " << line << endl;
+
+						// echo back
+						client_sock->send( line, line_len );
+
+					}
 
 					// destroy / close connection
 					delete client_sock;
