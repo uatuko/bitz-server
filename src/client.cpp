@@ -25,8 +25,8 @@ int main(int argc, char *argv[]) {
 	char   r[MAXLEN];
 
 	cout << "Welcome to my awesome client. type a command or help for the list of commands available." << endl;
-
 	while (1) {
+		cout << "[client] ";
 		TCPSocket * server_socket;
 		server_socket = new TCPSocket();
 		getline(cin, usr_input);
