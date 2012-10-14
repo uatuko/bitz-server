@@ -1,5 +1,5 @@
 ## src/
-INCLUDES       = -I$(top_srcdir)/include
+INCLUDES       = -I$(top_srcdir)/include -I$(top_srcdir)/lib
 
 sbin_PROGRAMS  = server server-preforked
 server_SOURCES = server.cpp
