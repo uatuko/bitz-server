@@ -61,6 +61,9 @@ PKG_CHECK_MODULES([libconfig], [libconfig++ >= 1.4],,
 PKG_CHECK_MODULES([log4cpp], [log4cpp >= 1.0],,
 	AC_MSG_ERROR([log4cpp 1.0 or newer not found.])
 )
+PKG_CHECK_MODULES([openssl], [openssl >= 1.0.1],,
+	AC_MSG_ERROR([openssl 1.0.1 or newer not found.])
+)
 
 # Checks for header files.
 #AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stddef.h stdlib.h string.h sys/socket.h syslog.h unistd.h])
@@ -76,6 +79,12 @@ AC_FUNC_ERROR_AT_LINE
 AC_FUNC_FORK
 AC_CHECK_FUNCS([gethostbyname inet_ntoa memmove memset select socket strchr strerror])
 
+AC_SUBST(openssl_LIBS)
+AC_SUBST(openssl_CFLAGS)
+
+pkgconfig_LIBS+="${openssl_LIBS}"
+AC_SUBST(pkgconfig_LIBS)
+
 LIBS+="${libconfig_LIBS} ${log4cpp_LIBS}"
 CFLAGS+="${libconfig_CFLAGS} ${log4cpp_CFLAGS}"
 
@@ -83,6 +92,7 @@ AC_CONFIG_FILES([ \
 	Makefile \
 	include/Makefile \
 	lib/Makefile \
+	lib/socket/Makefile \
 	src/Makefile \
 ])
 

@@ -1,1 +1,3 @@
-## lib/
+## [bitz-server] lib/
+SUBDIRS = socket
+
