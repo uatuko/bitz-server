@@ -17,30 +17,33 @@
  *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "manager.h"
-#include "logger.h"
+#ifndef BITZ_LOGGER_H
+#define BITZ_LOGGER_H
+
+#include <string.h>
+#include <log4cpp/Category.hh>
 
 namespace bitz {
 
-	Manager::Manager( unsigned short port, const std::string &address, int backlog ) {
+	class Logger {
+		public:
+			static Logger &instance( std::string log_file = "/dev/null" , std::string category = "logger" ) {
+				static Logger instance( log_file, category ) ;
+				return instance;
+			}
+			virtual ~Logger();
 
+			void initialise( std::string log_file, std::string category );
+			void log( int priority, const std::string &message );
+		private:
+			log4cpp::Category * LOGGER;
 
-		if ( address.empty() ) {
-			this->socket = new socketlibrary::TCPServerSocket( port, backlog );
-		} else {
-			this->socket = new socketlibrary::TCPServerSocket( address, port, backlog );
-		}
-
-		Logger &logger = Logger::instance();
-		logger.log( 600, "manager initialised" );
-
-	}
-
-	Manager::~Manager() {
-		delete this->socket;
-	}
-
-	void Manager::spawn() {}
+			Logger( std::string log_file, std::string category );
+			Logger( Logger const &copy );
+			Logger &operator=( const Logger &copy );
+	};
 
 } // end of namespace bitz
+
+#endif /* !BITZ_LOGGER_H */
 
