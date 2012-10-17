@@ -20,16 +20,27 @@
 #ifndef BITZ_MANAGER_H
 #define BITZ_MANAGER_H
 
+#include <string>              // for string type
+#include <socket/socket.h>     // socket-library
+
 namespace bitz {
 
 	class Manager {
 		public:
-			Manager();
+			/**
+			 * Note: backlog = SOMAXCONN (from sys/socket.h)
+			 */
+			Manager( unsigned short port, const std::string &address = "", int backlog = 128 );
+
+			/**
+			 * deconstructor
+			 */
 			~Manager();
 
 			void spawn();
 
 		private:
+			socketlibrary::TCPServerSocket * socket;
 	};
 
 } // end of namespace bitz

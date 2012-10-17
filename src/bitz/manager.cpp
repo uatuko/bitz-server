@@ -21,8 +21,19 @@
 
 namespace bitz {
 
-	Manager::Manager() {}
-	Manager::~Manager() {}
+	Manager::Manager( unsigned short port, const std::string &address, int backlog ) {
+
+		if ( address.empty() ) {
+			this->socket = new socketlibrary::TCPServerSocket( port, backlog );
+		} else {
+			this->socket = new socketlibrary::TCPServerSocket( address, port, backlog );
+		}
+
+	}
+
+	Manager::~Manager() {
+		delete this->socket;
+	}
 
 	void Manager::spawn() {}
 
