@@ -8,11 +8,16 @@
 #include <config.h>
 #include <iostream>
 
+#include "bitz/manager.h"
+
+using namespace bitz;
+
 int main() {
 
 	std::cout << PACKAGE_STRING << std::endl;
 
 	// TODO
+	Manager * manager = new Manager( 4040 );
 
 	return 0;
 }
