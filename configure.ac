@@ -85,11 +85,10 @@ AC_SUBST(openssl_CFLAGS)
 pkgconfig_LIBS+="${openssl_LIBS}"
 AC_SUBST(pkgconfig_LIBS)
 
-LIBS+="${libconfig_LIBS} ${log4cpp_LIBS}"
-CFLAGS+="${libconfig_CFLAGS} ${log4cpp_CFLAGS}"
 
 AC_CONFIG_FILES([ \
 	Makefile \
+	conf/Makefile \
 	include/Makefile \
 	lib/Makefile \
 	lib/socket/Makefile \
