@@ -18,25 +18,54 @@
  */
 
 #include <iostream>
+#include <string>
+#include <cstdlib>
 #include <libconfig.h++>
 
 #include "config.h"
 #include "bitz/manager.h"
 #include "bitz/logger.h"
 
-#define CONFIG_FILE "/etc/bitz/bitz-server.conf"
+#ifndef BITZ_SERVER_CONFIG_FILE
+#define BITZ_SERVER_CONFIG_FILE "/etc/bitz/bitz-server.conf"
+#endif
 
 using namespace bitz;
 
 int main() {
 
-	// configurations
+	// main configurations
 	libconfig::Config config;
+	std::string log_file, log_category;
 
+	try {
+		config.readFile( BITZ_SERVER_CONFIG_FILE );
+	} catch( const libconfig::FileIOException &e ) {
+		std::cerr << "Failed to read config file: " << BITZ_SERVER_CONFIG_FILE << std::endl;
+		return( EXIT_FAILURE );
+	}
+
+	try {
+		config.lookupValue( "log_file", log_file );
+		config.lookupValue( "log_category", log_category );
+	} catch( const libconfig::SettingNotFoundException &e ) {
+		std::cerr << "Missing configurations, \
+			check 'log_file' and 'log_category' entries" << std::endl;
+		return( EXIT_FAILURE );
+	}
 
 	// initialise the logger
-	Logger &logger = Logger::instance( "/tmp/bitz-server.log", "bitz-server" );
+	Logger &logger = Logger::instance( log_file, log_category );
 	logger.log( 600, std::string( PACKAGE_STRING ) + " initialised" );
+
+	// other configurations
+	int port;
+	try {
+		config.lookupValue( "port", port );
+	} catch( const libconfig::SettingNotFoundException &e ) {
+		logger.log( 200, "port confguration not found, defaults to 4040" );
+		port = 4040;
+	}
 
 	// TODO
 	Manager * manager = new Manager( 4040 );
@@ -44,6 +73,6 @@ int main() {
 	// clean-up
 	delete manager;
 
-	return 0;
+	return( EXIT_SUCCESS );
 }
 

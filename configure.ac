@@ -49,6 +49,12 @@ AC_PROG_LIBTOOL
 # Language
 AC_LANG(C++)
 
+# Options
+AC_ARG_WITH([config],
+	[AS_HELP_STRING([--with-config],
+		[specify the config file to be used])],
+	[], [with_config=no])
+
 # Checks for libraries
 AM_PROG_LIBTOOL
 
@@ -78,6 +84,14 @@ AC_CHECK_TYPES([ptrdiff_t])
 AC_FUNC_ERROR_AT_LINE
 AC_FUNC_FORK
 AC_CHECK_FUNCS([gethostbyname inet_ntoa memmove memset select socket strchr strerror])
+
+# defines / substitutes
+AS_IF([test "x$with_config" != xno],
+	AC_DEFINE_UNQUOTED([BITZ_SERVER_CONFIG_FILE],
+		["$with_config"],
+		[server configuration file]
+	)
+)
 
 AC_SUBST(openssl_LIBS)
 AC_SUBST(openssl_CFLAGS)
