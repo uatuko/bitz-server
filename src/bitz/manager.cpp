@@ -32,12 +32,17 @@ namespace bitz {
 		}
 
 		Logger &logger = Logger::instance();
-		logger.log( 600, "manager initialised" );
+		logger.debug( "manager initialised" );
 
 	}
 
 	Manager::~Manager() {
+
+		Logger &logger = Logger::instance();
+		logger.debug( "shutting down manager" );
+
 		delete this->socket;
+
 	}
 
 	void Manager::spawn() {}
