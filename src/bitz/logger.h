@@ -28,13 +28,26 @@ namespace bitz {
 	class Logger {
 		public:
 			static Logger &instance( std::string log_file = "/dev/null" , std::string category = "logger" ) {
-				static Logger instance( log_file, category ) ;
-				return instance;
+				static Logger logger( log_file, category );
+				return logger;
 			}
 			virtual ~Logger();
 
 			void initialise( std::string log_file, std::string category );
+
+			static int getPriorityValue( const std::string& priority );
 			void log( int priority, const std::string &message );
+
+			void fatal( const std::string& message );
+			void emerg( const std::string& message );
+			void alert( const std::string& message );
+			void crit( const std::string& message );
+			void error( const std::string& message );
+			void warn( const std::string& message );
+			void notice( const std::string& message );
+			void info( const std::string& message );
+			void debug( const std::string& message );
+
 		private:
 			log4cpp::Category * LOGGER;
 

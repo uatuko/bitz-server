@@ -44,14 +44,54 @@ namespace bitz {
 
 	    log_appender->setLayout( log_layout );
 	    this->LOGGER->setAppender( log_appender );
-	    this->LOGGER->setPriority( log4cpp::Priority::INFO );
+	    this->LOGGER->setPriority( this->getPriorityValue( "DEBUG" ) );
 
-	    this->LOGGER->info( "logger initialised, log_file: " + log_file );
+	    this->LOGGER->debug( "logger initialised, log_file: " + log_file );
 
+	}
+
+	int Logger::getPriorityValue( const std::string &priority ) {
+		return ( log4cpp::Priority::getPriorityValue( priority ) );
 	}
 
 	void Logger::log( log4cpp::Priority::Value priority, const std::string &message ) {
 		this->LOGGER->log( priority, message );
+	}
+
+	void Logger::fatal( const std::string& message ) {
+		this->LOGGER->fatal( message );
+	}
+
+	void Logger::emerg( const std::string& message ) {
+		this->LOGGER->emerg( message );
+	}
+
+	void Logger::alert( const std::string& message ) {
+		this->LOGGER->alert( message );
+	}
+
+	void Logger::crit( const std::string& message ) {
+		this->LOGGER->crit( message );
+	}
+
+	void Logger::error( const std::string& message ) {
+		this->LOGGER->error( message );
+	}
+
+	void Logger::warn( const std::string& message ) {
+		this->LOGGER->warn( message );
+	}
+
+	void Logger::notice( const std::string& message ) {
+		this->LOGGER->notice( message );
+	}
+
+	void Logger::info( const std::string& message ) {
+		this->LOGGER->info( message );
+	}
+
+	void Logger::debug( const std::string& message ) {
+		this->LOGGER->debug( message );
 	}
 
 } // end of namespace bitz
