@@ -18,14 +18,21 @@
  */
 
 #include <iostream>
+#include <libconfig.h++>
 
 #include "config.h"
 #include "bitz/manager.h"
 #include "bitz/logger.h"
 
+#define CONFIG_FILE "/etc/bitz/bitz-server.conf"
+
 using namespace bitz;
 
 int main() {
+
+	// configurations
+	libconfig::Config config;
+
 
 	// initialise the logger
 	Logger &logger = Logger::instance( "/tmp/bitz-server.log", "bitz-server" );
