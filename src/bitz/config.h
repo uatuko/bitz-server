@@ -43,7 +43,7 @@ namespace bitz {
 			virtual ~Config();
 
 			const config_t &initialise( std::string config_file = BITZ_SERVER_CONFIG_FILE );
-			const config_t &getConfig();
+			const config_t &getConfigs();
 
 		private:
 			config_t _config;
