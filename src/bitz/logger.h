@@ -31,7 +31,6 @@ namespace bitz {
 				static Logger logger( log_file, category );
 				return logger;
 			}
-			virtual ~Logger();
 
 			void initialise( std::string log_file, std::string category );
 
@@ -52,6 +51,7 @@ namespace bitz {
 			log4cpp::Category * LOGGER;
 
 			Logger( std::string log_file, std::string category );
+			~Logger();
 			Logger( Logger const &copy );
 			Logger &operator=( const Logger &copy );
 	};
