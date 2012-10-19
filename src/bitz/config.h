@@ -42,7 +42,7 @@ namespace bitz {
 			}
 
 			const config_t &initialise( std::string config_file = BITZ_SERVER_CONFIG_FILE );
-			const config_t &getConfigs();
+			const config_t &configs();
 
 		private:
 			config_t _config;

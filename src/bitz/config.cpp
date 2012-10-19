@@ -55,7 +55,7 @@ namespace bitz {
 
 	}
 
-	const config_t &Config::getConfigs() {
+	const config_t &Config::configs() {
 		return this->_config;
 	}
 
