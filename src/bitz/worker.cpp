@@ -28,7 +28,7 @@ namespace bitz {
 		logger.debug( "exiting worker" );
 	}
 
-	void Worker::run( socketlibrary::TCPServerSocket * server_sock ) throw() {
+	void Worker::run( socketlibrary::TCPServerSocket * server_sock, unsigned int max_requests ) throw() {
 
 		socketlibrary::TCPSocket * client_sock;
 
@@ -37,24 +37,30 @@ namespace bitz {
 
 		try {
 
-			client_sock = server_sock->accept();
-			std::cout << "New connection accepted on " << client_sock->getForeignAddress() << ":" << client_sock->getForeignPort() << std::endl;
+			while ( max_requests > 0 ) {
 
-			// read
-			line_len = client_sock->readline( line, 1024 );
-			if ( line_len == -1) {
-				std::cout << "Failed to read from connection" << std::endl;
-			} else {
+				client_sock = server_sock->accept();
+				std::cout << "New connection accepted on " << client_sock->getForeignAddress() << ":" << client_sock->getForeignPort() << std::endl;
 
-				std::cout << "client said: " << line << std::endl;
+				// read
+				line_len = client_sock->readline( line, 1024 );
+				if ( line_len == -1) {
+					std::cout << "Failed to read from connection" << std::endl;
+				} else {
 
-				// echo back
-				client_sock->send( line, line_len );
+					std::cout << "client said: " << line << std::endl;
+
+					// echo back
+					client_sock->send( line, line_len );
+
+				}
+
+				// destroy / close connection
+				delete client_sock;
+
+				max_requests--;
 
 			}
-
-			// destroy / close connection
-			delete client_sock;
 
 		} catch( socketlibrary::SocketException &sex ) {
 			std::cout << "ERROR: " << sex.what() << std::endl;

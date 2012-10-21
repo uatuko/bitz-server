@@ -60,10 +60,11 @@ namespace bitz {
 
 	}
 
-	void Manager::spawn( unsigned int max_workers ) throw( ManagerException ) {
+	void Manager::spawn( unsigned int max_workers, unsigned int max_worker_requests ) throw( ManagerException ) {
 
-		_manager.max_workers = max_workers;
-		_manager.worker_pool  = new worker_pool_t[max_workers];
+		_manager.max_workers         = max_workers;
+		_manager.max_worker_requests = max_worker_requests;
+		_manager.worker_pool         = new worker_pool_t[max_workers];
 
 		// pre-fork workers
 		if (! _manager.worker ) {
@@ -100,7 +101,7 @@ namespace bitz {
 			_manager.worker_pool[worker_id].worker_id  = worker_id;
 			_manager.worker_pool[worker_id].worker_pid = worker_pid;
 
-			_manager.worker_pool[worker_id].worker->run( _manager.socket );
+			_manager.worker_pool[worker_id].worker->run( _manager.socket, _manager.max_worker_requests );
 			std::cout << "end of cycle, worker: " << worker_id << ", pid: " << getpid() << std::endl;
 
 			sleep(3);

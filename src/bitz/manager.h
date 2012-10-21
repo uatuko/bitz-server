@@ -31,6 +31,11 @@
 #define BITZ_MAX_WORKERS 2
 #endif
 
+#ifndef BITZ_MAX_WORKER_REQUESTS
+#define BITZ_MAX_WORKER_REQUESTS 100
+#endif
+
+
 namespace bitz {
 
 	class Manager {
@@ -45,6 +50,7 @@ namespace bitz {
 			struct manager_t {
 				bool worker;
 				unsigned int max_workers;
+				unsigned int max_worker_requests;
 				unsigned int workers_count;
 				unsigned int worker_id;
 
@@ -62,7 +68,7 @@ namespace bitz {
 			 */
 			virtual ~Manager();
 
-			virtual void spawn( unsigned int max_workers = BITZ_MAX_WORKERS ) throw( ManagerException );
+			virtual void spawn( unsigned int max_workers = BITZ_MAX_WORKERS, unsigned int max_worker_requests = BITZ_MAX_WORKER_REQUESTS ) throw( ManagerException );
 			virtual void shutdown( bool graceful = true ) throw();
 			virtual void reap_worker( pid_t worker_pid ) throw();
 			virtual void manager_workers() throw();
