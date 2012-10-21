@@ -18,11 +18,49 @@
  */
 
 #include "worker.h"
+#include "logger.h"
 
 namespace bitz {
 
 	Worker::Worker() {}
-	Worker::~Worker() {}
+	Worker::~Worker() {
+		Logger &logger = Logger::instance();
+		logger.debug( "exiting worker" );
+	}
+
+	void Worker::run( socketlibrary::TCPServerSocket * server_sock ) throw() {
+
+		socketlibrary::TCPSocket * client_sock;
+
+		int  line_len;
+		char line[1024];
+
+		try {
+
+			client_sock = server_sock->accept();
+			std::cout << "New connection accepted on " << client_sock->getForeignAddress() << ":" << client_sock->getForeignPort() << std::endl;
+
+			// read
+			line_len = client_sock->readline( line, 1024 );
+			if ( line_len == -1) {
+				std::cout << "Failed to read from connection" << std::endl;
+			} else {
+
+				std::cout << "client said: " << line << std::endl;
+
+				// echo back
+				client_sock->send( line, line_len );
+
+			}
+
+			// destroy / close connection
+			delete client_sock;
+
+		} catch( socketlibrary::SocketException &sex ) {
+			std::cout << "ERROR: " << sex.what() << std::endl;
+		}
+
+	}
 
 } // end of namespace bitz
 

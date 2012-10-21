@@ -20,12 +20,16 @@
 #ifndef BITZ_WORKER_H
 #define BITZ_WORKER_H
 
+#include <socket/socket.h>
+
 namespace bitz {
 
 	class Worker {
 		public:
 			Worker();
-			~Worker();
+			virtual ~Worker();
+
+			virtual void run( socketlibrary::TCPServerSocket * server_sock ) throw();
 
 		private:
 	};

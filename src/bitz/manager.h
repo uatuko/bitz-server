@@ -21,12 +21,37 @@
 #define BITZ_MANAGER_H
 
 #include <string>              // for string type
+#include <unistd.h>            // pid_t, fork() etc.
 #include <socket/socket.h>     // socket-library
+
+#include "manager_exception.h"
+#include "worker.h"
+
+#ifndef BITZ_MAX_WORKERS
+#define BITZ_MAX_WORKERS 2
+#endif
 
 namespace bitz {
 
 	class Manager {
 		public:
+
+			struct worker_pool_t {
+				pid_t worker_pid;
+				unsigned int worker_id;
+				Worker * worker;
+			};
+
+			struct manager_t {
+				bool worker;
+				unsigned int max_workers;
+				unsigned int workers_count;
+				unsigned int worker_id;
+
+				socketlibrary::TCPServerSocket * socket;
+				worker_pool_t * worker_pool;
+			};
+
 			/**
 			 * Note: backlog = SOMAXCONN (from sys/socket.h)
 			 */
@@ -35,12 +60,18 @@ namespace bitz {
 			/**
 			 * deconstructor
 			 */
-			~Manager();
+			virtual ~Manager();
 
-			void spawn();
+			virtual void spawn( unsigned int max_workers = BITZ_MAX_WORKERS ) throw( ManagerException );
+			virtual void shutdown( bool graceful = true ) throw();
+			virtual void reap_worker( pid_t worker_pid ) throw();
+			virtual void manager_workers() throw();
 
 		private:
-			socketlibrary::TCPServerSocket * socket;
+			manager_t _manager;
+
+			virtual void spawn_worker( unsigned int worker_id ) throw( ManagerException );
+
 	};
 
 } // end of namespace bitz

@@ -25,7 +25,7 @@
 namespace bitz {
 
 	Logger::Logger( std::string log_file, std::string category ) {
-		this->LOGGER = 0;
+		this->LOGGER = NULL;
 		this->initialise( log_file, category );
 	}
 

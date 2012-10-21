@@ -39,8 +39,14 @@ namespace bitz {
 
 		try {
 			config.readFile( config_file.c_str() );
-		} catch( const libconfig::FileIOException &e ) {
+		} catch( const libconfig::FileIOException &ex ) {
 			// TODO
+		} catch( const libconfig::ParseException &pex ) {
+			// TODO
+			/*
+			*     std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()
+			*        << " - " << pex.getError() << std::endl;
+			*/
 		}
 
 		try {
