@@ -21,6 +21,7 @@
 #include <string>
 #include <cstdlib>
 #include <csignal>
+#include <sys/wait.h>
 
 #include "config.h"
 #include "bitz/config.h"
