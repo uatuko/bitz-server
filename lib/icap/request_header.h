@@ -17,12 +17,24 @@
  *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef ICAP_ICAP_H
-#define ICAP_ICAP_H
+#ifndef ICAP_REQUEST_HEADER_H
+#define ICAP_REQUEST_HEADER_H
+
+#include "header.h"
+
 
 namespace icap {
 
+	class RequestHeader : public Header {
+	public:
+		RequestHeader();
+		virtual ~RequestHeader();
+
+	private:
+
+	};
+
 } /* end of namespace icap */
 
-#endif /* !ICAP_ICAP_H */
+#endif /* !ICAP_REQUEST_HEADER_H */
 

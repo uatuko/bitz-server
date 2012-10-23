@@ -106,6 +106,7 @@ AC_CONFIG_FILES([ \
 	include/Makefile \
 	lib/Makefile \
 	lib/socket/Makefile \
+	lib/icap/Makefile \
 	src/Makefile \
 ])
 

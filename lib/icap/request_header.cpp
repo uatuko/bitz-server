@@ -17,12 +17,12 @@
  *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef ICAP_ICAP_H
-#define ICAP_ICAP_H
+#include "request_header.h"
 
 namespace icap {
 
-} /* end of namespace icap */
+	RequestHeader::RequestHeader() : Header() { }
+	RequestHeader::~RequestHeader() { }
 
-#endif /* !ICAP_ICAP_H */
+} /* end of namespace icap */
 

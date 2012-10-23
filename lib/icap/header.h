@@ -17,12 +17,21 @@
  *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef ICAP_ICAP_H
-#define ICAP_ICAP_H
+#ifndef ICAP_HEADER_H
+#define ICAP_HEADER_H
 
 namespace icap {
 
+	class Header {
+	public:
+		Header();
+		virtual ~Header();
+
+	private:
+
+	};
+
 } /* end of namespace icap */
 
-#endif /* !ICAP_ICAP_H */
+#endif /* !ICAP_HEADER_H */
 

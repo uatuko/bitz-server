@@ -1,3 +1,3 @@
 ## [bitz-server] lib/
-SUBDIRS = socket
+SUBDIRS = socket icap
 

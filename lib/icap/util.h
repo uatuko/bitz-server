@@ -17,12 +17,21 @@
  *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef ICAP_ICAP_H
-#define ICAP_ICAP_H
+#ifndef ICAP_UTIL_H
+#define ICAP_UTIL_H
+
+#include <socket/socket.h>
+#include "request_header.h"
 
 namespace icap {
 
+	namespace util {
+
+		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket );
+
+	} /* end of namespace util */
+
 } /* end of namespace icap */
 
-#endif /* !ICAP_ICAP_H */
+#endif /* !ICAP_UTIL_H */
 
