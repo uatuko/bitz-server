@@ -20,6 +20,9 @@
 #include "worker.h"
 #include "logger.h"
 
+#include <icap/util.h>
+#include <icap/request_header.h>
+
 namespace bitz {
 
 	Worker::Worker() {}
@@ -42,18 +45,11 @@ namespace bitz {
 				client_sock = server_sock->accept();
 				std::cout << "New connection accepted on " << client_sock->getForeignAddress() << ":" << client_sock->getForeignPort() << std::endl;
 
-				// read
-				line_len = client_sock->readline( line, 1024 );
-				if ( line_len == -1) {
-					std::cout << "Failed to read from connection" << std::endl;
-				} else {
+				icap::RequestHeader * req_header = icap::util::read_req_header( client_sock );
 
-					std::cout << "client said: " << line << std::endl;
 
-					// echo back
-					client_sock->send( line, line_len );
-
-				}
+				// cleanup
+				delete req_header;
 
 				// destroy / close connection
 				delete client_sock;
