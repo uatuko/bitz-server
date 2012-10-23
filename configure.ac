@@ -32,8 +32,9 @@ AC_CONFIG_HEADERS([include/config.h])
 #                 better
 # CURRENT : REVISION : AGE
 
-LT_VERSION=0:0:1
-AC_SUBST(LT_VERSION)
+# lib versions
+ICAP_LT_VERSION=0:0:0
+AC_SUBST(ICAP_LT_VERSION)
 
 # Init
 AM_INIT_AUTOMAKE
