@@ -25,7 +25,7 @@ namespace bitz {
 	Config::Config() {
 
 		// initialise config_t values
-		this->_config.port            = 4040;
+		this->_config.port            = 1344;
 		this->_config.log_file        = "/dev/null";
 		this->_config.log_category    = "bitz";
 
