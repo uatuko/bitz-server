@@ -27,10 +27,18 @@ namespace icap {
 
 	class RequestHeader : public Header {
 	public:
+
+		struct request_t {
+			std::string method;
+			std::string uri;
+			std::string protocol;
+		};
+
 		RequestHeader();
 		virtual ~RequestHeader();
 
 	private:
+		request_t _request;
 
 	};
 

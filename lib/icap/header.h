@@ -20,12 +20,21 @@
 #ifndef ICAP_HEADER_H
 #define ICAP_HEADER_H
 
+#include <string>
+#include <map>
+
 namespace icap {
 
 	class Header {
 	public:
+
+		typedef std::map<std::string, std::string> header_t;
+
 		Header();
 		virtual ~Header();
+
+	protected:
+		header_t _headers;
 
 	private:
 
