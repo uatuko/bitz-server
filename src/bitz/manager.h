@@ -39,48 +39,48 @@
 namespace bitz {
 
 	class Manager {
-		public:
+	public:
 
-			struct worker_pool_t {
-				pid_t worker_pid;
-				unsigned int worker_id;
-				Worker * worker;
-			};
+		struct worker_pool_t {
+			pid_t worker_pid;
+			unsigned int worker_id;
+			Worker * worker;
+		};
 
-			struct manager_t {
-				bool worker;
-				unsigned int max_workers;
-				unsigned int max_worker_requests;
-				unsigned int workers_count;
-				unsigned int worker_id;
+		struct manager_t {
+			bool worker;
+			unsigned int max_workers;
+			unsigned int max_worker_requests;
+			unsigned int workers_count;
+			unsigned int worker_id;
 
-				socketlibrary::TCPServerSocket * socket;
-				worker_pool_t * worker_pool;
-			};
+			socketlibrary::TCPServerSocket * socket;
+			worker_pool_t * worker_pool;
+		};
 
-			/**
-			 * Note: backlog = SOMAXCONN (from sys/socket.h)
-			 */
-			Manager( unsigned short port, const std::string &address = "", int backlog = 128 );
+		/**
+		 * Note: backlog = SOMAXCONN (from sys/socket.h)
+		 */
+		Manager( unsigned short port, const std::string &address = "", int backlog = 128 );
 
-			/**
-			 * deconstructor
-			 */
-			virtual ~Manager();
+		/**
+		 * deconstructor
+		 */
+		virtual ~Manager();
 
-			virtual void spawn( unsigned int max_workers = BITZ_MAX_WORKERS, unsigned int max_worker_requests = BITZ_MAX_WORKER_REQUESTS ) throw( ManagerException );
-			virtual void shutdown( bool graceful = true ) throw();
-			virtual void reap_worker( pid_t worker_pid ) throw();
-			virtual void manager_workers() throw();
+		virtual void spawn( unsigned int max_workers = BITZ_MAX_WORKERS, unsigned int max_worker_requests = BITZ_MAX_WORKER_REQUESTS ) throw( ManagerException );
+		virtual void shutdown( bool graceful = true ) throw();
+		virtual void reap_worker( pid_t worker_pid ) throw();
+		virtual void manager_workers() throw();
 
-		private:
-			manager_t _manager;
+	private:
+		manager_t _manager;
 
-			virtual void spawn_worker( unsigned int worker_id ) throw( ManagerException );
+		virtual void spawn_worker( unsigned int worker_id ) throw( ManagerException );
 
 	};
 
-} // end of namespace bitz
+} /* end of namespace bitz */
 
 #endif /* !BITZ_MANAGER_H */
 

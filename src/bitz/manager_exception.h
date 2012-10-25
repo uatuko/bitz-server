@@ -25,12 +25,12 @@
 namespace bitz {
 
 	class ManagerException: public Exception {
-		public:
-			ManagerException( const std::string &message, bool inclSystemMessage = false ) throw();
-			virtual ~ManagerException() throw();
+	public:
+		ManagerException( const std::string &message, bool inclSystemMessage = false ) throw();
+		virtual ~ManagerException() throw();
 	};
 
-} // end of namespace bitz
+} /* end of namespace bitz */
 
 #endif /* BITZ_MANAGER_EXCEPTION_H */
 

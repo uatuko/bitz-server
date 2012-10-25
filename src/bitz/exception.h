@@ -27,17 +27,17 @@
 namespace bitz {
 
 	class Exception : public std::exception {
-		public:
-			Exception( const std::string &message, bool inclSystemMessage = false ) throw();
-			virtual ~Exception() throw();
+	public:
+		Exception( const std::string &message, bool inclSystemMessage = false ) throw();
+		virtual ~Exception() throw();
 
-			virtual const char * what() const throw();
+		virtual const char * what() const throw();
 
-		private:
-			std::string _message;
+	private:
+		std::string _message;
 	};
 
-} // end of namespace bitz
+} /* end of namespace bitz */
 
 #endif /* !BITZ_EXCEPTION_H */
 

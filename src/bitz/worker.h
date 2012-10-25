@@ -25,16 +25,15 @@
 namespace bitz {
 
 	class Worker {
-		public:
-			Worker();
-			virtual ~Worker();
+	public:
+		Worker();
+		virtual ~Worker();
 
-			virtual void run( socketlibrary::TCPServerSocket * server_sock, unsigned int max_requests ) throw();
+		virtual void run( socketlibrary::TCPServerSocket * server_sock, unsigned int max_requests ) throw();
 
-		private:
 	};
 
-} // end of namespace bitz
+} /* end of namespace bitz */
 
 #endif /* !BITZ_WORKER_H */
 

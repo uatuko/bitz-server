@@ -35,25 +35,25 @@ namespace bitz {
 	};
 
 	class Config {
-		public:
-			static Config &instance() {
-				static Config config;
-				return config;
-			}
+	public:
+		static Config &instance() {
+			static Config config;
+			return config;
+		}
 
-			const config_t &initialise( std::string config_file = BITZ_SERVER_CONFIG_FILE );
-			const config_t &configs();
+		const config_t &initialise( std::string config_file = BITZ_SERVER_CONFIG_FILE );
+		const config_t &configs();
 
-		private:
-			config_t _config;
+	private:
+		config_t _config;
 
-			Config();
-			~Config();
-			Config( Config const &copy );
-			Config &operator=( const Config &copy );
+		Config();
+		~Config();
+		Config( Config const &copy );
+		Config &operator=( const Config &copy );
 	};
 
-} // end of namespace bitz
+} /* end of namespace bitz */
 
 #endif /* !BITZ_CONFIG_H */
 
