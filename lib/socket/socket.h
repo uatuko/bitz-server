@@ -190,7 +190,7 @@ public:
 	 * @return number of bytes read, 0 for EOF, and -1 for error
 	 * @exception SocketException thrown if unable to receive data
 	 */
-	int readline(char *buffer, int maxlen) throw(SocketException);
+	int readLine(char *buffer, int bufferLen, const char delimiter = '\n') throw(SocketException);
 
 	/**
 	*   Get the foreign address.  Call connect() before calling recv()
