@@ -23,9 +23,23 @@
 #include <socket/socket.h>
 #include "request_header.h"
 
+#ifndef ICAP_BUFFER_LENGTH
+#define ICAP_BUFFER_LENGTH 1024
+#endif
+
+
 namespace icap {
 
 	namespace util {
+
+		/**
+		*   Read a line (ending with \r\n) from the socket
+		*
+		*   @param socket socket to read from
+		*   @param buf buffer to read the data into
+		*   @param buf_length length / size of the buffer data is read into
+		*/
+		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length ) throw();
 
 		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket );
 

@@ -22,16 +22,11 @@
 #include <string>
 #include <iostream>
 
-#ifndef ICAP_BUFFER_LENGTH
-#define ICAP_BUFFER_LENGTH 1024
-#endif
-
-
 namespace icap {
 
 	namespace util {
 
-		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length = ICAP_BUFFER_LENGTH ) {
+		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length ) throw() {
 
 			int i  = 0, n;
 			char c = '\0';
@@ -42,8 +37,9 @@ namespace icap {
 
 				if ( n > 0 ) {
 					if ( c == '\r' ) {
-						n = socket->recv( &c, 1 );
+						n = socket->peek( &c, 1 );
 						if ( ( n > 0 ) && ( c == '\n' ) ) {
+							socket->recv( &c, 1 );
 							break;    // end of line
 						}
 					}
@@ -53,10 +49,10 @@ namespace icap {
 				} else {
 					break;    // nothing read from socket
 				}
+
 			}
 
 			buf[i] = '\0';
-
 			return i;
 
 		}
@@ -66,7 +62,7 @@ namespace icap {
 			char buffer[ICAP_BUFFER_LENGTH];
 			std::string data;
 
-			while ( ( ( socket->readLine( buffer, ICAP_BUFFER_LENGTH ) ) > 0 ) && ( buffer[0] != '\r' ) ) {
+			while ( ( read_line( socket, buffer, ICAP_BUFFER_LENGTH ) ) > 0 ) {
 				data.append( buffer );
 			}
 
