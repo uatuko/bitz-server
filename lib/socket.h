@@ -182,6 +182,18 @@ public:
 	int recv(void *buffer, int bufferLen) throw(SocketException);
 
 	/**
+	*   Read into the given buffer up to bufferLen bytes data from this
+	*   socket but don't remove the read bytes from the socket read buffer.
+	*   Call connect() before calling peek()
+	*
+	*   @param buffer buffer to receive the data
+	*   @param bufferLen maximum number of bytes to read into buffer
+	*   @return number of bytes read, 0 for EOF, and -1 for error
+	*   @exception SocketException thrown if unable to receive data
+	*/
+	int peek(void *buffer, int bufferLen) throw(SocketException);
+
+	/**
 	* Read a line into the given buffer from this socket.
 	* Call connect() before calling recv()
 	*
