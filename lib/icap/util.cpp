@@ -55,7 +55,7 @@ namespace icap {
 				}
 			}
 
-			bug[i] = '\0';
+			buf[i] = '\0';
 
 			return i;
 
@@ -66,7 +66,7 @@ namespace icap {
 			char buffer[ICAP_BUFFER_LENGTH];
 			std::string data;
 
-			while ( ( ( socket->readline( buffer, ICAP_BUFFER_LENGTH ) ) > 0 ) && ( buffer[0] != '\r' ) ) {
+			while ( ( ( socket->readLine( buffer, ICAP_BUFFER_LENGTH ) ) > 0 ) && ( buffer[0] != '\r' ) ) {
 				data.append( buffer );
 			}
 
