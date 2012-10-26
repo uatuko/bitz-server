@@ -194,14 +194,14 @@ public:
 	int peek(void *buffer, int bufferLen) throw(SocketException);
 
 	/**
-	* Read a line into the given buffer from this socket.
-	* Call connect() before calling recv()
+	*   Read a line into the given buffer from this socket.
+	*   Call connect() before calling recv()
 	*
-	* @param buffer buffer to receive the data
-	* @param bufferLen maximum number of bytes to read into buffer
-	* @param delimiter (optional) end of line delimiter
-	* @return number of bytes read, 0 for EOF, and -1 for error
-	* @exception SocketException thrown if unable to receive data
+	*   @param buffer buffer to receive the data
+	*   @param bufferLen maximum number of bytes to read into buffer
+	*   @param delimiter (optional) end of line delimiter
+	*   @return number of bytes read, 0 for EOF, and -1 for error
+	*   @exception SocketException thrown if unable to receive data
 	*/
 	int readLine(char *buffer, int bufferLen, const char delimiter = '\n') throw(SocketException);
 
