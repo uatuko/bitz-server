@@ -70,7 +70,7 @@ void * worker( void *arg ) {
 		cl_port = cl_sock->getForeignPort();
 
 		// read from the client
-		line_len = cl_sock->readline( line, MAXLEN );
+		line_len = cl_sock->readLine( line, MAXLEN );
 
 		cout << "[" << cl_sock->getForeignAddress() << ":" << cl_sock->getForeignPort() << "] client said: " << line << endl;
 

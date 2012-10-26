@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 				try {
 					server_socket->connect("localhost", PORT);
 					server_socket->send("spam\n", 5);
-					server_socket->readline(r, MAXLEN);
+					server_socket->readLine(r, MAXLEN);
 					cout << "[server] " << r;
 					delete server_socket;
 					server_socket = new TCPSocket();
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 			try {
 				server_socket->connect("localhost", PORT);
 				server_socket->send("cmd\n", 4);
-				server_socket->readline(r, MAXLEN);
+				server_socket->readLine(r, MAXLEN);
 				cout << "[server] " << r;
 			} catch( SocketException &e) {
 				cout << e.what() << endl;

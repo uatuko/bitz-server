@@ -53,7 +53,7 @@ int main() {
 					cout << "[" << i << "] New connection accepted on " << client_sock->getForeignAddress() << ":" << client_sock->getForeignPort() << endl;
 
 					// read
-					line_len = client_sock->readline( line, MAXLEN );
+					line_len = client_sock->readLine( line, MAXLEN );
 					if ( line_len == -1) {
 						cout << "[" << i << "] Failed to read from connection" << endl;
 					} else {
