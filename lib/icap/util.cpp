@@ -20,7 +20,7 @@
 #include "util.h"
 
 #include <string>
-#include <iostream>
+#include <vector>
 
 namespace icap {
 
@@ -60,13 +60,15 @@ namespace icap {
 		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket ) {
 
 			char buffer[ICAP_BUFFER_LENGTH];
-			std::string data;
+			int  n = 0;
+			std::vector<std::string> data;
 
-			while ( ( read_line( socket, buffer, ICAP_BUFFER_LENGTH ) ) > 0 ) {
-				data.append( buffer );
+			while ( ( n = read_line( socket, buffer, ICAP_BUFFER_LENGTH ) ) > 0 ) {
+				// FIXME: this is not correct if a line is longer than the buffer length
+				data.push_back( buffer );
 			}
 
-			icap::RequestHeader * req_header = new icap::RequestHeader();
+			icap::RequestHeader * req_header = new icap::RequestHeader( data );
 			return req_header;
 		}
 

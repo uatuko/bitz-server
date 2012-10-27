@@ -21,7 +21,10 @@
 
 namespace icap {
 
-	RequestHeader::RequestHeader() : Header() { }
+	RequestHeader::RequestHeader( const std::vector<std::string> &data ) : Header() {
+
+	}
+
 	RequestHeader::~RequestHeader() { }
 
 } /* end of namespace icap */

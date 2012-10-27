@@ -22,6 +22,9 @@
 
 #include "header.h"
 
+#include <string>
+#include <vector>
+
 
 namespace icap {
 
@@ -34,7 +37,7 @@ namespace icap {
 			std::string protocol;
 		};
 
-		RequestHeader();
+		RequestHeader( const std::vector<std::string> &data );
 		virtual ~RequestHeader();
 
 	private:
