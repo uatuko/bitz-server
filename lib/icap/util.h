@@ -41,6 +41,14 @@ namespace icap {
 		*/
 		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length ) throw();
 
+		/**
+		*   split a string into a vector by the given delimiter
+		*
+		*   @param str input string
+		*   @param delimiter (optional) delimiter, defaults to " "
+		*/
+		std::vector<std::string> split( const std::string &str, const std::string &delimiter = " " ) throw();
+
 		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket );
 
 	} /* end of namespace util */

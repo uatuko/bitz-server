@@ -57,6 +57,24 @@ namespace icap {
 
 		}
 
+
+		std::vector<std::string> split( const std::string &str, const std::string &delimiter ) throw() {
+
+			std::vector<std::string> result;
+			size_t current;
+			size_t next = -1;
+
+			do {
+				current = next + 1;
+				next    = str.find_first_of( delimiter, current );
+				result.push_back( str.substr( current, ( next - current ) ) );
+			} while ( next != std::string::npos );
+
+			return result;
+
+		}
+
+
 		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket ) {
 
 			char buffer[ICAP_BUFFER_LENGTH];
