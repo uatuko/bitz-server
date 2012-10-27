@@ -18,12 +18,40 @@
  */
 
 #include "request_header.h"
+#include "util.h"
+
 
 namespace icap {
 
+	/*
+	*  sample icap request:
+	*  REQMOD icap://icap-server.net/server?arg=87 ICAP/1.0
+	*  Host: icap-server.net
+	*  Encapsulated: req-hdr=0, null-body=170
+	*
+	*/
 	RequestHeader::RequestHeader( const std::vector<std::string> &data ) : Header() {
 
+		if ( data.size() > 0 ) {
+
+			std::vector<std::string> request = util::split( data.at( 0 ) );
+
+			if ( request.size() == 3 ) {
+				_request.method   = request.at(0);
+				_request.uri      = request.at(1);
+				_request.protocol = request.at(2);
+			} else {
+				// TODO: error, invalid request format
+			}
+
+		} else {
+			_request.method   = "";
+			_request.uri      = "";
+			_request.protocol = "ICAP/1.0";
+		}
+
 	}
+
 
 	RequestHeader::~RequestHeader() { }
 
