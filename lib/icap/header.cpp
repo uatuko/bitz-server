@@ -28,7 +28,7 @@ namespace icap {
 	Header::~Header() {}
 
 
-	const Header::header_t &Header::headers() const throw() {
+	const Header::headers_t &Header::headers() const throw() {
 		return _headers;
 	}
 

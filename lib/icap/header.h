@@ -29,7 +29,7 @@ namespace icap {
 	class Header {
 	public:
 
-		typedef std::map<std::string, std::string> header_t;
+		typedef std::map<std::string, std::string> headers_t;
 
 		Header();
 		virtual ~Header();
@@ -39,7 +39,7 @@ namespace icap {
 		*   Return headers
 		*   @return headers
 		*/
-		const header_t &headers() const throw();
+		const headers_t &headers() const throw();
 
 		/**
 		*   Attach header data into the header
@@ -62,7 +62,7 @@ namespace icap {
 		virtual bool remove( std::string key ) throw();
 
 	protected:
-		header_t _headers;
+		headers_t _headers;
 
 	private:
 
