@@ -22,6 +22,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 namespace icap {
 
@@ -32,6 +33,33 @@ namespace icap {
 
 		Header();
 		virtual ~Header();
+
+
+		/**
+		*   Return headers
+		*   @return header_t
+		*/
+		const header_t &headers() const throw();
+
+		/**
+		*   Attach header data into the header
+		*
+		*   e.g.
+		*   Host: icap-server.net
+		*   Encapsulated: req-hdr=0, null-body=170
+		*   [key]: [value]
+		*
+		*   @param key header key
+		*   @param value header value
+		*/
+		virtual void attach( std::string &key, std::string &value ) throw();
+
+		/**
+		*   Remove header data from the header
+		*
+		*   @param key header key
+		*/
+		virtual bool remove( std::string &key ) throw();
 
 	protected:
 		header_t _headers;

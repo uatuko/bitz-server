@@ -24,16 +24,18 @@
 namespace icap {
 
 	/*
-	*  sample icap request:
+	*  sample icap request header:
 	*  REQMOD icap://icap-server.net/server?arg=87 ICAP/1.0
 	*  Host: icap-server.net
 	*  Encapsulated: req-hdr=0, null-body=170
 	*
+	*  [payload]
 	*/
 	RequestHeader::RequestHeader( const std::vector<std::string> &data ) : Header() {
 
 		if ( data.size() > 0 ) {
 
+			std::vector<std::string> header_data;
 			std::vector<std::string> request = util::split( data.at( 0 ) );
 
 			if ( request.size() == 3 ) {
@@ -42,6 +44,16 @@ namespace icap {
 				_request.protocol = request.at(2);
 			} else {
 				// TODO: error, invalid request format
+			}
+
+			for ( int i = 1; i < data.size(); i++ ) {
+				header_data = util::split( data.at( i ), ":" );
+
+				if ( header_data.size() == 2 ) {
+					this->attach( header_data.at( 0 ), header_data.at( 1 ) );
+				} else {
+					// TODO: error parsing header data
+				}
 			}
 
 		} else {

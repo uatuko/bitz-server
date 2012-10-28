@@ -24,5 +24,20 @@ namespace icap {
 	Header::Header() {}
 	Header::~Header() {}
 
+
+	const Header::header_t &Header::headers() const throw() {
+		return _headers;
+	}
+
+
+	void Header::attach( std::string &key, std::string &value ) throw() {
+		_headers[key] = value;
+	}
+
+
+	bool Header::remove( std::string &key ) throw() {
+		return ( (bool) _headers.erase( key ) );
+	}
+
 }
 
