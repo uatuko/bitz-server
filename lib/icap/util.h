@@ -38,6 +38,7 @@ namespace icap {
 		*   @param socket socket to read from
 		*   @param buf buffer to read the data into
 		*   @param buf_length length / size of the buffer data is read into
+		*   @return number of bytes read
 		*/
 		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length ) throw();
 
@@ -49,6 +50,12 @@ namespace icap {
 		*/
 		std::vector<std::string> split( const std::string &str, const std::string &delimiter = " " ) throw();
 
+		/**
+		*   Read icap request header from the socket passes in
+		*
+		*   @param socket socket object to read data from
+		*   @return icap request header object
+		*/
 		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket );
 
 	} /* end of namespace util */

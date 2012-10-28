@@ -37,7 +37,7 @@ namespace icap {
 
 		/**
 		*   Return headers
-		*   @return header_t
+		*   @return headers
 		*/
 		const header_t &headers() const throw();
 
