@@ -67,5 +67,25 @@ namespace icap {
 
 	RequestHeader::~RequestHeader() { }
 
+
+	const std::string &RequestHeader::method() throw() {
+		return _request.method;
+	}
+
+
+	const std::string &RequestHeader::uri() throw() {
+		return _request.uri;
+	}
+
+
+	const std::string &RequestHeader::protocol() throw() {
+		return _request.protocol;
+	}
+
+
+	const RequestHeader::request_t &RequestHeader::request() throw() {
+		return _request;
+	}
+
 } /* end of namespace icap */
 

@@ -40,6 +40,30 @@ namespace icap {
 		RequestHeader( const std::vector<std::string> &data );
 		virtual ~RequestHeader();
 
+		/**
+		*   Return request method
+		*   @return method
+		*/
+		const std::string &method() throw();
+
+		/**
+		*   Return request URI
+		*   @return URI
+		*/
+		const std::string &uri() throw();
+
+		/**
+		*   Return request protocol
+		*   @return protocol
+		*/
+		const std::string &protocol() throw();
+
+		/**
+		*   Return request
+		*   @return request
+		*/
+		const request_t &request() throw();
+
 	private:
 		request_t _request;
 
