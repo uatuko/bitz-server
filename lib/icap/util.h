@@ -51,6 +51,30 @@ namespace icap {
 		std::vector<std::string> split( const std::string &str, const std::string &delimiter = " " ) throw();
 
 		/**
+		*   Left trim (trim from start) a passed in string
+		*
+		*   @param str string to trim
+		*   @return trimmed string
+		*/
+		std::string &ltrim( std::string &str ) throw();
+
+		/**
+		*   Right trim (trim from end) a passed in string
+		*
+		*   @param str string to trim
+		*   @return trimmed string
+		*/
+		std::string &rtrim( std::string &str ) throw();
+
+		/**
+		*   Trim (trim from both ends) a passed in string
+		*
+		*   @param str string to trim
+		*   @return trimmed string
+		*/
+		std::string &trim( std::string &str ) throw();
+
+		/**
 		*   Read icap request header from the socket passes in
 		*
 		*   @param socket socket object to read data from
