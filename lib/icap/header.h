@@ -52,14 +52,14 @@ namespace icap {
 		*   @param key header key
 		*   @param value header value
 		*/
-		virtual void attach( std::string &key, std::string &value ) throw();
+		virtual void attach( std::string key, std::string value ) throw();
 
 		/**
 		*   Remove header data from the header
 		*
 		*   @param key header key
 		*/
-		virtual bool remove( std::string &key ) throw();
+		virtual bool remove( std::string key ) throw();
 
 	protected:
 		header_t _headers;

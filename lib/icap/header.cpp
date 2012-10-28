@@ -18,6 +18,9 @@
  */
 
 #include "header.h"
+#include <iostream>
+#include "util.h"
+
 
 namespace icap {
 
@@ -30,13 +33,13 @@ namespace icap {
 	}
 
 
-	void Header::attach( std::string &key, std::string &value ) throw() {
-		_headers[key] = value;
+	void Header::attach( std::string key, std::string value ) throw() {
+		_headers[util::trim( key )] = util::trim( value );
 	}
 
 
-	bool Header::remove( std::string &key ) throw() {
-		return ( (bool) _headers.erase( key ) );
+	bool Header::remove( std::string key ) throw() {
+		return ( (bool) _headers.erase( util::trim( key ) ) );
 	}
 
 }
