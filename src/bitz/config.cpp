@@ -65,5 +65,5 @@ namespace bitz {
 		return this->_config;
 	}
 
-} // end of namespace bitz
+} /* end of namespace bitz */
 

@@ -94,5 +94,5 @@ namespace bitz {
 		this->LOGGER->debug( message );
 	}
 
-} // end of namespace bitz
+} /* end of namespace bitz */
 

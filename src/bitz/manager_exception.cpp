@@ -28,5 +28,5 @@ namespace bitz {
 
 	ManagerException::~ManagerException() throw() { }
 
-} // end of namespace bitz
+} /* end of namespace bitz */
 

@@ -36,5 +36,5 @@ namespace bitz {
 		return _message.c_str();
 	}
 
-} // end of namespace bitz
+} /* end of namespace bitz */
 

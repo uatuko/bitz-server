@@ -64,5 +64,5 @@ namespace bitz {
 
 	}
 
-} // end of namespace bitz
+} /* end of namespace bitz */
 
