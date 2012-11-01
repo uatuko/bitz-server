@@ -59,13 +59,13 @@ namespace bitz {
 		};
 
 		/**
-		 * Note: backlog = SOMAXCONN (from sys/socket.h)
-		 */
+		*   Note: backlog = SOMAXCONN (from sys/socket.h)
+		*/
 		Manager( unsigned short port, const std::string &address = "", int backlog = 128 );
 
 		/**
-		 * deconstructor
-		 */
+		*   deconstructor
+		*/
 		virtual ~Manager();
 
 		virtual void spawn( unsigned int max_workers = BITZ_MAX_WORKERS, unsigned int max_worker_requests = BITZ_MAX_WORKER_REQUESTS ) throw( ManagerException );
