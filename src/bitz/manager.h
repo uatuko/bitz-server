@@ -21,11 +21,13 @@
 #define BITZ_MANAGER_H
 
 #include <string>              // for string type
+#include <map>                 // for std::map
 #include <unistd.h>            // pid_t, fork() etc.
 #include <socket/socket.h>     // socket-library
 
 #include "manager_exception.h"
 #include "worker.h"
+#include "request_handler.h"
 
 #ifndef BITZ_MAX_WORKERS
 #define BITZ_MAX_WORKERS 2
@@ -58,6 +60,9 @@ namespace bitz {
 			worker_pool_t * worker_pool;
 		};
 
+		typedef std::map<std::string, RequestHandler *> req_handlers_t;
+
+
 		/**
 		*   Note: backlog = SOMAXCONN (from sys/socket.h)
 		*/
@@ -74,7 +79,8 @@ namespace bitz {
 		virtual void manager_workers() throw();
 
 	private:
-		manager_t _manager;
+		manager_t         _manager;
+		req_handlers_t    _req_handlers;
 
 		virtual void spawn_worker( unsigned int worker_id ) throw( ManagerException );
 

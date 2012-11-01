@@ -19,6 +19,7 @@
 
 #include "manager.h"
 #include "logger.h"
+#include "options_request_handler.h"
 
 #include <cstdlib>
 #include <sstream>
@@ -36,6 +37,10 @@ namespace bitz {
 		_manager.socket        = NULL;
 		_manager.worker_pool   = NULL;
 
+		// request handlers
+		_req_handlers["OPTIONS"] = new OptionsRequestHandler();
+
+		// FIXME: exception handling
 		if ( address.empty() ) {
 			_manager.socket = new socketlibrary::TCPServerSocket( port, backlog );
 		} else {
@@ -54,6 +59,8 @@ namespace bitz {
 		if (! _manager.worker ) {
 			logger.debug( "shutting down manager" );
 		}
+
+		delete _req_handlers["OPTIONS"];
 
 		delete [] _manager.worker_pool;
 		delete _manager.socket;

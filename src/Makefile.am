@@ -14,6 +14,7 @@ bitz_server_SOURCES     = bitz-server.cpp \
 	bitz/manager.h bitz/manager.cpp \
 	bitz/worket.h bitz/worker.cpp \
 	bitz/request_handler.h bitz/request_handler.cpp \
+	bitz/options_request_handler.h bitz/options_request_handler.cpp \
 	bitz/modifier.h bitz/modifier.cpp \
 	bitz/request_modifier.h bitz/request_modifier.cpp \
 	bitz/response_modifier.h bitz/response_modifier.cpp
