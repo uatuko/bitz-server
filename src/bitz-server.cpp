@@ -59,14 +59,16 @@ int main() {
 	Logger &logger = Logger::instance( config.log_file, config.log_category );
 	logger.info( std::string( PACKAGE_STRING ) + " initialised" );
 
-
-	// start-up the manager
-	Manager * manager = MANAGER = new Manager( config.port );
-
 	// initialise signal handlers
 	init_signal_handlers();
 
+	// manager
+	Manager * manager;
+
 	try {
+		// start-up the manager
+		manager = MANAGER = new Manager( config.port );
+
 		// spawn workers
 		manager->spawn( 1 );
 	} catch( ManagerException &mex ) {

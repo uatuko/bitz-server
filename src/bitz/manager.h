@@ -66,7 +66,7 @@ namespace bitz {
 		/**
 		*   Note: backlog = SOMAXCONN (from sys/socket.h)
 		*/
-		Manager( unsigned short port, const std::string &address = "", int backlog = 128 );
+		Manager( unsigned short port, const std::string &address = "", int backlog = 128 ) throw( ManagerException );
 
 		/**
 		*   deconstructor

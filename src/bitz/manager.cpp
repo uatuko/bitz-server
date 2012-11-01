@@ -27,7 +27,7 @@
 
 namespace bitz {
 
-	Manager::Manager( unsigned short port, const std::string &address, int backlog ) {
+	Manager::Manager( unsigned short port, const std::string &address, int backlog ) throw( ManagerException ) {
 
 		// initialise manager
 		_manager.worker        = false;
@@ -40,11 +40,15 @@ namespace bitz {
 		// request handlers
 		_req_handlers["OPTIONS"] = new OptionsRequestHandler();
 
-		// FIXME: exception handling
-		if ( address.empty() ) {
-			_manager.socket = new socketlibrary::TCPServerSocket( port, backlog );
-		} else {
-			_manager.socket = new socketlibrary::TCPServerSocket( address, port, backlog );
+		// initialise listening socket
+		try {
+			if ( address.empty() ) {
+				_manager.socket = new socketlibrary::TCPServerSocket( port, backlog );
+			} else {
+				_manager.socket = new socketlibrary::TCPServerSocket( address, port, backlog );
+			}
+		} catch ( socketlibrary::SocketException &sex ) {
+			throw ManagerException( "failed to initialise socket" );
 		}
 
 		Logger &logger = Logger::instance();
