@@ -76,7 +76,6 @@ int main() {
 		return ( EXIT_FAILURE );
 	}
 
-	std::cout << "[" << getpid() << "] before sigsuspend" << std::endl;
 
 	/* loop until termination signal arrives */
 	sigset_t mask, oldmask;
@@ -248,7 +247,7 @@ void sigint_handler(  int sig, siginfo_t *siginfo, void *context ) {
 /* termination handler */
 void termination_handler( int sig, siginfo_t *siginfo, void *context ) {
 
-	std::cout << "[" << getpid() << "]inside termination handler" << std::endl;
+	std::cout << "[" << getpid() << "] inside termination handler" << std::endl;
 
 	// exit by re-raising the signal if termination
 	// already in progress

@@ -19,6 +19,7 @@
 
 #include "manager.h"
 #include "logger.h"
+#include "util.h"
 #include "options_request_handler.h"
 
 #include <cstdlib>
@@ -94,6 +95,7 @@ namespace bitz {
 
 	void Manager::spawn_worker( unsigned int worker_id ) throw( ManagerException ) {
 
+		Logger &logger = Logger::instance();
 		pid_t worker_pid;
 
 		// create a worker child
@@ -113,9 +115,8 @@ namespace bitz {
 			_manager.worker_pool[worker_id].worker_pid = worker_pid;
 
 			_manager.worker_pool[worker_id].worker->run( _manager.socket, _manager.max_worker_requests );
-			std::cout << "end of cycle, worker: " << worker_id << ", pid: " << getpid() << std::endl;
+			logger.info( std::string( "end of cycle, worker[" ).append( util::itoa( worker_id ) ).append( "]" ) );
 
-			sleep(3);
 			delete _manager.worker_pool[worker_id].worker;
 			_exit( EXIT_SUCCESS );
 
@@ -136,6 +137,8 @@ namespace bitz {
 
 	void Manager::shutdown( bool graceful ) throw() {
 
+		// logger
+		Logger &logger = Logger::instance();
 
 		if ( _manager.worker ) {
 
@@ -150,15 +153,15 @@ namespace bitz {
 				if ( _manager.worker_pool[i].worker_pid != 0 ) {
 					if ( graceful ) {
 						kill( _manager.worker_pool[i].worker_pid, SIGTERM );
-						std::cout << "manager: sending SIGTERM to worker["
-								<< i << "], pid: " << _manager.worker_pool[i].worker_pid << std::endl;
+						logger.debug( std::string( "manager: sending SIGTERM to worker[" ).append( util::itoa( i ) )
+								.append( "], pid: " ).append( util::itoa( _manager.worker_pool[i].worker_pid ) ) );
 					} else {
 						kill( _manager.worker_pool[i].worker_pid, SIGKILL );
-						std::cout << "manager: sending SIGKILL to worker ["
-								<< i << "], pid:" << _manager.worker_pool[i].worker_pid << std::endl;
+						logger.debug( std::string( "manager: sending SIGKILL to worker[" ).append( util::itoa( i ) )
+								.append( "], pid: " ).append( util::itoa( _manager.worker_pool[i].worker_pid ) ) );
 					}
 				} else {
-					std::cout << "manager: worker[" << i << "]" << " already closed" << std::endl;
+					logger.debug( std::string( "manager: worker[" ).append( util::itoa( i ) ).append( " already closed" ) );
 				}
 			}
 		}
@@ -167,7 +170,9 @@ namespace bitz {
 
 	void Manager::reap_worker( pid_t worker_pid ) throw() {
 
-		std::cout << "reaping worker, pid: " << worker_pid << std::endl;
+		// logger
+		Logger &logger = Logger::instance();
+		logger.debug( std::string( "reaping worker, pid: " ).append( util::itoa( worker_pid ) ) );
 
 		if (! _manager.worker ) {
 			for (unsigned int i = 0; i < _manager.max_workers; i++ ) {
