@@ -114,7 +114,7 @@ namespace bitz {
 			_manager.worker_pool[worker_id].worker_id  = worker_id;
 			_manager.worker_pool[worker_id].worker_pid = worker_pid;
 
-			_manager.worker_pool[worker_id].worker->run( _manager.socket, _manager.max_worker_requests );
+			_manager.worker_pool[worker_id].worker->run( _manager.socket, _req_handlers, _manager.max_worker_requests );
 			logger.info( std::string( "end of cycle, worker[" ).append( util::itoa( worker_id ) ).append( "]" ) );
 
 			delete _manager.worker_pool[worker_id].worker;

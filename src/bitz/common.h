@@ -17,26 +17,21 @@
  *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef BITZ_WORKER_H
-#define BITZ_WORKER_H
+#ifndef BITZ_COMMON_H
+#define BITZ_COMMON_H
 
-#include <socket/socket.h>
+#include <string>
+#include <map>
 
-#include "common.h"
+#include "request_handler.h"
 
 
 namespace bitz {
 
-	class Worker {
-	public:
-		Worker();
-		virtual ~Worker();
-
-		virtual void run( socketlibrary::TCPServerSocket * server_sock, const req_handlers_t &req_handlers, unsigned int max_requests ) throw();
-
-	};
+	/* request handlers type */
+	typedef std::map<std::string, RequestHandler *> req_handlers_t;
 
 } /* end of namespace bitz */
 
-#endif /* !BITZ_WORKER_H */
+#endif /* !BITZ_COMMIN_H */
 

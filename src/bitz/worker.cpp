@@ -31,7 +31,7 @@ namespace bitz {
 		logger.debug( "exiting worker" );
 	}
 
-	void Worker::run( socketlibrary::TCPServerSocket * server_sock, unsigned int max_requests ) throw() {
+	void Worker::run( socketlibrary::TCPServerSocket * server_sock, const req_handlers_t &req_handlers, unsigned int max_requests ) throw() {
 
 		socketlibrary::TCPSocket * client_sock;
 

@@ -20,14 +20,12 @@
 #ifndef BITZ_MANAGER_H
 #define BITZ_MANAGER_H
 
-#include <string>              // for string type
-#include <map>                 // for std::map
 #include <unistd.h>            // pid_t, fork() etc.
 #include <socket/socket.h>     // socket-library
 
+#include "common.h"
 #include "manager_exception.h"
 #include "worker.h"
-#include "request_handler.h"
 
 #ifndef BITZ_MAX_WORKERS
 #define BITZ_MAX_WORKERS 2
@@ -59,8 +57,6 @@ namespace bitz {
 			socketlibrary::TCPServerSocket * socket;
 			worker_pool_t * worker_pool;
 		};
-
-		typedef std::map<std::string, RequestHandler *> req_handlers_t;
 
 
 		/**
