@@ -32,7 +32,7 @@ namespace bitz {
 		Worker();
 		virtual ~Worker();
 
-		virtual void run( socketlibrary::TCPServerSocket * server_sock, const req_handlers_t &req_handlers, unsigned int max_requests ) throw();
+		virtual void run( socketlibrary::TCPServerSocket * server_sock, req_handlers_t req_handlers, unsigned int max_requests ) throw();
 
 	};
 

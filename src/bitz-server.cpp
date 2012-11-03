@@ -70,7 +70,7 @@ int main() {
 		manager = MANAGER = new Manager( config.port );
 
 		// spawn workers
-		manager->spawn( 1 );
+		manager->spawn( 1, 2 );
 	} catch( ManagerException &mex ) {
 		std::cout << mex.what() << std::endl;
 		return ( EXIT_FAILURE );
@@ -144,7 +144,7 @@ void sigchld_handler( int sig, siginfo_t *siginfo, void *context ) {
 
 	printf( "Inside zombie deleter:  " );
 	while ( ( worker_pid = waitpid( WAIT_ANY, &status, WNOHANG ) ) > 0 ) {
-		printf( "Child %ld terminated\n", worker_pid );
+		printf( "Child %ld terminated with status %d\n", worker_pid, status );
 		manager->reap_worker( worker_pid );
 	}
 

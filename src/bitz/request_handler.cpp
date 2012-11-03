@@ -18,12 +18,16 @@
  */
 
 #include "request_handler.h"
-
+#include "logger.h"
 
 namespace bitz {
 
 	RequestHandler::RequestHandler() { }
-	RequestHandler::~RequestHandler() { }
+
+	RequestHandler::~RequestHandler() {
+		Logger &logger = Logger::instance();
+		logger.debug( "exiting request handler" );
+	}
 
 } /* end of namespace bitz */
 
