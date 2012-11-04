@@ -29,5 +29,13 @@ namespace bitz {
 		logger.debug( "exiting request handler" );
 	}
 
+	icap::Response * RequestHandler::process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() {
+
+		// TODO:
+		icap::Response * response = new icap::Response();
+		return response;
+
+	}
+
 } /* end of namespace bitz */
 

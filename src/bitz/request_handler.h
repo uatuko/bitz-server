@@ -20,12 +20,19 @@
 #ifndef BITZ_REQUEST_HANDLER_H
 #define BITZ_REQUEST_HANDLER_H
 
+#include <icap/response.h>
+#include <icap/request_header.h>
+#include <socket/socket.h>
+
+
 namespace bitz {
 
 	class RequestHandler {
 	public:
 		RequestHandler();
 		virtual ~RequestHandler();
+
+		icap::Response * process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw();
 
 	private:
 
