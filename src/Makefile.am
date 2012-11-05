@@ -12,7 +12,7 @@ bitz_server_SOURCES     = bitz-server.cpp \
 	bitz/config.h bitz/config.cpp \
 	bitz/logger.h bitz/logger.cpp \
 	bitz/common.h \
-	bitz/util.h \
+	bitz/util.h bitz/util.cpp \
 	bitz/manager.h bitz/manager.cpp \
 	bitz/worket.h bitz/worker.cpp \
 	bitz/request_handler.h bitz/request_handler.cpp \

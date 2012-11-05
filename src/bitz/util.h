@@ -20,7 +20,10 @@
 #ifndef BITZ_UTIL_H
 #define BITZ_UTIL_H
 
+#include "common.h"
+
 #include <string>
+#include <sstream>
 
 
 namespace bitz {
@@ -33,15 +36,25 @@ namespace bitz {
 		*   @param number number to be converted
 		*   @return converted string
 		*/
-		template <typename T> std::string itoa( T number );
+		template <typename T> std::string itoa( T number ) {
+			std::ostringstream ss;
+			ss << number;
+
+			return ss.str();
+		}
+
+		/**
+		*   Find a matching request handler for the given method
+		*
+		*   @param req_handlers request handlers
+		*   @param req_method request method
+		*   @return request handler (or null pointer if not found)
+		*/
+		RequestHandler * find_req_handler( req_handlers_t req_handlers, const std::string &req_method );
 
 	} /* end of namespace util */
 
 } /* end of namespace bitz */
-
-
-/* template linking */
-#include "util.cpp"
 
 #endif /* !BITZ_UTIL_H */
 

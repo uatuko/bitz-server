@@ -19,19 +19,25 @@
 
 #include "util.h"
 
-#include <sstream>
-
 
 namespace bitz {
 
 	namespace util {
 
-		template <typename T>
-		std::string itoa( T number ) {
-			std::ostringstream ss;
-			ss << number;
+		RequestHandler * find_req_handler( req_handlers_t req_handlers, const std::string &req_method ) {
 
-			return ss.str();
+			RequestHandler * req_handler;
+			req_handlers_index_t rh_i;
+			rh_i = req_handlers.find( req_method );
+
+			if ( rh_i != req_handlers.end() ) {
+				req_handler = rh_i->second;
+			} else {
+				req_handler = NULL;
+			}
+
+			return req_handler;
+
 		}
 
 	} /* end of namespace util */
