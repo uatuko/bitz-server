@@ -19,9 +19,11 @@
 
 #include "worker.h"
 #include "logger.h"
+#include "util.h"
 
 #include <icap/util.h>
 #include <icap/request_header.h>
+
 
 namespace bitz {
 
@@ -31,13 +33,11 @@ namespace bitz {
 		logger.debug( "exiting worker" );
 	}
 
-	void Worker::run( socketlibrary::TCPServerSocket * server_sock, req_handlers_t req_handlers, unsigned int max_requests ) throw() {
+	void Worker::run( socketlibrary::TCPServerSocket * server_sock, const req_handlers_t &req_handlers, unsigned int max_requests ) throw() {
 
 		socketlibrary::TCPSocket * client_sock;
 		icap::RequestHeader * req_header;
 		RequestHandler * req_handler;
-
-		req_handlers_index_t rh_i;
 
 
 		try {
@@ -45,19 +45,19 @@ namespace bitz {
 			while ( max_requests > 0 ) {
 
 				client_sock = server_sock->accept();
-				std::cout << "New connection accepted on " << client_sock->getForeignAddress() << ":" << client_sock->getForeignPort() << std::endl;
+				std::cout << "[worker] new connection accepted on " << client_sock->getForeignAddress() << ":" << client_sock->getForeignPort() << std::endl;
 
-				req_header = icap::util::read_req_header( client_sock );
-				rh_i = req_handlers.find( req_header->method() );
+				req_header  = icap::util::read_req_header( client_sock );
+				req_handler = util::find_req_handler( req_handlers, req_header->method() );
 
-				if ( rh_i != req_handlers.end() ) {
-
-					req_handler = rh_i->second;
+				if ( req_handler != NULL ) {
 
 					// TODO: handler the request
+					std::cout << "[worker] handling request: " << req_header->method() << std::endl;
 
 				} else {
 					// TODO: unsupported request
+					std::cout << "[worker] unsupported request: " << req_header->method() << std::endl;
 				}
 
 				// cleanup
