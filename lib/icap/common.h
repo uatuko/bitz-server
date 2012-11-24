@@ -17,27 +17,12 @@
  *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef ICAP_RESPONSE_H
-#define ICAP_RESPONSE_H
-
-#include "response_header.h"
-
+#ifndef ICAP_COMMON_H
+#define ICAP_COMMON_H
 
 namespace icap {
 
-	class Response {
-	public:
-		Response( ResponseHeader * response_header = NULL );
-		Response( ResponseHeader::response_status_enum status );
-		virtual ~Response();
-
-	private:
-		ResponseHeader * _response_header;
-		bool _cleanup_header;
-
-	};
-
 } /* end of namespace icap */
 
-#endif /* !ICAP_RESPONSE_H */
+#endif /* !ICAP_COMMIN_H */
 

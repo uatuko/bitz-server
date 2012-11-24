@@ -17,8 +17,8 @@
  *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef ICAP_RESPONSE_H
-#define ICAP_RESPONSE_H
+#ifndef ICAP_RESPONSE_HEADER_H
+#define ICAP_RESPONSE_HEADER_H
 
 #include "header.h"
 
@@ -27,12 +27,36 @@ namespace icap {
 
 	class ResponseHeader : public Header {
 	public:
-		ResponseHeader();
+
+		enum response_status_enum {
+			CONTINUE            = 100,
+			OK                  = 200,
+			NO_CONTENT          = 204,
+			BAD_REQUEST         = 400,
+			NOT_FOUND           = 404,
+			NOT_ALLOWED         = 405,
+			REQ_TIMEOUT         = 408,
+			SERVER_ERROR        = 500,
+			NOT_IMPLEMENTED     = 501,
+			BAD_GATEWAY         = 502,
+			SERVICE_OVERLOADED  = 503,
+			NOT_SUPPORTED       = 505
+		};
+
+		struct response_t {
+			std::string protocol;
+			response_status_enum status;
+		};
+
+		ResponseHeader( response_status_enum status );
 		virtual ~ResponseHeader();
+
+	private:
+		response_t _response;
 
 	};
 
 } /* end of namespace icap */
 
-#endif /* !ICAP_RESPONSE_H */
+#endif /* !ICAP_RESPONSE_HEADER_H */
 

@@ -22,6 +22,7 @@
 
 #include <socket/socket.h>
 #include "request_header.h"
+#include "response.h"
 
 #ifndef ICAP_BUFFER_LENGTH
 #define ICAP_BUFFER_LENGTH 1024
@@ -80,7 +81,16 @@ namespace icap {
 		*   @param socket socket object to read data from
 		*   @return icap request header object
 		*/
-		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket );
+		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket ) throw();
+
+		/**
+		*   Output a response using the passed in icap::Response class to the
+		*   passed in socket
+		*
+		*   @param response response object to get the response data from
+		*   @param socket socket object to send the data to
+		*/
+		void send_response( icap::Response * response, socketlibrary::TCPSocket * socket ) throw();
 
 	} /* end of namespace util */
 

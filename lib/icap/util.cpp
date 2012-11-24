@@ -96,7 +96,7 @@ namespace icap {
 		}
 
 
-		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket ) {
+		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket ) throw() {
 
 			char buffer[ICAP_BUFFER_LENGTH];
 			int  n = 0;
@@ -110,6 +110,14 @@ namespace icap {
 			icap::RequestHeader * req_header = new icap::RequestHeader( data );
 			return req_header;
 		}
+
+
+		void send_response( icap::Response * response, socketlibrary::TCPSocket * socket ) throw() {
+			// TODO: send the response back
+			std::string line = "ICAP/1.0 500 Server Error\n";
+			socket->send( line.c_str(), line.length() );
+		}
+
 
 	} /* end of namespace util */
 

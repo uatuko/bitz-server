@@ -22,8 +22,33 @@
 
 namespace icap {
 
-	Response::Response() { }
-	Response::~Response() { }
+	Response::Response( ResponseHeader * response_header ) {
+
+		if ( response_header != NULL ) {
+			_response_header = response_header;
+			_cleanup_header  = false;
+		} else {
+			_response_header = new ResponseHeader( ResponseHeader::SERVER_ERROR );
+			_cleanup_header  = true;
+		}
+
+	}
+
+
+	Response::Response( ResponseHeader::response_status_enum status ) {
+		_response_header = new ResponseHeader( ResponseHeader::SERVER_ERROR );
+		_cleanup_header  = true;
+	}
+
+
+	Response::~Response() {
+
+		// cleanup
+		if ( _cleanup_header ) {
+			delete _response_header;
+		}
+
+	}
 
 } /* end of namespace icap */
 
