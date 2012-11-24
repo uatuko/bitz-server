@@ -31,8 +31,12 @@ namespace bitz {
 
 	icap::Response * RequestHandler::process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() {
 
-		// TODO:
-		icap::Response * response = new icap::Response();
+		/*
+		*  Note: This method should be overridden by the extended classes,
+		*        we simply return a 501 - Method not implemented here.
+		*/
+
+		icap::Response * response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
 		return response;
 
 	}

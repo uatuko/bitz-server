@@ -61,7 +61,9 @@ namespace bitz {
 
 		Logger &logger = Logger::instance();
 
-		if (! _manager.worker ) {
+		if ( _manager.worker ) {
+			logger.debug( "[worker] cleaning up manager" );
+		} else {
 			logger.debug( "shutting down manager" );
 		}
 

@@ -35,8 +35,11 @@ namespace bitz {
 
 	void Worker::run( socketlibrary::TCPServerSocket * server_sock, const req_handlers_t &req_handlers, unsigned int max_requests ) throw() {
 
+		Logger &logger = Logger::instance();
+
 		socketlibrary::TCPSocket * client_sock;
 		icap::RequestHeader * req_header;
+		icap::Response * response;
 		RequestHandler * req_handler;
 
 
@@ -44,23 +47,35 @@ namespace bitz {
 
 			while ( max_requests > 0 ) {
 
+				logger.debug( std::string( "[worker] waiting for a connection" ) );
+
 				client_sock = server_sock->accept();
-				std::cout << "[worker] new connection accepted on " << client_sock->getForeignAddress() << ":" << client_sock->getForeignPort() << std::endl;
+				logger.debug( std::string( "[worker] new connection accepted on " ).append( client_sock->getForeignAddress() )
+						.append( ":" ).append( util::itoa( client_sock->getForeignPort() ) ) );
 
 				req_header  = icap::util::read_req_header( client_sock );
 				req_handler = util::find_req_handler( req_handlers, req_header->method() );
 
 				if ( req_handler != NULL ) {
 
-					// TODO: handler the request
-					std::cout << "[worker] handling request: " << req_header->method() << std::endl;
+					logger.debug( std::string( "[worker] handling request: " ).append( req_header->method() ) );
+
+					// process the request and grab the response
+					response = req_handler->process( req_header, client_sock );
 
 				} else {
-					// TODO: unsupported request
-					std::cout << "[worker] unsupported request: " << req_header->method() << std::endl;
+
+					// unsupported request
+					logger.info( std::string( "[worker] unsupported request: " ).append( req_header->method() ) );
+					response = new icap::Response( new icap::ResponseHeader( icap::ResponseHeader::NOT_ALLOWED ) );
+
 				}
 
+				// send the response back to the client
+				icap::util::send_response( response, client_sock );
+
 				// cleanup
+				delete response;
 				delete req_header;
 
 				// destroy / close connection
@@ -71,7 +86,7 @@ namespace bitz {
 			}
 
 		} catch( socketlibrary::SocketException &sex ) {
-			std::cout << "ERROR: " << sex.what() << std::endl;
+			logger.error( std::string( "[worker] ERROR: " ).append( sex.what() ) );
 		}
 
 	}
