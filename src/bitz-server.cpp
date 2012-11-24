@@ -252,6 +252,7 @@ void termination_handler( int sig, siginfo_t *siginfo, void *context ) {
 	// exit by re-raising the signal if termination
 	// already in progress
 	if ( termination_in_progress ) {
+		std::cout << "[" << getpid() << "] already terminating" << std::endl;
 		raise( sig );
 	}
 
