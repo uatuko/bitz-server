@@ -32,7 +32,7 @@ namespace icap {
 		virtual ~Response();
 
 	private:
-		ResponseHeader * _response_header;
+		ResponseHeader * _header;
 		bool _cleanup_header;
 
 	};

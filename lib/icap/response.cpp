@@ -22,13 +22,13 @@
 
 namespace icap {
 
-	Response::Response( ResponseHeader * response_header ) {
+	Response::Response( ResponseHeader * header ) {
 
-		if ( response_header != NULL ) {
-			_response_header = response_header;
+		if ( header != NULL ) {
+			_header = header;
 			_cleanup_header  = false;
 		} else {
-			_response_header = new ResponseHeader( ResponseHeader::SERVER_ERROR );
+			_header = new ResponseHeader( ResponseHeader::SERVER_ERROR );
 			_cleanup_header  = true;
 		}
 
@@ -36,7 +36,7 @@ namespace icap {
 
 
 	Response::Response( ResponseHeader::status_t status ) {
-		_response_header = new ResponseHeader( ResponseHeader::SERVER_ERROR );
+		_header = new ResponseHeader( ResponseHeader::SERVER_ERROR );
 		_cleanup_header  = true;
 	}
 
@@ -45,7 +45,7 @@ namespace icap {
 
 		// cleanup
 		if ( _cleanup_header ) {
-			delete _response_header;
+			delete _header;
 		}
 
 	}
