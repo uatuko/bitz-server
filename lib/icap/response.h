@@ -28,7 +28,7 @@ namespace icap {
 	class Response {
 	public:
 		Response( ResponseHeader * response_header = NULL );
-		Response( ResponseHeader::response_status_enum status );
+		Response( ResponseHeader::status_t status );
 		virtual ~Response();
 
 	private:

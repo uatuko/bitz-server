@@ -35,7 +35,7 @@ namespace icap {
 	}
 
 
-	Response::Response( ResponseHeader::response_status_enum status ) {
+	Response::Response( ResponseHeader::status_t status ) {
 		_response_header = new ResponseHeader( ResponseHeader::SERVER_ERROR );
 		_cleanup_header  = true;
 	}

@@ -28,7 +28,7 @@ namespace icap {
 	class ResponseHeader : public Header {
 	public:
 
-		enum response_status_enum {
+		typedef enum status_t {
 			CONTINUE            = 100,
 			OK                  = 200,
 			NO_CONTENT          = 204,
@@ -45,10 +45,10 @@ namespace icap {
 
 		struct response_t {
 			std::string protocol;
-			response_status_enum status;
+			status_t status;
 		};
 
-		ResponseHeader( response_status_enum status );
+		ResponseHeader( status_t status );
 		virtual ~ResponseHeader();
 
 	private:

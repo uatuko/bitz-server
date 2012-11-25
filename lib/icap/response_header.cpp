@@ -22,7 +22,7 @@
 
 namespace icap {
 
-	ResponseHeader::ResponseHeader( response_status_enum status ) : Header() {
+	ResponseHeader::ResponseHeader( status_t status ) : Header() {
 
 		// FIXME: protocol shouldn't be hard-coded
 		_response.protocol = "ICAP/1.0";
