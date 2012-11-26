@@ -31,6 +31,12 @@ namespace icap {
 		Response( ResponseHeader::status_t status );
 		virtual ~Response();
 
+		/**
+		*   Return the response header
+		*   @return response header
+		*/
+		ResponseHeader * const header() const throw();
+
 	private:
 		ResponseHeader * _header;
 		bool _cleanup_header;

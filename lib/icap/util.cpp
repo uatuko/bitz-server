@@ -113,6 +113,11 @@ namespace icap {
 
 
 		void send_response( icap::Response * response, socketlibrary::TCPSocket * socket ) throw() {
+
+			icap::ResponseHeader * header;
+
+			header = response->header();
+
 			// TODO: send the response back
 			std::string line = "ICAP/1.0 500 Server Error\n";
 			socket->send( line.c_str(), line.length() );

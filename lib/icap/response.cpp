@@ -50,5 +50,10 @@ namespace icap {
 
 	}
 
+
+	ResponseHeader * const Response::header() const throw() {
+		return _header;
+	}
+
 } /* end of namespace icap */
 
