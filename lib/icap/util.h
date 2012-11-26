@@ -112,7 +112,7 @@ namespace icap {
 		*
 		*   @param status status to get the text for
 		*/
-		const std::string &response_status( ResponseHeader::status_t status ) throw();
+		const std::string response_status( const ResponseHeader::status_t &status ) throw();
 
 	} /* end of namespace util */
 

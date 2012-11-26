@@ -136,7 +136,7 @@ namespace icap {
 		}
 
 
-		const std::string &response_status( ResponseHeader::status_t status ) throw() {
+		const std::string response_status( const ResponseHeader::status_t &status ) throw() {
 
 			// FIXME: probably there's a better way of mapping this
 			std::map<ResponseHeader::status_t, std::string> status_text;
