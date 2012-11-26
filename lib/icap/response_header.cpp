@@ -32,5 +32,13 @@ namespace icap {
 
 	ResponseHeader::~ResponseHeader() { }
 
+	const std::string &ResponseHeader::protocol() throw() {
+		return _response.protocol;
+	}
+
+	const ResponseHeader::status_t &ResponseHeader::status() throw() {
+		return _response.status;
+	}
+
 } /* end of namespace icap */
 

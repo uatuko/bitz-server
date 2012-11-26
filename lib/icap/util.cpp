@@ -116,13 +116,47 @@ namespace icap {
 
 			icap::ResponseHeader * header;
 
+			// grab the response header
 			header = response->header();
 
-			// TODO: send the response back
-			std::string line = "ICAP/1.0 500 Server Error\n";
+			// send the response back
+			// response status
+			std::string line = header->protocol();
+			line.append( " " );
+			line.append( itoa( header->status() ) );
+			line.append( " " );
+			line.append( response_status( header->status() ) );
+			line.append( "\n" );
+
 			socket->send( line.c_str(), line.length() );
+
+			// TODO: send response headers (if there are any)
+			// TODO: send response content (if there are any)
+
 		}
 
+
+		const std::string &response_status( ResponseHeader::status_t status ) throw() {
+
+			// FIXME: probably there's a better way of mapping this
+			std::map<ResponseHeader::status_t, std::string> status_text;
+
+			status_text[ResponseHeader::CONTINUE]           = "Continue";
+			status_text[ResponseHeader::OK]                 = "OK";
+			status_text[ResponseHeader::NO_CONTENT]         = "No modifications needed";
+			status_text[ResponseHeader::BAD_REQUEST]        = "Bad request";
+			status_text[ResponseHeader::NOT_FOUND]          = "ICAP Service not found";
+			status_text[ResponseHeader::NOT_ALLOWED]        = "Method not allowed for service";
+			status_text[ResponseHeader::REQ_TIMEOUT]        = "Request timeout";
+			status_text[ResponseHeader::SERVER_ERROR]       = "Server error";
+			status_text[ResponseHeader::NOT_IMPLEMENTED]    = "Method not implemented";
+			status_text[ResponseHeader::BAD_GATEWAY]        = "Bad gateway";
+			status_text[ResponseHeader::SERVICE_OVERLOADED] = "Service overloaded";
+			status_text[ResponseHeader::NOT_SUPPORTED]      = "ICAP version not supported by server";
+
+			return status_text[status];
+
+		}
 
 	} /* end of namespace util */
 

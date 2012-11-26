@@ -20,6 +20,8 @@
 #ifndef ICAP_UTIL_H
 #define ICAP_UTIL_H
 
+#include <sstream>
+
 #include <socket/socket.h>
 #include "request_header.h"
 #include "response.h"
@@ -32,6 +34,19 @@
 namespace icap {
 
 	namespace util {
+
+		/**
+		*   Convert a number into a string
+		*
+		*   @param number number to be converted
+		*   @return converted string
+		*/
+		template <typename T> std::string itoa( T number ) {
+			std::ostringstream ss;
+			ss << number;
+
+			return ss.str();
+		}
 
 		/**
 		*   Read a line (ending with \r\n) from the socket
@@ -91,6 +106,13 @@ namespace icap {
 		*   @param socket socket object to send the data to
 		*/
 		void send_response( icap::Response * response, socketlibrary::TCPSocket * socket ) throw();
+
+		/**
+		*   Returns the response status text for the given status
+		*
+		*   @param status status to get the text for
+		*/
+		const std::string &response_status( ResponseHeader::status_t status ) throw();
 
 	} /* end of namespace util */
 

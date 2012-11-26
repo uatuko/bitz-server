@@ -51,6 +51,18 @@ namespace icap {
 		ResponseHeader( status_t status );
 		virtual ~ResponseHeader();
 
+		/**
+		*   Return the response protocol
+		*   @return protocol
+		*/
+		const std::string &protocol() throw();
+
+		/**
+		*   Return the response status
+		*   @return status
+		*/
+		const status_t &status() throw();
+
 	private:
 		response_t _response;
 
