@@ -6,7 +6,7 @@ An ICAP server implementation in C++
 ### The concept
 
 The main goal of this project is to create an ICAP server
-[RFC 3507](http://www.ietf.org/rfc/rfc3507.txt) implementation in C++
+([RFC 3507](http://www.ietf.org/rfc/rfc3507.txt)) implementation in C++
 to use the power of object oriented programming.
 
 Starting from scratch, the server is developed with a modular architecture in mind.
