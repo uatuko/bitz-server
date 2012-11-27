@@ -32,7 +32,7 @@ namespace bitz {
 	typedef std::map<std::string, RequestHandler *> req_handlers_t;
 
 	/* iterator type */
-	typedef std::map<std::string, RequestHandler *>::iterator req_handlers_index_t;
+	typedef req_handlers_t::iterator req_handlers_index_t;
 
 } /* end of namespace bitz */
 
