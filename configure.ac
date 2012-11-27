@@ -59,8 +59,6 @@ AC_ARG_WITH([config],
 # Checks for libraries
 AM_PROG_LIBTOOL
 
-AC_CHECK_LIB([pthread], [pthread_create],, AC_MSG_ERROR([usable pthread library now found]))
-
 PKG_PROG_PKG_CONFIG
 PKG_CHECK_MODULES([libconfig], [libconfig++ >= 1.4],,
 	AC_MSG_ERROR([libconfig++ 1.4 or newer not found.])
