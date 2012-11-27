@@ -57,3 +57,13 @@ e.g.
 
 	$ ./configure LIBS=-ldl
 
+
+##### config file
+
+The default config file location is `/etc/bitz/bitz-server.conf` but this can
+changed using the `--with-config` option when you run `configure`.
+
+e.g.
+
+	$ ./configure --with-config=/[path to source code]/conf/bitz-server.conf
+
