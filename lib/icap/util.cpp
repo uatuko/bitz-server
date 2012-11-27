@@ -62,6 +62,21 @@ namespace icap {
 		}
 
 
+		bool send_line( const std::string &line, socketlibrary::TCPSocket * socket ) throw() {
+
+			try {
+				socket->send( line.c_str(), line.length() );
+				socket->send( "\r\n", 2 );
+			} catch ( socketlibrary::SocketException &sex ) {
+				// TODO: log errors
+				return false;
+			}
+
+			return true;
+
+		}
+
+
 		std::vector<std::string> split( const std::string &str, const std::string &delimiter ) throw() {
 
 			std::vector<std::string> result;
@@ -109,12 +124,38 @@ namespace icap {
 
 			icap::RequestHeader * req_header = new icap::RequestHeader( data );
 			return req_header;
+
 		}
 
 
-		void send_response( icap::Response * response, socketlibrary::TCPSocket * socket ) throw() {
+		bool send_headers( icap::Header::headers_t headers, socketlibrary::TCPSocket * socket ) throw() {
+
+			std::string line;
+			icap::Header::headers_index_t i;
+
+			for ( i = headers.begin(); i != headers.end(); i++ ) {
+
+				line = i->first;
+				line.append( ": " );
+				line.append( i->second );
+
+				if (! send_line( line, socket ) ) {
+					return false;
+				}
+
+			}
+
+			return true;
+
+		}
+
+
+		bool send_response( icap::Response * response, socketlibrary::TCPSocket * socket ) throw() {
+
+			bool r_success = true;
 
 			icap::ResponseHeader * header;
+			icap::ResponseHeader::headers_t headers;
 
 			// grab the response header
 			header = response->header();
@@ -126,12 +167,21 @@ namespace icap {
 			line.append( itoa( header->status() ) );
 			line.append( " " );
 			line.append( response_status( header->status() ) );
-			line.append( "\n" );
 
-			socket->send( line.c_str(), line.length() );
+			r_success = send_line( line, socket );
 
-			// TODO: send response headers (if there are any)
-			// TODO: send response content (if there are any)
+			// response headers (if there are any)
+			if ( r_success ) {
+				headers = header->headers();
+				r_success = send_headers( headers, socket );
+			}
+
+			// response content (if there are any)
+			if ( r_success ) {
+				// TODO: send
+			}
+
+			return r_success;
 
 		}
 

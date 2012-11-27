@@ -59,6 +59,15 @@ namespace icap {
 		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length ) throw();
 
 		/**
+		*   Send / write a line (ending with \r\n) to the socket
+		*
+		*   @param line line to send through the socket without the line-ending chars
+		*   @param socket socket object to write the data to
+		*   @return boolean to denote success or failure
+		*/
+		bool send_line( const std::string &line, socketlibrary::TCPSocket * socket ) throw();
+
+		/**
 		*   split a string into a vector by the given delimiter
 		*
 		*   @param str input string
@@ -99,13 +108,23 @@ namespace icap {
 		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket ) throw();
 
 		/**
+		*   Send / write header data to a socket
+		*
+		*   @param headers headers to be sent
+		*   @param socket socket object to write the data to
+		*   @return boolean to denote success or failure
+		*/
+		bool send_headers( icap::Header::headers_t headers, socketlibrary::TCPSocket * socket ) throw();
+
+		/**
 		*   Output a response using the passed in icap::Response class to the
 		*   passed in socket
 		*
 		*   @param response response object to get the response data from
 		*   @param socket socket object to send the data to
+		*   @return boolean to denote success or failure
 		*/
-		void send_response( icap::Response * response, socketlibrary::TCPSocket * socket ) throw();
+		bool send_response( icap::Response * response, socketlibrary::TCPSocket * socket ) throw();
 
 		/**
 		*   Returns the response status text for the given status

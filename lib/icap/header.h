@@ -29,7 +29,11 @@ namespace icap {
 	class Header {
 	public:
 
+		/* headers data type */
 		typedef std::map<std::string, std::string> headers_t;
+
+		/* headers iterator type */
+		typedef headers_t::iterator headers_index_t;
 
 		Header();
 		virtual ~Header();
