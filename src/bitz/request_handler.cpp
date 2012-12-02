@@ -33,7 +33,7 @@ namespace bitz {
 
 		/*
 		*  Note: This method should be overridden by the extended classes,
-		*        we simply return a 501 - Method not implemented here.
+		*        we simply return a 500 - Server error here.
 		*/
 
 		icap::Response * response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
