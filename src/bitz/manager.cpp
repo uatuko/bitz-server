@@ -21,6 +21,7 @@
 #include "logger.h"
 #include "util.h"
 #include "options_request_handler.h"
+#include "reqmod_request_handler.h"
 
 #include <cstdlib>
 #include <sstream>
@@ -40,6 +41,9 @@ namespace bitz {
 
 		// request handlers
 		_req_handlers["OPTIONS"] = new OptionsRequestHandler();
+
+		// FIXME: these should be able to dynamically loaded and configurable
+		_req_handlers["REQMOD"]  = new ReqmodRequestHandler();
 
 		// initialise listening socket
 		try {
