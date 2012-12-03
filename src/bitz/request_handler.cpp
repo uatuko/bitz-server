@@ -29,17 +29,5 @@ namespace bitz {
 		logger.debug( "exiting request handler" );
 	}
 
-	icap::Response * RequestHandler::process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() {
-
-		/*
-		*  Note: This method should be overridden by the extended classes,
-		*        we simply return a 500 - Server error here.
-		*/
-
-		icap::Response * response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
-		return response;
-
-	}
-
 } /* end of namespace bitz */
 

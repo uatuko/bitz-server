@@ -25,5 +25,13 @@ namespace bitz {
 	OptionsRequestHandler::OptionsRequestHandler() : RequestHandler() { }
 	OptionsRequestHandler::~OptionsRequestHandler() { }
 
+	icap::Response * OptionsRequestHandler::process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() {
+
+		// TODO: for the moment we return 500 - Server error
+		icap::Response * response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
+		return response;
+
+	}
+
 } /* end of namespace bitz */
 

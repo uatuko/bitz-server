@@ -32,7 +32,7 @@ namespace bitz {
 		RequestHandler();
 		virtual ~RequestHandler();
 
-		virtual icap::Response * process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw();
+		virtual icap::Response * process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() =0;
 
 	private:
 
