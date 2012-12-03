@@ -24,7 +24,7 @@ namespace bitz {
 
 	namespace util {
 
-		RequestHandler * find_req_handler( req_handlers_t req_handlers, const std::string &req_method ) {
+		RequestHandler * find_req_handler( req_handlers_t req_handlers, const std::string &req_method ) throw() {
 
 			RequestHandler * req_handler;
 			req_handlers_index_t rh_i;

@@ -61,6 +61,7 @@ namespace bitz {
 
 	}
 
+
 	Manager::~Manager() {
 
 		Logger &logger = Logger::instance();
@@ -77,6 +78,7 @@ namespace bitz {
 		delete _manager.socket;
 
 	}
+
 
 	void Manager::spawn( unsigned int max_workers, unsigned int max_worker_requests ) throw( ManagerException ) {
 
@@ -98,6 +100,7 @@ namespace bitz {
 		}
 
 	}
+
 
 	void Manager::spawn_worker( unsigned int worker_id ) throw( ManagerException ) {
 
@@ -141,6 +144,7 @@ namespace bitz {
 
 	}
 
+
 	void Manager::shutdown( bool graceful ) throw() {
 
 		// logger
@@ -174,6 +178,7 @@ namespace bitz {
 
 	}
 
+
 	void Manager::reap_worker( pid_t worker_pid ) throw() {
 
 		// logger
@@ -196,6 +201,7 @@ namespace bitz {
 		}
 
 	}
+
 
 	void Manager::manager_workers() throw() {
 

@@ -50,7 +50,7 @@ namespace bitz {
 		*   @param req_method request method
 		*   @return request handler (or null pointer if not found)
 		*/
-		RequestHandler * find_req_handler( req_handlers_t req_handlers, const std::string &req_method );
+		RequestHandler * find_req_handler( req_handlers_t req_handlers, const std::string &req_method ) throw();
 
 	} /* end of namespace util */
 
