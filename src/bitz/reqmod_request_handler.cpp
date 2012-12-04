@@ -22,7 +22,7 @@
 
 namespace bitz {
 
-	ReqmodRequestHandler::ReqmodRequestHandler() : RequestHandler() { }
+	ReqmodRequestHandler::ReqmodRequestHandler() : RequestHandler( "REQMOD" ) { }
 	ReqmodRequestHandler::~ReqmodRequestHandler() { }
 
 	icap::Response * ReqmodRequestHandler::process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() {

@@ -29,12 +29,32 @@ namespace bitz {
 
 	class RequestHandler {
 	public:
-		RequestHandler();
+
+		struct req_handler_t {
+			std::string method;
+		};
+
+		RequestHandler( const std::string &method );
 		virtual ~RequestHandler();
 
+		/**
+		*   Returns the request method handled by this handler
+		*   @return method
+		*/
+		const std::string &method() const throw();
+
+		/**
+		*   Process the request and return a new response object. This will also
+		*   read from the passed in socket if more data needs to be read.
+		*
+		*   @param req_header request header object
+		*   @param socket socket object to read the data from
+		*   @return response object
+		*/
 		virtual icap::Response * process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() =0;
 
 	private:
+		req_handler_t _req_handler;
 
 	};
 

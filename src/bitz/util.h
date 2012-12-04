@@ -52,6 +52,14 @@ namespace bitz {
 		*/
 		RequestHandler * find_req_handler( req_handlers_t req_handlers, const std::string &req_method ) throw();
 
+		/**
+		*   Helper method to delete any loaded request handlers apart
+		*   from the OPTIONS handler
+		*
+		*   @param req_handlers request handlers
+		*/
+		void delete_req_handlers( req_handlers_t req_handlers ) throw();
+
 	} /* end of namespace util */
 
 } /* end of namespace bitz */

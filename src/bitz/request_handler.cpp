@@ -22,12 +22,21 @@
 
 namespace bitz {
 
-	RequestHandler::RequestHandler() { }
+	RequestHandler::RequestHandler( const std::string &method ) {
+		_req_handler.method = method;
+	}
+
 
 	RequestHandler::~RequestHandler() {
 		Logger &logger = Logger::instance();
-		logger.debug( "exiting request handler" );
+		logger.debug( std::string( "exiting request handler [" ).append( _req_handler.method ).append( "]" ) );
 	}
+
+
+	const std::string &RequestHandler::method() const throw() {
+		return _req_handler.method;
+	}
+
 
 } /* end of namespace bitz */
 

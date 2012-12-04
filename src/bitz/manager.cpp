@@ -39,11 +39,8 @@ namespace bitz {
 		_manager.socket        = NULL;
 		_manager.worker_pool   = NULL;
 
-		// request handlers
-		_req_handlers["OPTIONS"] = new OptionsRequestHandler();
-
-		// FIXME: these should be able to dynamically loaded and configurable
-		_req_handlers["REQMOD"]  = new ReqmodRequestHandler();
+		// load request handlers
+		load_req_handlers();
 
 		// initialise listening socket
 		try {
@@ -72,6 +69,8 @@ namespace bitz {
 			logger.debug( "shutting down manager" );
 		}
 
+		// cleanup request handlers
+		util::delete_req_handlers( _req_handlers );
 		delete _req_handlers["OPTIONS"];
 
 		delete [] _manager.worker_pool;
@@ -221,6 +220,21 @@ namespace bitz {
 			}
 
 		}
+
+	}
+
+
+	void Manager::load_req_handlers() throw() {
+
+		OptionsRequestHandler * options_handler;
+
+		// OPTIONS handler
+		options_handler = new OptionsRequestHandler();
+		_req_handlers["OPTIONS"] = options_handler;
+
+		// FIXME: these should be able to dynamically loaded and configurable
+		_req_handlers["REQMOD"]  = new ReqmodRequestHandler();
+		options_handler->register_handler( _req_handlers["REQMOD"] );
 
 	}
 

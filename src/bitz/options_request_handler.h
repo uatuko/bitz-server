@@ -32,6 +32,14 @@ namespace bitz {
 
 		icap::Response * process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw();
 
+		/**
+		*   Register a request handler so it is known to the OPTIONS
+		*   handler
+		*
+		*   @param req_handler request handler
+		*/
+		void register_handler( RequestHandler * req_handler ) throw();
+
 	private:
 
 	};

@@ -74,11 +74,13 @@ namespace bitz {
 		virtual void reap_worker( pid_t worker_pid ) throw();
 		virtual void manager_workers() throw();
 
+
 	private:
 		manager_t         _manager;
 		req_handlers_t    _req_handlers;
 
 		virtual void spawn_worker( unsigned int worker_id ) throw( ManagerException );
+		virtual void load_req_handlers() throw();
 
 	};
 

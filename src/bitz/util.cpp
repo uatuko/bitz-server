@@ -40,6 +40,21 @@ namespace bitz {
 
 		}
 
+
+		void delete_req_handlers( req_handlers_t req_handlers ) throw() {
+
+			req_handlers_index_t rh_i;
+
+			for ( rh_i = req_handlers.begin(); rh_i != req_handlers.end(); rh_i++ ) {
+				if ( rh_i->first != "OPTIONS" ) {
+					delete rh_i->second;
+				}
+			}
+
+			return;
+
+		}
+
 	} /* end of namespace util */
 
 } /* end of namespace bitz */
