@@ -16,7 +16,7 @@ The server core (written in C++) will handle the client requests, manage workers
 To extend this core functionality the idea is to have pluggable modules (like apache
 server modules). These modules will provide features like content filtering, anti-virus
 scanning etc. and to make it easier to write (and faster to implement) such modules
-there is hope exploit python programming language.
+there is hope to exploit python programming language.
 
 
 ### Dependencies
