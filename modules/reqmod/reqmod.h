@@ -30,8 +30,8 @@ namespace bitz {
 		Reqmod();
 		virtual ~Reqmod();
 
-		icap::Response * check( icap::Request * request ) throw();
-		icap::Response * preview( icap::RequestHeader * req_header ) throw();
+		icap::Response * modify( icap::Request * request ) throw();
+		icap::Response * preview( icap::Request * request ) throw();
 
 	private:
 

@@ -25,13 +25,15 @@ namespace bitz {
 	Reqmod::Reqmod() : RequestModifier() { }
 	Reqmod::~Reqmod() { }
 
-	icap::Response * Reqmod::check( icap::Request * request ) throw() {
+	icap::Response * Reqmod::modify( icap::Request * request ) throw() {
 		return new icap::Response( icap::ResponseHeader::NOT_IMPLEMENTED );
 	}
 
 
-	icap::Response * Reqmod::preview( icap::RequestHeader * req_header ) throw() {
-		return new icap::Response( icap::ResponseHeader::NOT_IMPLEMENTED );
+	icap::Response * Reqmod::preview( icap::Request * request ) throw() {
+		// TODO: needs to implement, for the moment we send back
+		// 100 - continue always
+		return new icap::Response( icap::ResponseHeader::CONTINUE );
 	}
 
 } /* end of namespace bitz */

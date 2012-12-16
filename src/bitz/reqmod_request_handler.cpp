@@ -57,6 +57,16 @@ namespace bitz {
 	    	std::cout << "destroy symbol loaded!" << std::endl;
 	    }*/
 
+		/*
+		 * notes:
+		 *    + read the remaining data and construct the request object
+		 *    + check for preview
+		 *        - if preview, user the preview() from the module to get the response
+		 *        - if the response is "100 continue" send it back to the client here and
+		 *          then read and append to the request obj and use modify() to get the response
+		 *    + if not in preview use the modify() to get the response and return
+		 *
+		 */
 		icap::Response * response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
 		return response;
 

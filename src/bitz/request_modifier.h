@@ -33,8 +33,23 @@ namespace bitz {
 		RequestModifier();
 		virtual ~RequestModifier();
 
-		virtual icap::Response * check( icap::Request * request ) throw() =0;
-		virtual icap::Response * preview( icap::RequestHeader * req_header ) throw() =0;
+		/**
+		*   Modify the request as needed and return a response object.
+		*
+		*   @param request request object
+		*   @return response object
+		*/
+		virtual icap::Response * modify( icap::Request * request ) throw() =0;
+
+		/**
+		*   Preview the request passed in and return a response object. The
+		*   response status of 100 (continue) should be handled by the caller
+		*   and pass the complete request to modify() method.
+		*
+		*   @param request request object
+		*   @return response object
+		*/
+		virtual icap::Response * preview( icap::Request * request ) throw() =0;
 
 	private:
 
