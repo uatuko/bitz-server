@@ -1,6 +1,7 @@
 ## src/
 AM_CPPFLAGS             = -I$(top_srcdir)/lib ${libconfig_CFLAGS} ${log4cpp_CFLAGS}
 
+bitzincludedir          = $(includedir)/bitz
 sbin_PROGRAMS           = bitz-server
 bitz_server_LDADD       = $(top_builddir)/lib/socket/libsocket.la \
 	$(top_builddir)/lib/icap/libicap.la \
@@ -18,7 +19,12 @@ bitz_server_SOURCES     = bitz-server.cpp \
 	bitz/request_handler.h bitz/request_handler.cpp \
 	bitz/options_request_handler.h bitz/options_request_handler.cpp \
 	bitz/reqmod_request_handler.h bitz/reqmod_request_handler.cpp \
-	bitz/modifier.h bitz/modifier.cpp \
+	bitz/modifier.cpp \
 	bitz/request_modifier.h bitz/request_modifier.cpp \
 	bitz/response_modifier.h bitz/response_modifier.cpp
+	
+bitzinclude_HEADERS     = \
+	bitz/modifier.h \
+	bitz/request_modifier.h \
+	bitz/response_modifier.h
 
