@@ -17,24 +17,21 @@
  *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef BITZ_REQUEST_MODIFIER_H
-#define BITZ_REQUEST_MODIFIER_H
+#ifndef BITZ_REQMOD_H
+#define BITZ_REQMOD_D
 
-#include <icap/request.h>
-#include <icap/response.h>
-
-#include "modifier.h"
+#include <bitz/request_modifier.h>
 
 
 namespace bitz {
 
-	class RequestModifier : public Modifier {
+	class Reqmod : public RequestModifier {
 	public:
-		RequestModifier();
-		virtual ~RequestModifier();
+		Reqmod();
+		virtual ~Reqmod();
 
-		virtual icap::Response * check( icap::Request * request ) throw() =0;
-		virtual icap::Response * preview( icap::RequestHeader * req_header ) throw() =0;
+		icap::Response * check( icap::Request * request ) throw();
+		icap::Response * preview( icap::RequestHeader * req_header ) throw();
 
 	private:
 
@@ -43,9 +40,15 @@ namespace bitz {
 } /* end of namespace bitz */
 
 
-/* types of the class factories */
-typedef bitz::RequestModifier * reqmod_create_t();
-typedef void reqmod_destroy_t( bitz::RequestModifier * );
+/* class factories */
 
-#endif /* !BITZ_REQUEST_MODIFIER_H */
+extern "C" bitz::RequestModifier * create() {
+	return new bitz::Reqmod;
+}
+
+extern "C" void destroy( bitz::RequestModifier * reqmod ) {
+	delete reqmod;
+}
+
+#endif /* !BITZ_REQMOD_H */
 

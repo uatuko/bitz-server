@@ -18,6 +18,10 @@
  */
 
 #include "reqmod_request_handler.h"
+#include "request_modifier.h"
+
+#include <dlfcn.h>
+#include <iostream>
 
 
 namespace bitz {
@@ -28,7 +32,32 @@ namespace bitz {
 	icap::Response * ReqmodRequestHandler::process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() {
 
 		// TODO
-		icap::Response * response = new icap::Response( icap::ResponseHeader::NOT_IMPLEMENTED );
+		/*
+		void * module = dlopen( "/tmp/root/lib/libreqmod.dylib", RTLD_LAZY);
+	    if (! module ) {
+	        std::cerr << "Cannot load library: " << dlerror() << std::endl;
+	    }
+
+	    // reset errors
+	    dlerror();
+
+		reqmod_create_t * create_module   = ( reqmod_create_t * ) dlsym( module, "create" );
+	    const char * dlsym_error = dlerror();
+	    if ( dlsym_error ) {
+	        std::cerr << "Cannot load symbol create: " << dlsym_error << std::endl;
+	    } else {
+	    	std::cout << "create symbol loaded!" << std::endl;
+	    }
+
+		reqmod_destroy_t * destroy_module = ( reqmod_destroy_t * ) dlsym( module, "destroy" );
+	    dlsym_error = dlerror();
+	    if ( dlsym_error ) {
+	        std::cerr << "Cannot load symbol destroy: " << dlsym_error << std::endl;
+	    } else {
+	    	std::cout << "destroy symbol loaded!" << std::endl;
+	    }*/
+
+		icap::Response * response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
 		return response;
 
 	}

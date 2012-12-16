@@ -34,7 +34,9 @@ AC_CONFIG_HEADERS([include/config.h])
 
 # lib versions
 ICAP_LT_VERSION=0:0:0
+BITZ_REQMOD_LT_VERSION=0:0:0
 AC_SUBST(ICAP_LT_VERSION)
+AC_SUBST(BITZ_REQMOD_LT_VERSION)
 
 # Init
 AM_INIT_AUTOMAKE
@@ -107,6 +109,9 @@ AC_CONFIG_FILES([ \
 	lib/socket/Makefile \
 	lib/icap/Makefile \
 	src/Makefile \
+	modules/Makefile \
+	modules/reqmod/Makefile \
 ])
 
 AC_OUTPUT
+
