@@ -56,8 +56,8 @@ namespace bitz {
 } /* end of namespace bitz */
 
 /* types of the class factories */
-typedef bitz::Modifier * reqmod_create_t();
-typedef void reqmod_destroy_t( bitz::Modifier * );
+typedef bitz::Modifier * modifier_create_t();
+typedef void modifier_destroy_t( bitz::Modifier * );
 
 #endif /* !BITZ_MODIFIER_H */
 
