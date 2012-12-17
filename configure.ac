@@ -110,7 +110,7 @@ AC_CONFIG_FILES([ \
 	lib/icap/Makefile \
 	src/Makefile \
 	modules/Makefile \
-	modules/reqmod/Makefile \
+	modules/echo/Makefile \
 ])
 
 AC_OUTPUT

@@ -17,38 +17,25 @@
  *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef BITZ_REQMOD_H
-#define BITZ_REQMOD_D
-
-#include <bitz/modifier.h>
-
+#include "echo.h"
 
 namespace bitz {
 
-	class Reqmod : public Modifier {
-	public:
-		Reqmod();
-		virtual ~Reqmod();
+	Echo::Echo() : Modifier() { }
+	Echo::~Echo() { }
 
-		icap::Response * modify( icap::Request * request ) throw();
-		icap::Response * preview( icap::Request * request ) throw();
+	icap::Response * Echo::modify( icap::Request * request ) throw() {
+		return new icap::Response( icap::ResponseHeader::NOT_IMPLEMENTED );
+	}
 
-	private:
 
-	};
+	icap::Response * Echo::preview( icap::Request * request ) throw() {
+		// TODO: needs to implement, for the moment we send back
+		// 100 - continue always
+		return new icap::Response( icap::ResponseHeader::CONTINUE );
+	}
+
+
 
 } /* end of namespace bitz */
-
-
-/* class factories */
-
-extern "C" bitz::Modifier * create() {
-	return new bitz::Reqmod;
-}
-
-extern "C" void destroy( bitz::Modifier * reqmod ) {
-	delete reqmod;
-}
-
-#endif /* !BITZ_REQMOD_H */
 

@@ -1,3 +1,3 @@
 ## modules/
-SUBDIRS = reqmod
+SUBDIRS = echo
 
