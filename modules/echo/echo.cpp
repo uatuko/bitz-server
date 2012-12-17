@@ -19,10 +19,12 @@
 
 #include "echo.h"
 
+
 namespace bitz {
 
 	Echo::Echo() : Modifier() { }
 	Echo::~Echo() { }
+
 
 	icap::Response * Echo::modify( icap::Request * request ) throw() {
 		return new icap::Response( icap::ResponseHeader::NOT_IMPLEMENTED );
@@ -34,8 +36,6 @@ namespace bitz {
 		// 100 - continue always
 		return new icap::Response( icap::ResponseHeader::CONTINUE );
 	}
-
-
 
 } /* end of namespace bitz */
 
