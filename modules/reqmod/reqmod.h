@@ -20,12 +20,12 @@
 #ifndef BITZ_REQMOD_H
 #define BITZ_REQMOD_D
 
-#include <bitz/request_modifier.h>
+#include <bitz/modifier.h>
 
 
 namespace bitz {
 
-	class Reqmod : public RequestModifier {
+	class Reqmod : public Modifier {
 	public:
 		Reqmod();
 		virtual ~Reqmod();
@@ -42,11 +42,11 @@ namespace bitz {
 
 /* class factories */
 
-extern "C" bitz::RequestModifier * create() {
+extern "C" bitz::Modifier * create() {
 	return new bitz::Reqmod;
 }
 
-extern "C" void destroy( bitz::RequestModifier * reqmod ) {
+extern "C" void destroy( bitz::Modifier * reqmod ) {
 	delete reqmod;
 }
 

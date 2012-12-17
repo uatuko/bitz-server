@@ -18,7 +18,7 @@
  */
 
 #include "reqmod_request_handler.h"
-#include "request_modifier.h"
+#include "modifier.h"
 
 #include <dlfcn.h>
 #include <iostream>

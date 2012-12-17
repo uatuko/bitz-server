@@ -22,7 +22,7 @@
 
 namespace bitz {
 
-	Reqmod::Reqmod() : RequestModifier() { }
+	Reqmod::Reqmod() : Modifier() { }
 	Reqmod::~Reqmod() { }
 
 	icap::Response * Reqmod::modify( icap::Request * request ) throw() {

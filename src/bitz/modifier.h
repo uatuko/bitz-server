@@ -20,6 +20,10 @@
 #ifndef BITZ_MODIFIER_H
 #define BITZ_MODIFIER_H
 
+#include <icap/request.h>
+#include <icap/response.h>
+
+
 namespace bitz {
 
 	class Modifier {
@@ -27,11 +31,33 @@ namespace bitz {
 		Modifier();
 		virtual ~Modifier();
 
+		/**
+		*   Modify the request as needed and return a response object.
+		*
+		*   @param request request object
+		*   @return response object
+		*/
+		virtual icap::Response * modify( icap::Request * request ) throw() =0;
+
+		/**
+		*   Preview the request passed in and return a response object. The
+		*   response status of 100 (continue) should be handled by the caller
+		*   and pass the complete request to modify() method.
+		*
+		*   @param request request object
+		*   @return response object
+		*/
+		virtual icap::Response * preview( icap::Request * request ) throw() =0;
+
 	private:
 
 	};
 
 } /* end of namespace bitz */
+
+/* types of the class factories */
+typedef bitz::Modifier * reqmod_create_t();
+typedef void reqmod_destroy_t( bitz::Modifier * );
 
 #endif /* !BITZ_MODIFIER_H */
 

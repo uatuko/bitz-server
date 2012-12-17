@@ -19,12 +19,8 @@ bitz_server_SOURCES     = bitz-server.cpp \
 	bitz/request_handler.h bitz/request_handler.cpp \
 	bitz/options_request_handler.h bitz/options_request_handler.cpp \
 	bitz/reqmod_request_handler.h bitz/reqmod_request_handler.cpp \
-	bitz/modifier.cpp \
-	bitz/request_modifier.h bitz/request_modifier.cpp \
-	bitz/response_modifier.h bitz/response_modifier.cpp
+	bitz/modifier.cpp
 	
 bitzinclude_HEADERS     = \
-	bitz/modifier.h \
-	bitz/request_modifier.h \
-	bitz/response_modifier.h
+	bitz/modifier.h
 
