@@ -20,8 +20,10 @@
 #ifndef BITZ_REQUEST_HANDLER_H
 #define BITZ_REQUEST_HANDLER_H
 
+#include "modifier.h"
+
 #include <icap/response.h>
-#include <icap/request_header.h>
+#include <icap/request.h>
 #include <socket/socket.h>
 
 
@@ -53,7 +55,28 @@ namespace bitz {
 		*/
 		virtual icap::Response * process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() =0;
 
+
+	protected:
+
+		/**
+		*   Load a modifier module
+		*
+		*   @param file file name / path of the module
+		*   @param symbols structure to return the symbols
+		*   @return boolean to denote success or failure
+		*/
+		bool load_modifier( const std::string &file, Modifier::symbols_t &symbols ) throw();
+
+		/**
+		*   Unload a modifier module
+		*
+		*   @param modifier pointer to the modifier to unload
+		*/
+		void unload_modifier( void * modifier ) throw();
+
+
 	private:
+
 		req_handler_t _req_handler;
 
 	};

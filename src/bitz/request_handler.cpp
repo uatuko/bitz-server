@@ -20,6 +20,9 @@
 #include "request_handler.h"
 #include "logger.h"
 
+#include <dlfcn.h>
+
+
 namespace bitz {
 
 	RequestHandler::RequestHandler( const std::string &method ) {
@@ -37,6 +40,53 @@ namespace bitz {
 		return _req_handler.method;
 	}
 
+
+	bool RequestHandler::load_modifier( const std::string &file, Modifier::symbols_t &symbols ) throw() {
+
+		// logger
+		Logger &logger = Logger::instance();
+
+		// vars
+		const char* dlsym_error;
+
+		// load the modifier module
+		logger.debug( "loading modifier: " + file );
+		symbols.modifier = dlopen( file.c_str(), RTLD_LAZY );
+
+		if (! symbols.modifier ) {
+			logger.warn( std::string( "failed to load modifier: " ).append( file ).append( dlerror() ) );
+			return false;
+		}
+
+		// reset errors
+		dlerror();
+
+		// load the symbols
+		symbols.create = ( Modifier::create_t * ) dlsym( symbols.modifier, "create" );
+		dlsym_error    = dlerror();
+
+		if ( dlsym_error ) {
+			logger.warn( std::string( "failed to load create symbol: " ).append( dlsym_error ) );
+			return false;
+		}
+
+		symbols.destroy = ( Modifier::destroy_t * ) dlsym( symbols.modifier, "destroy" );
+		dlsym_error     = dlerror();
+
+		if ( dlsym_error ) {
+			logger.warn( std::string( "failed to load destroy symbol: " ).append( dlsym_error ) );
+			return false;
+		}
+
+		return true;
+
+	}
+
+
+	void RequestHandler::unload_modifier( void * modifier ) throw() {
+		// unload the modifier module
+		dlclose( modifier );
+	}
 
 } /* end of namespace bitz */
 

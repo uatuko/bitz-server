@@ -28,6 +28,17 @@ namespace bitz {
 
 	class Modifier {
 	public:
+
+		/* types of the class factories */
+		typedef bitz::Modifier * create_t();
+		typedef void destroy_t( bitz::Modifier * );
+
+		struct symbols_t {
+			void * modifier;
+			create_t  * create;
+			destroy_t * destroy;
+		};
+
 		Modifier();
 		virtual ~Modifier();
 
@@ -54,10 +65,6 @@ namespace bitz {
 	};
 
 } /* end of namespace bitz */
-
-/* types of the class factories */
-typedef bitz::Modifier * modifier_create_t();
-typedef void modifier_destroy_t( bitz::Modifier * );
 
 #endif /* !BITZ_MODIFIER_H */
 

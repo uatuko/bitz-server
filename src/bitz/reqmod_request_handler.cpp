@@ -18,10 +18,6 @@
  */
 
 #include "reqmod_request_handler.h"
-#include "modifier.h"
-
-#include <dlfcn.h>
-#include <iostream>
 
 
 namespace bitz {
@@ -31,34 +27,29 @@ namespace bitz {
 
 	icap::Response * ReqmodRequestHandler::process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() {
 
-		// TODO
-		/*
-		void * module = dlopen( "/tmp/root/lib/libreqmod.dylib", RTLD_LAZY);
-	    if (! module ) {
-	        std::cerr << "Cannot load library: " << dlerror() << std::endl;
-	    }
+		Modifier::symbols_t symbols;
+		icap::Request  * request;
+		icap::Response * response;
 
-	    // reset errors
-	    dlerror();
+		// FIXME: we shouldn't be loading and unloading the modules for each request
+		// FIXME: read module info from configs
+		// FIXME: error handling
+		// dynamic loading
+		load_modifier( "/tmp/root/etc/bitz/modules/mod_echo.so", symbols );
 
-		reqmod_create_t * create_module   = ( reqmod_create_t * ) dlsym( module, "create" );
-	    const char * dlsym_error = dlerror();
-	    if ( dlsym_error ) {
-	        std::cerr << "Cannot load symbol create: " << dlsym_error << std::endl;
-	    } else {
-	    	std::cout << "create symbol loaded!" << std::endl;
-	    }
+		// TODO: read the request
+		request = new icap::Request( req_header );
 
-		reqmod_destroy_t * destroy_module = ( reqmod_destroy_t * ) dlsym( module, "destroy" );
-	    dlsym_error = dlerror();
-	    if ( dlsym_error ) {
-	        std::cerr << "Cannot load symbol destroy: " << dlsym_error << std::endl;
-	    } else {
-	    	std::cout << "destroy symbol loaded!" << std::endl;
-	    }*/
+		// modify
+		Modifier * modifier = symbols.create();
+		response = modifier->modify( request );
+		symbols.destroy( modifier );
+
+		// unload
+		unload_modifier( symbols.modifier );
 
 		/*
-		 * notes:
+		 * TODO notes:
 		 *    + read the remaining data and construct the request object
 		 *    + check for preview
 		 *        - if preview, user the preview() from the module to get the response
@@ -67,7 +58,10 @@ namespace bitz {
 		 *    + if not in preview use the modify() to get the response and return
 		 *
 		 */
-		icap::Response * response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
+
+		// cleanup
+		delete request;
+
 		return response;
 
 	}
