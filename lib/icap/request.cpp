@@ -22,8 +22,8 @@
 
 namespace icap {
 
-	Request::Request( RequestHeader * request_header ) {
-		_header = request_header;
+	Request::Request( RequestHeader * req_header ) {
+		_header = req_header;
 	}
 
 

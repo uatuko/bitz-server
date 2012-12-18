@@ -27,7 +27,7 @@ namespace icap {
 
 	class Request {
 	public:
-		Request( RequestHeader * request_header );
+		Request( RequestHeader * req_header );
 		virtual ~Request();
 
 		/**
