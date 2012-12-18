@@ -18,7 +18,7 @@
  */
 
 #ifndef BITZ_ECHO_H
-#define BITZ_ECHO_D
+#define BITZ_ECHO_H
 
 #include <bitz/modifier.h>
 
