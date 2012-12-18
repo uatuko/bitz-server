@@ -9,6 +9,7 @@ libicap_la_SOURCES      = \
 	header.cpp \
 	request_header.cpp \
 	response_header.cpp \
+	request.cpp \
 	response.cpp \
 	util.cpp
 	
