@@ -56,6 +56,18 @@ AC_ARG_WITH([config],
 		[specify the config file to be used])],
 	[], [with_config=no])
 
+AC_ARG_ENABLE([modpy],
+	[AS_HELP_STRING([--enable-modpy],[Enable modpy module (default is yes)])],
+	[case "${enableval}" in
+		yes) modpy=true ;;
+		no)  modpy=false ;;
+		*) AC_MSG_ERROR([bad value ${enableval} for --enable-modpy]) ;;
+	esac],
+	[modpy=true]
+)
+AM_CONDITIONAL([MODPY], [test x$modpy = xtrue])
+
+
 # Checks for libraries
 AM_PROG_LIBTOOL
 
@@ -84,6 +96,15 @@ AC_FUNC_ERROR_AT_LINE
 AC_FUNC_FORK
 AC_CHECK_FUNCS([gethostbyname inet_ntoa memmove memset select socket strchr strerror])
 
+# conditional statements
+AS_IF([test x$modpy = xtrue],
+	[
+		AM_PATH_PYTHON([2.7])
+		AM_CHECK_PYTHON_HEADERS
+		AM_CHECK_PYTHON_LIBS
+	]
+)
+
 # defines / substitutes
 AS_IF([test "x$with_config" != xno],
 	AC_DEFINE_UNQUOTED([BITZ_SERVER_CONFIG_FILE],
@@ -91,12 +112,6 @@ AS_IF([test "x$with_config" != xno],
 		[server configuration file]
 	)
 )
-
-AC_SUBST(openssl_LIBS)
-AC_SUBST(openssl_CFLAGS)
-
-pkgconfig_LIBS+="${openssl_LIBS}"
-AC_SUBST(pkgconfig_LIBS)
 
 
 AC_CONFIG_FILES([ \
