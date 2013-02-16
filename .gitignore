@@ -29,6 +29,9 @@ Makefile.in
 # swap files
 *.swp
 
+# python
+*.pyc
+
 # project specific
 build/*
 
