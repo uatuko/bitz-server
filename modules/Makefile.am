@@ -1,3 +1,3 @@
 ## modules/
-SUBDIRS = echo
+SUBDIRS = echo modpy
 

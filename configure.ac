@@ -124,6 +124,7 @@ AC_CONFIG_FILES([ \
 	src/Makefile \
 	modules/Makefile \
 	modules/echo/Makefile \
+	modules/modpy/Makefile \
 ])
 
 AC_OUTPUT
