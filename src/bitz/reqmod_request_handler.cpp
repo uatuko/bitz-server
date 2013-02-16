@@ -18,35 +18,65 @@
  */
 
 #include "reqmod_request_handler.h"
+#include "config.h"
+#include "logger.h"
 
 
 namespace bitz {
 
-	ReqmodRequestHandler::ReqmodRequestHandler() : RequestHandler( "REQMOD" ) { }
-	ReqmodRequestHandler::~ReqmodRequestHandler() { }
+	ReqmodRequestHandler::ReqmodRequestHandler() : RequestHandler( "REQMOD" ) {
+
+		// initialise defaults
+		_handlers_count = 0;
+		_handlers       = NULL;
+
+		// load modifier modules
+		load_modules();
+
+	}
+
+
+	ReqmodRequestHandler::~ReqmodRequestHandler() {
+
+		// cleanup modifier modules
+		cleanup_modules();
+
+	}
+
 
 	icap::Response * ReqmodRequestHandler::process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() {
 
-		Modifier::symbols_t symbols;
 		icap::Request  * request;
 		icap::Response * response;
+		Modifier       * modifier;
 
-		// FIXME: we shouldn't be loading and unloading the modules for each request
-		// FIXME: read module info from configs
-		// FIXME: error handling
-		// dynamic loading
-		load_modifier( "/tmp/root/etc/bitz/modules/mod_py.so", symbols );
+		int i = 0;
+
+		// logger
+		Logger &logger = Logger::instance();
+
 
 		// TODO: read the request
 		request = new icap::Request( req_header );
 
-		// modify
-		Modifier * modifier = symbols.create();
-		response = modifier->modify( request );
-		symbols.destroy( modifier );
+		// FIXME: we should know whether this is a modify or a preview by this point
+		// loop through loaded modifier modules and grab responses
+		// we will only send out the response from the last module
+		// unless a icap::ResponseHeader::OK is received
+		for ( i = 0 ; i < _handlers_count; i++ ) {
 
-		// unload
-		unload_modifier( symbols.modifier );
+			// grab the response from modifier
+			// FIXME: preview or modify ??
+			logger.debug( std::string( "[reqmod] getting response from module: " ).append( _handlers[i].name ) );
+			modifier = _handlers[i].symbols.create();
+			response = modifier->modify( request );
+
+			// status 200 OK means content modified
+			if ( response->header()->status() == icap::ResponseHeader::OK ) {
+				break;
+			}
+
+		}
 
 		/*
 		 * TODO notes:
@@ -63,6 +93,60 @@ namespace bitz {
 		delete request;
 
 		return response;
+
+	}
+
+
+	void ReqmodRequestHandler::load_modules() throw() {
+
+		int i = 0;
+		int j = 0;
+		const bitz::config_t &config = Config::instance().configs();
+
+		// search for request handlers
+		for ( i = 0; i < config.req_handlers_count; i++ ) {
+
+			// we are only interested in REQMOD handlers
+			if ( config.req_handlers[i].name == "REQMOD" ) {
+
+				if ( config.req_handlers[i].modules_count > 0 ) {
+
+					_handlers_count = config.req_handlers[i].modules_count;
+					_handlers       = new handler_t[_handlers_count];
+
+					// search for request handler modules
+					for (j = 0; j < _handlers_count; j++ ) {
+
+						// load module
+						if ( load_modifier( config.req_handlers[i].modules[j].module, _handlers[j].symbols ) ) {
+							_handlers[j].name = config.req_handlers[i].modules[j].name;
+						} else {
+							_handlers[j].name = "";
+							// FIXME: error handling
+						}
+
+					}
+
+				}
+
+				// not interested in duplicate config entries
+				break;
+			}
+
+		}
+
+
+	}
+
+
+	void ReqmodRequestHandler::cleanup_modules() throw() {
+
+		int i = 0;
+
+		for ( i = 0; i < _handlers_count; i++ ) {
+			// unload
+			unload_modifier( _handlers[i].symbols.modifier );
+		}
 
 	}
 

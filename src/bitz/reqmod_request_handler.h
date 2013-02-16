@@ -27,12 +27,23 @@ namespace bitz {
 
 	class ReqmodRequestHandler : public RequestHandler {
 	public:
+
+		struct handler_t {
+			std::string name;
+			Modifier::symbols_t symbols;
+		};
+
 		ReqmodRequestHandler();
 		virtual ~ReqmodRequestHandler();
 
 		icap::Response * process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw();
 
 	private:
+		unsigned int _handlers_count;
+		handler_t * _handlers;
+
+		void load_modules() throw();
+		void cleanup_modules() throw();
 
 	};
 
