@@ -63,7 +63,16 @@ namespace bitz {
 		*      and pass it back to this method (using PyCapsule again)
 		*/
 
-		return new icap::Response( icap::ResponseHeader::NOT_IMPLEMENTED );
+		icap::Response * response;
+
+		if ( _pymodule == NULL ) {
+			response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
+		} else {
+			response = new icap::Response( icap::ResponseHeader::NOT_IMPLEMENTED );
+		}
+
+		return response;
+
 	}
 
 
@@ -95,6 +104,8 @@ namespace bitz {
 
 		PyObject * sys_path;
 		PyObject * pymodule_path, * pymodule_name;
+		PyObject * pymethod;
+		PyObject * pyreturn;
 
 		// logger
 		Logger &logger = Logger::instance();
@@ -122,6 +133,27 @@ namespace bitz {
 		pymodule_name = PyString_FromString( _config.module_name.c_str() );
 		_pymodule     = PyImport_Import( pymodule_name );
 
+		if ( _pymodule != NULL ) {
+
+			logger.debug( "[modpy] interface module loaded successfully" );
+
+			// call init() in the interface module
+			pymethod = PyObject_GetAttrString( _pymodule, "init" );
+
+			if ( pymethod && PyCallable_Check( pymethod ) ) {
+				pyreturn = PyObject_CallObject( pymethod, NULL );
+				Py_DECREF( pyreturn );
+			} else {
+				logger.warn ( "[modpy] failed to call init() in interface module" );
+			}
+
+			Py_DECREF( pymethod );
+
+		} else {
+			logger.warn( "[modpy] failed to load interface module" );
+		}
+
+
 		// cleanup
 		Py_DECREF( pymodule_name );
 		Py_DECREF( pymodule_path );
@@ -132,8 +164,30 @@ namespace bitz {
 
 	void Py::cleanup_python() throw() {
 
+		PyObject * pymethod;
+		PyObject * pyreturn;
+
+		// logger
+		Logger &logger = Logger::instance();
+
+
 		// cleanup
-		Py_DECREF( _pymodule );
+		if ( _pymodule != NULL ) {
+
+			// call cleanup() in the interface module
+			pymethod = PyObject_GetAttrString( _pymodule, "cleanup" );
+
+			if ( pymethod && PyCallable_Check( pymethod ) ) {
+				pyreturn = PyObject_CallObject( pymethod, NULL );
+				Py_DECREF( pyreturn );
+			} else {
+				logger.warn ( "[modpy] failed to call cleanup() in interface module" );
+			}
+
+			Py_DECREF( pymethod );
+			Py_DECREF( _pymodule );
+
+		}
 
 		// finalise python core
 		Py_Finalize();
