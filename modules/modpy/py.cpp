@@ -20,21 +20,35 @@
 #include "py.h"
 #include "interface.h"
 
+#include <bitz/config.h>
+#include <bitz/logger.h>
+
 
 namespace bitz {
 
 	Py::Py() : Modifier() {
 
+		// defaults
+		_pymodule = NULL;
+
+		// initialise Py::config_t values
+		_config.module_name = "modpy";
+		_config.module_path = "";
+
+		// load configs
+		load_configs();
+
 		// initialise python
-		this->init_python();
+		init_python();
 
 	}
 
 
 	Py::~Py() {
 
-		// close python
-		this->close_python();
+		// cleanup python
+		cleanup_python();
+
 	}
 
 
@@ -60,7 +74,30 @@ namespace bitz {
 	}
 
 
+	void Py::load_configs() throw() {
+
+		std::string s;
+		Config &server_config = Config::instance();
+
+		// interface module name
+		s = server_config.module_config( "modpy", "module_name" );
+		if ( s != "" ) {
+			_config.module_name = s;
+		}
+
+		// module lookup path
+		_config.module_path = server_config.module_config( "modpy", "module_path" );
+
+	}
+
+
 	void Py::init_python() throw() {
+
+		PyObject * sys_path;
+		PyObject * pymodule_path, * pymodule_name;
+
+		// logger
+		Logger &logger = Logger::instance();
 
 		// python core
 		Py_Initialize();
@@ -69,16 +106,36 @@ namespace bitz {
 		Py_InitModule( "bitz", bitz_methods );
 
 		// setup python environment
-		PyObject * sys_path = PySys_GetObject( "path" );
-		//PyList_Append( sys_path, )
+		if ( _config.module_path != "" ) {
 
+			logger.debug( std::string( "[modpy] appending to sys.path, module_path: " ).append( _config.module_path ) );
+
+			sys_path      = PySys_GetObject( "path" );
+			pymodule_path = PyString_FromString( _config.module_path.c_str() );
+			PyList_Append( sys_path, pymodule_path );
+
+		}
+
+		// load the interface module
+		logger.debug( std::string( "[modpy] interface module: " ).append( _config.module_name ) );
+
+		pymodule_name = PyString_FromString( _config.module_name.c_str() );
+		_pymodule     = PyImport_Import( pymodule_name );
+
+		// cleanup
+		Py_DECREF( pymodule_name );
+		Py_DECREF( pymodule_path );
+		Py_DECREF( sys_path );
 
 	}
 
 
-	void Py::close_python() throw() {
+	void Py::cleanup_python() throw() {
 
-		// TODO: clear python stuff
+		// cleanup
+		Py_DECREF( _pymodule );
+
+		// finalise python core
 		Py_Finalize();
 
 	}

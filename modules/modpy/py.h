@@ -20,6 +20,8 @@
 #ifndef BITZ_PY_H
 #define BITZ_PY_H
 
+#include <Python.h>
+
 #include <bitz/modifier.h>
 
 
@@ -27,6 +29,12 @@ namespace bitz {
 
 	class Py : public Modifier {
 	public:
+
+		struct config_t {
+			std::string module_path;
+			std::string module_name;
+		};
+
 		Py();
 		virtual ~Py();
 
@@ -34,8 +42,12 @@ namespace bitz {
 		icap::Response * preview( icap::Request * request ) throw();
 
 	private:
+		config_t _config;
+		PyObject * _pymodule;
+
+		void load_configs() throw();
 		void init_python() throw();
-		void close_python() throw();
+		void cleanup_python() throw();
 
 	};
 
