@@ -1,5 +1,7 @@
 # modules/modpy
 
+SUBDIRS = modules
+
 if MODPY
 modlibdir               = $(sysconfdir)/bitz/modules
 modlib_LTLIBRARIES      = mod_py.la
