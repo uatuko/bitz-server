@@ -18,6 +18,7 @@
  */
 
 #include "config.h"
+#include "logger.h"
 
 #include <iostream>
 
@@ -30,6 +31,8 @@ namespace bitz {
 		_config.port            = 1344;
 		_config.log_file        = "/dev/null";
 		_config.log_category    = "bitz";
+		_config.req_handlers_count = 0;
+		_config.req_handlers       = NULL;
 
 		// defaults
 		_lconfig = NULL;
@@ -52,10 +55,9 @@ namespace bitz {
 		try {
 			config->readFile( config_file.c_str() );
 		} catch( const libconfig::FileIOException &ex ) {
-			// TODO
+			std::cerr << "[config] failed to read config file: " << ex.what() << std::endl;
 		} catch( const libconfig::ParseException &pex ) {
-			// FIXME
-			std::cerr << "Parse error at " << pex.getFile()
+			std::cerr << "[config] parse error at " << pex.getFile()
 					<< ":" << pex.getLine() << " - " << pex.getError() << std::endl;
 		}
 
@@ -66,12 +68,16 @@ namespace bitz {
 			config->lookupValue( "log_file", _config.log_file );
 			config->lookupValue( "log_category", _config.log_category );
 
-			// cache configs
-			_lconfig = config;
-
 		} catch( const libconfig::SettingNotFoundException &e ) {
-			// TODO
+			std::cerr << "[config] failed to load core configs, "
+					<< e.getPath() << " : " << e.what() << std::endl;
 		}
+
+		// cache configs
+		_lconfig = config;
+
+		// read other configs
+		read_req_handler_configs();
 
 		return _config;
 
@@ -94,11 +100,66 @@ namespace bitz {
 				setting.lookupValue( config, config_value );
 			} catch( const libconfig::SettingNotFoundException &e ) {
 				// TODO: log errors ??
+				std::cerr << "[config] " << e.getPath() << " : " << e.what() << std::endl;
 			}
 
+		} else {
+			std::cout << "[config] 'modules' configs not found" << std::endl;
 		}
 
 		return config_value;
+
+	}
+
+
+	void Config::read_req_handler_configs() throw() {
+
+		int i, j;
+		std::string s;
+
+		std::cout << "[config] looking for req_handlers... ";
+		if ( _lconfig->exists( "req_handlers" ) ) {
+
+			std::cout << "found ";
+
+			libconfig::Setting &req_handlers = _lconfig->lookup( "req_handlers" );
+			_config.req_handlers_count       = req_handlers.getLength();
+			_config.req_handlers             = new req_handlers_config_t[_config.req_handlers_count];
+
+			std::cout << "(" << _config.req_handlers_count << ")" << std::endl;
+
+			try {
+
+				// read request handler configs
+				for ( i = 0; i < _config.req_handlers_count ; i++ ) {
+					_config.req_handlers[i].name       = (const char *) req_handlers[i]["handler"];
+					_config.req_handlers[i].class_name = (const char *) req_handlers[i]["class"];
+
+					// read request handler modules config
+					std::cout << "[config] looking for " << _config.req_handlers[i].name << " modules... ";
+					if ( req_handlers[i].exists( "modules" ) ) {
+						std::cout << "found ";
+
+						_config.req_handlers[i].modules_count   = req_handlers[i]["modules"].getLength();
+						_config.req_handlers[i].modules         = new modules_config_t[_config.req_handlers[i].modules_count];
+
+						std::cout << "(" << _config.req_handlers[i].modules_count << ")" << std::endl;
+						for ( j = 0; j < _config.req_handlers[i].modules_count; j++ ) {
+							_config.req_handlers[i].modules[j].name   = (const char *) req_handlers[i]["modules"][j]["name"];
+							_config.req_handlers[i].modules[j].module = (const char *) req_handlers[i]["modules"][j]["module"];
+						}
+					} else {
+						std::cout << "not found" << std::endl;
+					}
+				}
+
+			} catch ( const libconfig::SettingNotFoundException &ex ) {
+				std::cerr << "[config] Error: " << ex.getPath() << ex.what() << std::endl;
+			}
+
+		} else {
+			std::cout << "not found" << std::endl;
+		}
 
 	}
 

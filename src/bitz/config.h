@@ -30,10 +30,26 @@
 
 namespace bitz {
 
+	struct modules_config_t {
+		std::string name;
+		std::string module;
+	};
+
+	struct req_handlers_config_t {
+		std::string name;
+		std::string class_name;
+		int modules_count;
+
+		modules_config_t * modules;
+	};
+
 	struct config_t {
 		int port;
 		std::string log_file;
 		std::string log_category;
+		int req_handlers_count;
+
+		req_handlers_config_t * req_handlers;
 	};
 
 	class Config {
@@ -65,6 +81,9 @@ namespace bitz {
 		~Config();
 		Config( Config const &copy );
 		Config &operator=( const Config &copy );
+
+		void read_req_handler_configs() throw();
+
 	};
 
 } /* end of namespace bitz */
