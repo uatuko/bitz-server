@@ -38,7 +38,7 @@ namespace bitz {
 	struct req_handlers_config_t {
 		std::string name;
 		std::string class_name;
-		int modules_count;
+		unsigned int modules_count;
 
 		modules_config_t * modules;
 	};
@@ -47,7 +47,7 @@ namespace bitz {
 		int port;
 		std::string log_file;
 		std::string log_category;
-		int req_handlers_count;
+		unsigned int req_handlers_count;
 
 		req_handlers_config_t * req_handlers;
 	};
