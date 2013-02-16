@@ -65,9 +65,34 @@ namespace bitz {
 
 		icap::Response * response;
 
+		PyObject * pymethod;
+		PyObject * pyreturn;
+		PyObject * pyargs;
+		PyObject * pyrequest, * pyresponse;
+
+		// logger
+		Logger &logger = Logger::instance();
+
 		if ( _pymodule == NULL ) {
 			response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
 		} else {
+
+			// call modify() in the interface module
+			pymethod  = PyObject_GetAttrString( _pymodule, "modify" );
+			pyargs    = PyTuple_New( 1 );
+			pyrequest = PyCapsule_New( (void *) request, NULL, NULL );
+			PyTuple_SetItem( pyargs, 0, pyrequest );
+
+			if ( pymethod && PyCallable_Check( pymethod ) ) {
+				pyreturn = PyObject_CallObject( pymethod, pyargs );
+				Py_DECREF( pyargs );
+				Py_DECREF( pyreturn );
+			} else {
+				logger.warn ( "[modpy] failed to call modify() in interface module" );
+			}
+
+			Py_DECREF( pymethod );
+
 			response = new icap::Response( icap::ResponseHeader::NOT_IMPLEMENTED );
 		}
 

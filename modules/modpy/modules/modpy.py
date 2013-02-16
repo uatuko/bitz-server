@@ -12,6 +12,6 @@ def cleanup():
 def preview():
 	print "preview() called"
 	
-def modify():
-	print "modify() called"
+def modify( request ):
+	print "modify() called: ", request
 
