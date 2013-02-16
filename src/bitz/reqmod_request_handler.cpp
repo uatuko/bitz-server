@@ -35,7 +35,7 @@ namespace bitz {
 		// FIXME: read module info from configs
 		// FIXME: error handling
 		// dynamic loading
-		load_modifier( "/tmp/root/etc/bitz/modules/mod_echo.so", symbols );
+		load_modifier( "/tmp/root/etc/bitz/modules/mod_py.so", symbols );
 
 		// TODO: read the request
 		request = new icap::Request( req_header );
