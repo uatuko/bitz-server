@@ -27,16 +27,21 @@ namespace bitz {
 	Config::Config() {
 
 		// initialise config_t values
-		this->_config.port            = 1344;
-		this->_config.log_file        = "/dev/null";
-		this->_config.log_category    = "bitz";
+		_config.port            = 1344;
+		_config.log_file        = "/dev/null";
+		_config.log_category    = "bitz";
 
 		// defaults
-		this->_lconfig = NULL;
+		_lconfig = NULL;
 
 	}
 
-	Config::~Config() { }
+	Config::~Config() {
+
+		// cleanup
+		delete _lconfig;
+
+	}
 
 
 	const config_t &Config::initialise( const std::string &config_file ) {
@@ -57,43 +62,43 @@ namespace bitz {
 		try {
 
 			// read core configs
-			config->lookupValue( "port", this->_config.port );
-			config->lookupValue( "log_file", this->_config.log_file );
-			config->lookupValue( "log_category", this->_config.log_category );
+			config->lookupValue( "port", _config.port );
+			config->lookupValue( "log_file", _config.log_file );
+			config->lookupValue( "log_category", _config.log_category );
 
 			// cache configs
-			this->_lconfig = config;
+			_lconfig = config;
 
 		} catch( const libconfig::SettingNotFoundException &e ) {
 			// TODO
 		}
 
-		return this->_config;
+		return _config;
 
 	}
 
 
 	const config_t &Config::configs() {
-		return this->_config;
+		return _config;
 	}
 
 
-	const libconfig::Setting * Config::module_configs( const std::string & module ) {
+	const std::string Config::module_config( const std::string &module, const std::string &config ) throw() {
 
-		libconfig::Setting * setting;
-		setting = NULL;
+		std::string config_value = "";
 
-		if ( this->_lconfig->exists( "module" ) ) {
+		if ( _lconfig->exists( "modules" ) ) {
 
 			try {
-				setting = &this->_lconfig->lookup( std::string( "module." ).append( module ) );
+				libconfig::Setting &setting = _lconfig->lookup( std::string( "modules." ).append( module ) );
+				setting.lookupValue( config, config_value );
 			} catch( const libconfig::SettingNotFoundException &e ) {
-				// TODO
+				// TODO: log errors ??
 			}
 
 		}
 
-		return setting;
+		return config_value;
 
 	}
 

@@ -47,14 +47,15 @@ namespace bitz {
 		const config_t &configs();
 
 		/**
-		*   Returns module specific config settings (or NULL if not found)
+		*   Returns module specific config value (or NULL string if not found)
 		*   Note: This method should be only used my the pluggable modules and not
 		*         by the core code.
 		*
 		*   @param module module name
-		*   @return module config settings
+		*   @param config config name
+		*   @return module config value
 		*/
-		const libconfig::Setting * module_configs( const std::string &module );
+		const std::string module_config( const std::string &module, const std::string &config ) throw();
 
 	private:
 		config_t _config;
