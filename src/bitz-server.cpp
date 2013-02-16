@@ -53,7 +53,7 @@ int main() {
 
 	// initialise configurations
 	Config &server_config = Config::instance();
-	const config_t &config = server_config.initialise();
+	const bitz::config_t &config = server_config.initialise();
 
 	// initialise the logger
 	Logger &logger = Logger::instance( config.log_file, config.log_category );

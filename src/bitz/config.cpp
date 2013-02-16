@@ -18,7 +18,9 @@
  */
 
 #include "config.h"
-#include <libconfig.h++>
+
+#include <iostream>
+
 
 namespace bitz {
 
@@ -29,30 +31,39 @@ namespace bitz {
 		this->_config.log_file        = "/dev/null";
 		this->_config.log_category    = "bitz";
 
+		// defaults
+		this->_lconfig = NULL;
+
 	}
 
 	Config::~Config() { }
 
-	const config_t &Config::initialise( std::string config_file ) {
 
-		libconfig::Config config;
+	const config_t &Config::initialise( const std::string &config_file ) {
+
+		libconfig::Config * config;
+		config = new libconfig::Config;
 
 		try {
-			config.readFile( config_file.c_str() );
+			config->readFile( config_file.c_str() );
 		} catch( const libconfig::FileIOException &ex ) {
 			// TODO
 		} catch( const libconfig::ParseException &pex ) {
-			// TODO
-			/*
-			*     std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()
-			*        << " - " << pex.getError() << std::endl;
-			*/
+			// FIXME
+			std::cerr << "Parse error at " << pex.getFile()
+					<< ":" << pex.getLine() << " - " << pex.getError() << std::endl;
 		}
 
 		try {
-			config.lookupValue( "port", this->_config.port );
-			config.lookupValue( "log_file", this->_config.log_file );
-			config.lookupValue( "log_category", this->_config.log_category );
+
+			// read core configs
+			config->lookupValue( "port", this->_config.port );
+			config->lookupValue( "log_file", this->_config.log_file );
+			config->lookupValue( "log_category", this->_config.log_category );
+
+			// cache configs
+			this->_lconfig = config;
+
 		} catch( const libconfig::SettingNotFoundException &e ) {
 			// TODO
 		}
@@ -61,8 +72,29 @@ namespace bitz {
 
 	}
 
+
 	const config_t &Config::configs() {
 		return this->_config;
+	}
+
+
+	const libconfig::Setting * Config::module_configs( const std::string & module ) {
+
+		libconfig::Setting * setting;
+		setting = NULL;
+
+		if ( this->_lconfig->exists( "module" ) ) {
+
+			try {
+				setting = &this->_lconfig->lookup( std::string( "module." ).append( module ) );
+			} catch( const libconfig::SettingNotFoundException &e ) {
+				// TODO
+			}
+
+		}
+
+		return setting;
+
 	}
 
 } /* end of namespace bitz */

@@ -21,6 +21,8 @@
 #define BITZ_CONFIG_H
 
 #include <string>
+#include <libconfig.h++>
+
 
 #ifndef BITZ_SERVER_CONFIG_FILE
 #define BITZ_SERVER_CONFIG_FILE "/etc/bitz/bitz-server.conf"
@@ -41,11 +43,22 @@ namespace bitz {
 			return config;
 		}
 
-		const config_t &initialise( std::string config_file = BITZ_SERVER_CONFIG_FILE );
+		const config_t &initialise( const std::string &config_file = BITZ_SERVER_CONFIG_FILE );
 		const config_t &configs();
+
+		/**
+		*   Returns module specific config settings (or NULL if not found)
+		*   Note: This method should be only used my the pluggable modules and not
+		*         by the core code.
+		*
+		*   @param module module name
+		*   @return module config settings
+		*/
+		const libconfig::Setting * module_configs( const std::string &module );
 
 	private:
 		config_t _config;
+		libconfig::Config * _lconfig;
 
 		Config();
 		~Config();
