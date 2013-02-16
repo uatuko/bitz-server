@@ -25,6 +25,7 @@ Makefile.in
 .project
 .cproject
 .settings/*
+.pydevproject
 
 # swap files
 *.swp
