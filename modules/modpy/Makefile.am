@@ -11,8 +11,8 @@ mod_py_la_SOURCES       = \
 	interface.h interface.cpp
 
 AM_CPPFLAGS             = -I$(top_srcdir)/lib -I$(top_srcdir)/src \
-	${PYTHON_INCLUDES} ${libconfig_CFLAGS}
-	
+	${PYTHON_INCLUDES} ${libconfig_CFLAGS} ${log4cpp_CFLAGS}
+
 mod_py_la_LIBADD        = ${PYTHON_LIBS}
 endif
 
