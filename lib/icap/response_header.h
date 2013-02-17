@@ -55,16 +55,20 @@ namespace icap {
 		*   Return the response protocol
 		*   @return protocol
 		*/
-		const std::string &protocol() throw();
+		const std::string &protocol() const throw();
 
 		/**
 		*   Return the response status
 		*   @return status
 		*/
-		const status_t &status() throw();
+		const status_t &status() const throw();
 
 	private:
 		response_t _response;
+
+		void update_timestamp() throw();
+		void generate_istag() throw();
+		void init_defaults() throw();
 
 	};
 
