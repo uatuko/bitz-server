@@ -76,6 +76,10 @@ namespace bitz {
 				break;
 			}
 
+			// cleanup
+			logger.debug( std::string( "[reqmod] cleaning up module: " ).append( _handlers[i].name ) );
+			_handlers[i].symbols.destroy( modifier );
+
 		}
 
 		/*
@@ -143,9 +147,16 @@ namespace bitz {
 
 		int i = 0;
 
+		// logger
+		Logger &logger = Logger::instance();
+
 		for ( i = 0; i < _handlers_count; i++ ) {
+
+			logger.debug( std::string( "[reqmod] unloading module: " ).append( _handlers[i].name ) );
+
 			// unload
 			unload_modifier( _handlers[i].symbols.modifier );
+
 		}
 
 	}
