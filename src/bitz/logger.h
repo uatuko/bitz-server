@@ -20,7 +20,7 @@
 #ifndef BITZ_LOGGER_H
 #define BITZ_LOGGER_H
 
-#include <string.h>
+#include <string>
 #include <log4cpp/Category.hh>
 
 namespace bitz {

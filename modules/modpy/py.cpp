@@ -139,7 +139,9 @@ namespace bitz {
 		Py_Initialize();
 
 		// bitz python module
-		Py_InitModule( "bitz", bitz_methods );
+		if ( Py_InitModule( "bitz", bitz_methods ) == NULL ) {
+			logger.warn( "[modpy] failed to init C interface module: bitz" );
+		}
 
 		// setup python environment
 		if ( _config.module_path != "" ) {
