@@ -22,5 +22,7 @@ bitz_server_SOURCES     = bitz-server.cpp \
 	bitz/modifier.cpp
 	
 bitzinclude_HEADERS     = \
+	bitz/config.h \
+	bitz/logger.h \
 	bitz/modifier.h
 
