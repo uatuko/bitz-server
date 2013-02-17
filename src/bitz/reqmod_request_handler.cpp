@@ -21,6 +21,8 @@
 #include "config.h"
 #include "logger.h"
 
+#include <icap/util.h>
+
 
 namespace bitz {
 
@@ -60,29 +62,40 @@ namespace bitz {
 		Logger &logger = Logger::instance();
 
 
-		// TODO: read the request
+		// request
 		request = new icap::Request( req_header );
 
-		// FIXME: we should know whether this is a modify or a preview by this point
-		// loop through loaded modifier modules and grab responses
-		// we will only send out the response from the last module
-		// unless a icap::ResponseHeader::OK is received
-		for ( i = 0 ; i < _handlers_count; i++ ) {
+		// read request data
+		if (! icap::util::read_req_data( request, socket ) ) {
 
-			// grab the response from modifier
-			// FIXME: preview or modify ??
-			logger.debug( std::string( "[reqmod] getting response from module: " ).append( _handlers[i].name ) );
-			modifier = _handlers[i].symbols.create();
-			response = modifier->modify( request );
+			logger.warn( "[reqmod] failed to read request data" );
+			response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
 
-			// status 200 OK means content modified
-			if ( response->header()->status() == icap::ResponseHeader::OK ) {
-				break;
+		} else {
+
+			logger.debug( std::string( "[reqmod] payload: \r\n").append( request->payload() ) );
+
+			// loop through loaded modifier modules and grab responses
+			// we will only send out the response from the last module
+			// unless a icap::ResponseHeader::OK is received
+			for ( i = 0 ; i < _handlers_count; i++ ) {
+
+				// grab the response from modifier
+				// FIXME: preview or modify ??
+				logger.debug( std::string( "[reqmod] getting response from module: " ).append( _handlers[i].name ) );
+				modifier = _handlers[i].symbols.create();
+				response = modifier->modify( request );
+
+				// status 200 OK means content modified
+				if ( response->header()->status() == icap::ResponseHeader::OK ) {
+					break;
+				}
+
+				// cleanup
+				logger.debug( std::string( "[reqmod] cleaning up module: " ).append( _handlers[i].name ) );
+				_handlers[i].symbols.destroy( modifier );
+
 			}
-
-			// cleanup
-			logger.debug( std::string( "[reqmod] cleaning up module: " ).append( _handlers[i].name ) );
-			_handlers[i].symbols.destroy( modifier );
 
 		}
 

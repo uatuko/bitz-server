@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <functional>
 #include <locale>
+#include <iostream>
 
 
 namespace icap {
@@ -124,6 +125,53 @@ namespace icap {
 
 			icap::RequestHeader * req_header = new icap::RequestHeader( data );
 			return req_header;
+
+		}
+
+
+		bool read_req_data( icap::Request * request, socketlibrary::TCPSocket * socket ) throw() {
+
+			int data_length = 0;
+			int data_read   = 0;
+
+			// Encapsulated header
+			icap::Header::encapsulated_header_t encaps_header;
+			encaps_header = request->header()->encapsulated_header();
+
+			// we are interested in req-body or null-body entities only
+			if ( encaps_header.req_body > 0 ) {
+				data_length = encaps_header.req_body;
+			} else if ( encaps_header.null_body > 0 ) {
+				data_length = encaps_header.null_body;
+			}
+
+
+			/* read request data */
+
+			// is there anything to read?
+			if ( data_length > 0  ) {
+
+				char buffer[data_length];
+
+				// read from the socket
+				data_read = socket->recv( buffer, data_length );
+
+				// sanity check
+				if ( data_read != data_length ) {
+					// something is not right
+					return false;
+				}
+
+				// end char buffer
+				buffer[data_read] = NULL;
+
+				// update request
+				request->payload( buffer );
+
+			}
+
+
+			return true;
 
 		}
 

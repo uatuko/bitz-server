@@ -23,7 +23,8 @@
 namespace icap {
 
 	Request::Request( RequestHeader * req_header ) {
-		_header = req_header;
+		_header  = req_header;
+		_payload = "";
 	}
 
 
@@ -32,6 +33,16 @@ namespace icap {
 
 	RequestHeader * const Request::header() const throw() {
 		return _header;
+	}
+
+
+	const std::string &Request::payload() const throw() {
+		return _payload;
+	}
+
+
+	void Request::payload( const char * payload ) throw() {
+		_payload = payload;
 	}
 
 } /* end of namespace icap */

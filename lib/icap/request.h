@@ -36,8 +36,21 @@ namespace icap {
 		*/
 		RequestHeader * const header() const throw();
 
+		/**
+		*   Return payload data
+		*   @return payload
+		*/
+		const std::string &payload() const throw();
+
+		/**
+		*   Set request payload
+		*   @param payload data
+		*/
+		void payload( const char * payload ) throw();
+
 	private:
 		RequestHeader * _header;
+		std::string _payload;
 
 	};
 
