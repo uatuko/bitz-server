@@ -31,7 +31,53 @@ namespace icap {
 	*
 	*  [payload]
 	*/
-	RequestHeader::RequestHeader( const std::vector<std::string> &data ) : Header() {
+	RequestHeader::RequestHeader( const std::string &raw_data ) : Header() {
+
+		// initialise defaults
+		_request.method   = "";
+		_request.uri      = "";
+		_request.protocol = "ICAP/1.0";
+
+		// read header
+		read_header( raw_data );
+
+	}
+
+
+	RequestHeader::~RequestHeader() { }
+
+
+	const std::string &RequestHeader::method() const throw() {
+		return _request.method;
+	}
+
+
+	const std::string &RequestHeader::uri() const throw() {
+		return _request.uri;
+	}
+
+
+	const std::string &RequestHeader::protocol() const throw() {
+		return _request.protocol;
+	}
+
+
+	const RequestHeader::request_t &RequestHeader::request() const throw() {
+		return _request;
+	}
+
+
+	const std::string &RequestHeader::raw_data() const throw() {
+		return _raw_data;
+	}
+
+
+	void RequestHeader::read_header( const std::string &raw_data ) throw() {
+
+		std::vector<std::string> data;
+
+		_raw_data = raw_data;
+		data = util::split( raw_data, "\r\n" );
 
 		if ( data.size() > 0 ) {
 
@@ -59,35 +105,8 @@ namespace icap {
 				}
 			}
 
-		} else {
-			_request.method   = "";
-			_request.uri      = "";
-			_request.protocol = "ICAP/1.0";
 		}
 
-	}
-
-
-	RequestHeader::~RequestHeader() { }
-
-
-	const std::string &RequestHeader::method() throw() {
-		return _request.method;
-	}
-
-
-	const std::string &RequestHeader::uri() throw() {
-		return _request.uri;
-	}
-
-
-	const std::string &RequestHeader::protocol() throw() {
-		return _request.protocol;
-	}
-
-
-	const RequestHeader::request_t &RequestHeader::request() throw() {
-		return _request;
 	}
 
 } /* end of namespace icap */

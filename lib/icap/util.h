@@ -56,7 +56,7 @@ namespace icap {
 		*   @param buf_length length / size of the buffer data is read into
 		*   @return number of bytes read
 		*/
-		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length ) throw();
+		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length, bool incl_endl = false ) throw();
 
 		/**
 		*   Send / write a line (ending with \r\n) to the socket

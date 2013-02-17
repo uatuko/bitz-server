@@ -37,35 +37,44 @@ namespace icap {
 			std::string protocol;
 		};
 
-		RequestHeader( const std::vector<std::string> &data );
+		RequestHeader( const std::string &raw_data );
 		virtual ~RequestHeader();
 
 		/**
 		*   Return request method
 		*   @return method
 		*/
-		const std::string &method() throw();
+		const std::string &method() const throw();
 
 		/**
 		*   Return request URI
 		*   @return URI
 		*/
-		const std::string &uri() throw();
+		const std::string &uri() const throw();
 
 		/**
 		*   Return request protocol
 		*   @return protocol
 		*/
-		const std::string &protocol() throw();
+		const std::string &protocol() const throw();
 
 		/**
 		*   Return request
 		*   @return request
 		*/
-		const request_t &request() throw();
+		const request_t &request() const throw();
+
+		/**
+		*   Return raw header data
+		*   @return raw request header
+		*/
+		const std::string &raw_data() const throw();
 
 	private:
 		request_t _request;
+		std::string _raw_data;
+
+		void read_header( const std::string &raw_data ) throw();
 
 	};
 

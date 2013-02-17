@@ -31,7 +31,7 @@ namespace icap {
 
 	namespace util {
 
-		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length ) throw() {
+		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length, bool incl_endl ) throw() {
 
 			int i  = 0, n;
 			char c = '\0';
@@ -42,9 +42,24 @@ namespace icap {
 
 				if ( n > 0 ) {
 					if ( c == '\r' ) {
+
+						if ( incl_endl ) {
+							buf[i] = c;
+							i++;
+						}
+
+						// peak for \n
 						n = socket->peek( &c, 1 );
+
 						if ( ( n > 0 ) && ( c == '\n' ) ) {
-							socket->recv( &c, 1 );
+
+							n = socket->recv( &c, 1 );
+
+							if ( incl_endl ) {
+								buf[i] = c;
+								i++;
+							}
+
 							break;    // end of line
 						}
 					}
@@ -116,11 +131,10 @@ namespace icap {
 
 			char buffer[ICAP_BUFFER_LENGTH];
 			int  n = 0;
-			std::vector<std::string> data;
+			std::string data = "";
 
-			while ( ( n = read_line( socket, buffer, ICAP_BUFFER_LENGTH ) ) > 0 ) {
-				// FIXME: this is not correct if a line is longer than the buffer length
-				data.push_back( buffer );
+			while ( ( n = read_line( socket, buffer, ICAP_BUFFER_LENGTH, true ) ) > 2 ) {
+				data.append( buffer );
 			}
 
 			icap::RequestHeader * req_header = new icap::RequestHeader( data );
