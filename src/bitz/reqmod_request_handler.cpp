@@ -41,6 +41,10 @@ namespace bitz {
 		// cleanup modifier modules
 		cleanup_modules();
 
+		if ( _handlers != NULL ) {
+			delete [] _handlers;
+		}
+
 	}
 
 

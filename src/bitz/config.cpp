@@ -44,6 +44,16 @@ namespace bitz {
 		// cleanup
 		delete _lconfig;
 
+		for (int i = 0; i < _config.req_handlers_count ; i++ ) {
+			if ( _config.req_handlers[i].modules_count > 0 ) {
+				delete [] _config.req_handlers[i].modules;
+			}
+		}
+
+		if ( _config.req_handlers != NULL ) {
+			delete [] _config.req_handlers;
+		}
+
 	}
 
 
