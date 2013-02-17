@@ -36,7 +36,10 @@ namespace icap {
 		if ( data.size() > 0 ) {
 
 			std::vector<std::string> header_data;
-			std::vector<std::string> request = util::split( data.at( 0 ) );
+			std::vector<std::string> request;
+
+			std::string request_data = data.at( 0 );
+			request = util::split( util::trim( request_data ) );
 
 			if ( request.size() == 3 ) {
 				_request.method   = request.at(0);
