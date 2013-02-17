@@ -35,6 +35,16 @@ namespace icap {
 		/* headers iterator type */
 		typedef headers_t::iterator headers_index_t;
 
+		/* encapsulated header type */
+		struct encapsulated_header_t {
+			unsigned int req_hdr;
+			unsigned int req_body;
+			unsigned int res_hdr;
+			unsigned int res_body;
+			unsigned int opt_body;
+			unsigned int null_body;
+		};
+
 		Header();
 		virtual ~Header();
 
@@ -44,6 +54,12 @@ namespace icap {
 		*   @return headers
 		*/
 		const headers_t &headers() const throw();
+
+		/**
+		*   Return Encapsulated header
+		*   @return encapsulated header
+		*/
+		const encapsulated_header_t &encapsulated_header() const throw();
 
 		/**
 		*   Attach header data into the header
@@ -59,6 +75,18 @@ namespace icap {
 		virtual void attach( std::string key, std::string value ) throw();
 
 		/**
+		*   Attach Encapsulated header data
+		*
+		*   e.g.
+		*   Encapsulated: req-hdr=0, req-body=412
+		*   Encapsulated: req-hdr=0, res-hdr=822, res-body=1655
+		*   Encapsulated: [header_value]
+		*
+		*   @param header_value Encapsulated header value
+		*/
+		virtual void attach_encapsulated( std::string header_value ) throw();
+
+		/**
 		*   Remove header data from the header
 		*
 		*   @param key header key
@@ -67,8 +95,13 @@ namespace icap {
 
 	protected:
 		headers_t _headers;
+		encapsulated_header_t _encapsulated;
 
 	private:
+		typedef std::map<std::string, unsigned int *>::iterator _encapsulated_map_index_t;
+		std::map<std::string, unsigned int *> _encapsulated_map;
+
+		void populate_encapsulated_map() throw();
 
 	};
 
