@@ -20,6 +20,8 @@
 #include "worker.h"
 #include "logger.h"
 #include "util.h"
+#include "options_request_handler.h"
+#include "reqmod_request_handler.h"
 
 #include <icap/util.h>
 #include <icap/request_header.h>
@@ -27,13 +29,28 @@
 
 namespace bitz {
 
-	Worker::Worker() {}
-	Worker::~Worker() {
-		Logger &logger = Logger::instance();
-		logger.debug( "exiting worker" );
+	Worker::Worker() {
+
+		// load request handlers
+		load_req_handlers();
+
 	}
 
-	void Worker::run( socketlibrary::TCPServerSocket * server_sock, const req_handlers_t &req_handlers, unsigned int max_requests ) throw() {
+
+	Worker::~Worker() {
+
+		// logger
+		Logger &logger = Logger::instance();
+		logger.debug( "[worker] exiting" );
+
+		// cleanup request handlers
+		util::delete_req_handlers( _req_handlers );
+		delete _req_handlers["OPTIONS"];
+
+	}
+
+
+	void Worker::run( socketlibrary::TCPServerSocket * server_sock, unsigned int max_requests ) throw() {
 
 		Logger &logger = Logger::instance();
 
@@ -54,7 +71,7 @@ namespace bitz {
 						.append( ":" ).append( util::itoa( client_sock->getForeignPort() ) ) );
 
 				req_header  = icap::util::read_req_header( client_sock );
-				req_handler = util::find_req_handler( req_handlers, req_header->method() );
+				req_handler = util::find_req_handler( _req_handlers, req_header->method() );
 
 				if ( req_handler != NULL ) {
 
@@ -88,6 +105,21 @@ namespace bitz {
 		} catch( socketlibrary::SocketException &sex ) {
 			logger.error( std::string( "[worker] ERROR: " ).append( sex.what() ) );
 		}
+
+	}
+
+
+	void Worker::load_req_handlers() throw() {
+
+		OptionsRequestHandler * options_handler;
+
+		// OPTIONS handler
+		options_handler = new OptionsRequestHandler();
+		_req_handlers["OPTIONS"] = options_handler;
+
+		// FIXME: these should be able to dynamically loaded and configurable
+		_req_handlers["REQMOD"]  = new ReqmodRequestHandler();
+		options_handler->register_handler( _req_handlers["REQMOD"] );
 
 	}
 

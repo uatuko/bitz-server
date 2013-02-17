@@ -20,12 +20,11 @@
 #include "manager.h"
 #include "logger.h"
 #include "util.h"
-#include "options_request_handler.h"
-#include "reqmod_request_handler.h"
 
 #include <cstdlib>
 #include <sstream>
 #include <csignal>
+
 
 namespace bitz {
 
@@ -38,9 +37,6 @@ namespace bitz {
 		_manager.worker_id     = 0;
 		_manager.socket        = NULL;
 		_manager.worker_pool   = NULL;
-
-		// load request handlers
-		load_req_handlers();
 
 		// initialise listening socket
 		try {
@@ -66,12 +62,8 @@ namespace bitz {
 		if ( _manager.worker ) {
 			logger.debug( "[worker] cleaning up manager" );
 		} else {
-			logger.debug( "shutting down manager" );
+			logger.debug( "[manager] shutting down manager" );
 		}
-
-		// cleanup request handlers
-		util::delete_req_handlers( _req_handlers );
-		delete _req_handlers["OPTIONS"];
 
 		delete [] _manager.worker_pool;
 		delete _manager.socket;
@@ -122,7 +114,7 @@ namespace bitz {
 			_manager.worker_pool[worker_id].worker_id  = worker_id;
 			_manager.worker_pool[worker_id].worker_pid = worker_pid;
 
-			_manager.worker_pool[worker_id].worker->run( _manager.socket, _req_handlers, _manager.max_worker_requests );
+			_manager.worker_pool[worker_id].worker->run( _manager.socket, _manager.max_worker_requests );
 			logger.info( std::string( "end of cycle, worker[" ).append( util::itoa( worker_id ) ).append( "]" ) );
 
 			delete _manager.worker_pool[worker_id].worker;
@@ -131,6 +123,7 @@ namespace bitz {
 		} else {
 
 			/* manager */
+			logger.info( std::string( "[manager] worker spawned with pid: " ).append( util::itoa( worker_pid) ) );
 
 			_manager.workers_count++;
 
@@ -151,26 +144,29 @@ namespace bitz {
 
 		if ( _manager.worker ) {
 
+			logger.info( "[worker] manager shutdown request received" );
+
 			/* worker: cleanup */
 			delete _manager.worker_pool[_manager.worker_id].worker;
 
 		} else {
 
 			/* manager: stop all child processes */
+			logger.info( "[manager] shutdown request received" );
 
 			for (unsigned int i = 0; i < _manager.max_workers; i++ ) {
 				if ( _manager.worker_pool[i].worker_pid != 0 ) {
 					if ( graceful ) {
 						kill( _manager.worker_pool[i].worker_pid, SIGTERM );
-						logger.debug( std::string( "manager: sending SIGTERM to worker[" ).append( util::itoa( i ) )
+						logger.debug( std::string( "[manager] sending SIGTERM to worker[" ).append( util::itoa( i ) )
 								.append( "], pid: " ).append( util::itoa( _manager.worker_pool[i].worker_pid ) ) );
 					} else {
 						kill( _manager.worker_pool[i].worker_pid, SIGKILL );
-						logger.debug( std::string( "manager: sending SIGKILL to worker[" ).append( util::itoa( i ) )
+						logger.debug( std::string( "[manager] sending SIGKILL to worker[" ).append( util::itoa( i ) )
 								.append( "], pid: " ).append( util::itoa( _manager.worker_pool[i].worker_pid ) ) );
 					}
 				} else {
-					logger.debug( std::string( "manager: worker[" ).append( util::itoa( i ) ).append( " already closed" ) );
+					logger.debug( std::string( "[manager] worker[" ).append( util::itoa( i ) ).append( "] already closed" ) );
 				}
 			}
 		}
@@ -220,21 +216,6 @@ namespace bitz {
 			}
 
 		}
-
-	}
-
-
-	void Manager::load_req_handlers() throw() {
-
-		OptionsRequestHandler * options_handler;
-
-		// OPTIONS handler
-		options_handler = new OptionsRequestHandler();
-		_req_handlers["OPTIONS"] = options_handler;
-
-		// FIXME: these should be able to dynamically loaded and configurable
-		_req_handlers["REQMOD"]  = new ReqmodRequestHandler();
-		options_handler->register_handler( _req_handlers["REQMOD"] );
 
 	}
 

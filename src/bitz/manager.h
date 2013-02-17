@@ -23,7 +23,6 @@
 #include <unistd.h>            // pid_t, fork() etc.
 #include <socket/socket.h>     // socket-library
 
-#include "common.h"
 #include "manager_exception.h"
 #include "worker.h"
 
@@ -77,10 +76,8 @@ namespace bitz {
 
 	private:
 		manager_t         _manager;
-		req_handlers_t    _req_handlers;
 
 		virtual void spawn_worker( unsigned int worker_id ) throw( ManagerException );
-		virtual void load_req_handlers() throw();
 
 	};
 
