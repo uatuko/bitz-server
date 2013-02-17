@@ -70,7 +70,11 @@ namespace bitz {
 				logger.debug( std::string( "[worker] new connection accepted on " ).append( client_sock->getForeignAddress() )
 						.append( ":" ).append( util::itoa( client_sock->getForeignPort() ) ) );
 
+				// request header
 				req_header  = icap::util::read_req_header( client_sock );
+				logger.debug( std::string( "[worker] request header:\r\n" ).append( req_header->raw_data() ) );
+
+				// try to find a handler for the request
 				req_handler = util::find_req_handler( _req_handlers, req_header->method() );
 
 				if ( req_handler != NULL ) {
