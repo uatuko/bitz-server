@@ -21,10 +21,15 @@
 #define BITZ_MODPY_INTERFACE_H
 
 #include <Python.h>
+#include <stddef.h>
 
+
+
+PyObject * bitz_numargs( PyObject * self, PyObject * args );
 
 static PyMethodDef bitz_methods[] = {
-
+		{ "numargs",  bitz_numargs, METH_VARARGS, "Test func" },
+		{ NULL, NULL, 0, NULL }
 };
 
 //static int numargs=0;

@@ -19,3 +19,8 @@
 
 #include "interface.h"
 
+
+PyObject * bitz_numargs( PyObject * self, PyObject * args ) {
+	return Py_BuildValue( "i", 10 );
+}
+
