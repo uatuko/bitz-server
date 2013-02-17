@@ -142,9 +142,9 @@ void sigchld_handler( int sig, siginfo_t *siginfo, void *context ) {
 	pid_t worker_pid;
 	int status;
 
-	printf( "Inside zombie deleter:  " );
+	std::cout << "[" << getpid() << "] inside zombie deleter: ";
 	while ( ( worker_pid = waitpid( WAIT_ANY, &status, WNOHANG ) ) > 0 ) {
-		printf( "Child %ld terminated with status %d\n", worker_pid, status );
+		printf( "child %ld terminated with status %d\n", worker_pid, status );
 		manager->reap_worker( worker_pid );
 	}
 
@@ -175,7 +175,7 @@ void init_sigterm_handler() {
 
 void sigterm_handler( int sig, siginfo_t *siginfo, void *context ) {
 
-	std::cout << "inside SIGTERM handler" << std::endl;
+	std::cout << "[" << getpid() << "] inside SIGTERM handler" << std::endl;
 	termination_handler( sig, siginfo, context );
 
 }
@@ -206,7 +206,7 @@ void init_sigquit_handler() {
 
 void sigquit_handler( int sig, siginfo_t *siginfo, void *context ) {
 
-	std::cout << "inside SIGQUIT handler" << std::endl;
+	std::cout << "[" << getpid() << "] inside SIGQUIT handler" << std::endl;
 	termination_handler( sig, siginfo, context );
 
 }
@@ -237,7 +237,7 @@ void init_sigint_handler() {
 
 void sigint_handler(  int sig, siginfo_t *siginfo, void *context ) {
 
-	std::cout << "inside SIGQINT handler" << std::endl;
+	std::cout << "[" << getpid() << "] inside SIGQINT handler" << std::endl;
 	termination_handler( sig, siginfo, context );
 
 }
