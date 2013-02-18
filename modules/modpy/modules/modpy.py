@@ -10,11 +10,11 @@ def init():
 
 def cleanup():
 	print "cleanup() called"
-	
+
 def preview():
 	print "preview() called"
-	
+
 def modify( request ):
-	print "modify() called: ", request
-	print "numargs: ", bitz.numargs()
+	request = bitz.get_request( request )
+	print "payload: \r\n", request['payload']
 

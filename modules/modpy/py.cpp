@@ -80,7 +80,7 @@ namespace bitz {
 			// call modify() in the interface module
 			pymethod  = PyObject_GetAttrString( _pymodule, "modify" );
 			pyargs    = PyTuple_New( 1 );
-			pyrequest = PyCapsule_New( (void *) request, NULL, NULL );
+			pyrequest = PyCapsule_New( (void *) request, "request", NULL );
 			PyTuple_SetItem( pyargs, 0, pyrequest );
 
 			if ( pymethod && PyCallable_Check( pymethod ) ) {
