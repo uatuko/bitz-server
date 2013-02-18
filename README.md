@@ -24,6 +24,7 @@ there is hope to exploit python programming language.
 * [libconfig++ >= 1.4](http://www.hyperrealm.com/libconfig/)
 * log4cpp >= 1.0
 * openssl >= 1.0.1c
+* python 2.7 (for modpy module)
 
 
 ### Compiling from source
@@ -40,6 +41,12 @@ After that you can use the usual `./configure && make`
 
 
 #### Notes
+##### modpy
+This is the (long awaited) python interface module. It provides a template for any
+other python interface module implementations either as C++ module template or as
+a C++ interface for python modules.
+
+
 ##### Debugging
 
 Use the following to create the binaries with debug symbols
