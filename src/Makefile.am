@@ -3,6 +3,7 @@ AM_CPPFLAGS             = -I$(top_srcdir)/lib ${libconfig_CFLAGS} ${log4cpp_CFLA
 
 bitzincludedir          = $(includedir)/bitz
 sbin_PROGRAMS           = bitz-server
+bitz_server_LDFLAGS     = -export-dynamic
 bitz_server_LDADD       = $(top_builddir)/lib/socket/libsocket.la \
 	$(top_builddir)/lib/icap/libicap.la \
 	${libconfig_LIBS} ${log4cpp_LIBS}
@@ -20,7 +21,7 @@ bitz_server_SOURCES     = bitz-server.cpp \
 	bitz/options_request_handler.h bitz/options_request_handler.cpp \
 	bitz/reqmod_request_handler.h bitz/reqmod_request_handler.cpp \
 	bitz/modifier.cpp
-	
+
 bitzinclude_HEADERS     = \
 	bitz/config.h \
 	bitz/logger.h \
