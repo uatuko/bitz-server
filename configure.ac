@@ -117,6 +117,8 @@ AS_IF([test "x$with_config" != xno],
 AC_CONFIG_FILES([ \
 	Makefile \
 	conf/Makefile \
+	doc/doxygen.cfg \
+	doc/Makefile \
 	include/Makefile \
 	lib/Makefile \
 	lib/socket/Makefile \
