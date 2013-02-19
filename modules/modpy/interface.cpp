@@ -25,12 +25,10 @@
 #include <iostream>
 
 
-PyObject * bitz_get_request( PyObject * self, PyObject * args ) {
+PyObject * bitz_get_request( PyObject * self, PyObject * pyrequest ) {
 
-	PyObject * pyrequest;
 	PyObject * pyreturn;
-
-	icap::Request  * request;
+	icap::Request * request;
 
 	// logger
 	bitz::Logger &logger = bitz::Logger::instance();
@@ -39,31 +37,53 @@ PyObject * bitz_get_request( PyObject * self, PyObject * args ) {
 	// initialise return dictionary
 	pyreturn = PyDict_New();
 
-	if ( PyArg_ParseTuple( args, "O", &pyrequest ) ) {
+	// grab the request object pointer from args
+	void * p = PyCapsule_GetPointer( pyrequest, "request" );
 
-		// grab the request object pointer from args
-		void * p = PyCapsule_GetPointer( pyrequest, "request" );
+	// sanity check
+	if ( p != NULL ) {
 
-		// sanity check
-		if ( p != NULL ) {
+		// construct the request
+		request = static_cast<icap::Request *>(p);
 
-			// construct the request
-			request = static_cast<icap::Request *>(p);
-
-			PyDict_SetItemString( pyreturn, "request", PyString_FromString( request->header()->method().c_str() ) );
-			PyDict_SetItemString( pyreturn, "uri", PyString_FromString( request->header()->uri().c_str() ) );
-			PyDict_SetItemString( pyreturn, "protocol", PyString_FromString( request->header()->protocol().c_str() ) );
-			PyDict_SetItemString( pyreturn, "payload", PyString_FromString( request->payload().c_str() ) );
-
-		} else {
-			logger.warn( "[modpy.interface] failed to get request object pointer" );
-		}
+		PyDict_SetItemString( pyreturn, "request", PyString_FromString( request->header()->method().c_str() ) );
+		PyDict_SetItemString( pyreturn, "uri", PyString_FromString( request->header()->uri().c_str() ) );
+		PyDict_SetItemString( pyreturn, "protocol", PyString_FromString( request->header()->protocol().c_str() ) );
+		PyDict_SetItemString( pyreturn, "payload", PyString_FromString( request->payload().c_str() ) );
 
 	} else {
-		logger.warn( "[modpy.interface] failed to parse arguments" );
+		logger.warn( "[modpy.interface] failed to get request object pointer" );
 	}
 
 	return pyreturn;
 
 }
+
+
+PyObject * bitz_get_response_from_status( PyObject * self, PyObject * args) {
+
+	PyObject * pyresponse;
+	icap::Response * response;
+
+	unsigned int resp_status;
+
+	// logger
+	bitz::Logger &logger = bitz::Logger::instance();
+	logger.debug( "[modpy.interface] get_response_from_status()" );
+
+	// parse args
+	if ( PyArg_ParseTuple( args, "I", &resp_status ) ) {
+		response = new icap::Response( (icap::ResponseHeader::status_t) resp_status );
+	} else {
+		logger.warn( "[modpy.interface] failed to parse arguments" );
+		response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
+	}
+
+	// convert the response into a capsule
+	pyresponse = PyCapsule_New( (void *) response, "response", NULL );
+
+	return pyresponse;
+
+}
+
 

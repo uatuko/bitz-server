@@ -18,3 +18,6 @@ def modify( request ):
 	request = bitz.get_request( request )
 	print "payload: \r\n", request['payload']
 
+	response = bitz.get_response_from_status( 501 );
+	return response;
+

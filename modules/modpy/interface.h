@@ -24,10 +24,12 @@
 #include <stddef.h>
 
 
-PyObject * bitz_get_request( PyObject * self, PyObject * args );
+PyObject * bitz_get_request( PyObject * self, PyObject * pyrequest );
+PyObject * bitz_get_response_from_status( PyObject * self, PyObject * args);
 
 static PyMethodDef bitz_methods[] = {
-		{ "get_request", bitz_get_request, METH_VARARGS, "Convert a capsule request into a python dictionary" },
+		{ "get_request", bitz_get_request, METH_O, "Convert a capsule request into a python dictionary" },
+		{ "get_response_from_status", bitz_get_response_from_status, METH_VARARGS, "Get a response capsule from a response status" },
 		{ NULL, NULL, 0, NULL }
 };
 
