@@ -51,7 +51,7 @@ namespace bitz {
 
 		// load the modifier module
 		logger.debug( "loading modifier: " + file );
-		symbols.modifier = dlopen( file.c_str(), RTLD_LAZY );
+		symbols.modifier = dlopen( file.c_str(), RTLD_LAZY | RTLD_LOCAL );
 
 		if (! symbols.modifier ) {
 			logger.warn( std::string( "failed to load modifier: " ).append( file ).append( dlerror() ) );
