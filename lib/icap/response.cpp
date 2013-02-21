@@ -32,6 +32,12 @@ namespace icap {
 			_cleanup_header  = true;
 		}
 
+		// initialise defaults
+		_payload.req_header = "";
+		_payload.req_body   = "";
+		_payload.res_header = "";
+		_payload.res_body   = "";
+
 	}
 
 
@@ -53,6 +59,16 @@ namespace icap {
 
 	ResponseHeader * const Response::header() const throw() {
 		return _header;
+	}
+
+
+	void Response::payload( payload_t payload ) throw() {
+		_payload = payload;
+	}
+
+
+	const payload_t &Response::payload() const throw() {
+		return _payload;
 	}
 
 } /* end of namespace icap */

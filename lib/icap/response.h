@@ -20,6 +20,7 @@
 #ifndef ICAP_RESPONSE_H
 #define ICAP_RESPONSE_H
 
+#include "common.h"
 #include "response_header.h"
 
 
@@ -37,8 +38,23 @@ namespace icap {
 		*/
 		ResponseHeader * const header() const throw();
 
+		/**
+		*   Set the payload data for this response instance from a
+		*   icap::payload_t data structure
+		*
+		*   @param payload payload data structure
+		*/
+		void payload( payload_t payload ) throw();
+
+		/**
+		*   Return the payload data for this response instance
+		*   @return payload data
+		*/
+		const payload_t &payload() const throw();
+
 	private:
 		ResponseHeader * _header;
+		payload_t _payload;
 		bool _cleanup_header;
 
 	};
