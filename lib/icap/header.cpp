@@ -126,8 +126,31 @@ namespace icap {
 		*   OPTIONS response encapsulated_list: optbody
 		*/
 
-		// TODO:
-		return "";
+		Header::encapsulated_header_index_t idx;
+		std::string encaps_header = "";
+
+		// FIXME: chances are that we will always get the correct order
+		//        but should consider sorting
+		for ( idx = _encapsulated.begin(); idx != _encapsulated.end(); idx++ ) {
+
+			if ( idx->second > 0 ) {
+
+				if ( encaps_header != "" ) {
+					encaps_header.append( ", " );
+				}
+
+				encaps_header.append( idx->first ).append( "=" ).append( util::itoa( idx->second ) );
+
+			}
+
+		}
+
+		// sanity check
+		if ( encaps_header == "" ) {
+			encaps_header = "null-body=0";
+		}
+
+		return encaps_header;
 
 	}
 
