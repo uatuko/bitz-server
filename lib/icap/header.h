@@ -52,10 +52,13 @@ namespace icap {
 		const headers_t &headers() const throw();
 
 		/**
-		*   Return Encapsulated header
-		*   @return encapsulated header
+		*   Return Encapsulated header value for the given entity
+		*   or -1 if the given entity is invalid.
+		*
+		*   @param entity encapsulated header entity
+		*   @return -1 | encapsulated header value
 		*/
-		encapsulated_header_t encapsulated_header() const throw();
+		const int encapsulated_header( const std::string &entity ) throw();
 
 		/**
 		*   Attach header data into the header

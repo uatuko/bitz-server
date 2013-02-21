@@ -46,8 +46,17 @@ namespace icap {
 	}
 
 
-	Header::encapsulated_header_t Header::encapsulated_header() const throw() {
-		return _encapsulated;
+	const int Header::encapsulated_header( const std::string &entity ) throw() {
+
+		Header::encapsulated_header_index_t idx;
+
+		idx = _encapsulated.find( entity );
+		if ( idx == _encapsulated.end() ) {
+			return -1;
+		}
+
+		return idx->second;
+
 	}
 
 

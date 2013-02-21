@@ -148,16 +148,15 @@ namespace icap {
 			int data_length = 0;
 			int data_read   = 0;
 
-			// Encapsulated header
-			icap::Header::encapsulated_header_t encaps_header;
-			encaps_header = request->header()->encapsulated_header();
+			// header
+			icap::Header * header = request->header();
 
 			// we are interested in req-body or null-body entities only
 			// FIXME: this doesn't cover all the scenarios (e.g. RESMOD)
-			if ( encaps_header["req-body"] > 0 ) {
-				data_length = encaps_header["req-body"];
-			} else if ( encaps_header["null-body"] > 0 ) {
-				data_length = encaps_header["null-body"];
+			if ( header->encapsulated_header( "req-body" ) > 0 ) {
+				data_length = header->encapsulated_header( "req-body" );
+			} else if ( header->encapsulated_header("null-body" ) > 0 ) {
+				data_length = header->encapsulated_header( "null-body" );
 			}
 
 
