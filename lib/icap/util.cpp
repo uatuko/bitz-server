@@ -153,6 +153,7 @@ namespace icap {
 			encaps_header = request->header()->encapsulated_header();
 
 			// we are interested in req-body or null-body entities only
+			// FIXME: this doesn't cover all the scenarios (e.g. RESMOD)
 			if ( encaps_header.req_body > 0 ) {
 				data_length = encaps_header.req_body;
 			} else if ( encaps_header.null_body > 0 ) {

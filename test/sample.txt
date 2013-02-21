@@ -1,3 +1,6 @@
+REQMOD
+======
+
 ICAP Request Modification Example 1 - ICAP Request
 ----------------------------------------------------------------
 REQMOD icap://icap-server.net/server?arg=87 ICAP/1.0
@@ -30,6 +33,139 @@ If-None-Match: "xyzzy", "r2d2xxxx"
 
 ----------------------------------------------------------------
 
+
+
+ICAP Request Modification Example 2 - ICAP Request
+----------------------------------------------------------------
+REQMOD icap://icap-server.net/server?arg=87 ICAP/1.0
+Host: icap-server.net
+Encapsulated: req-hdr=0, req-body=147
+
+POST /origin-resource/form.pl HTTP/1.1
+Host: www.origin-server.com
+Accept: text/html, text/plain
+Accept-Encoding: compress
+Pragma: no-cache
+
+1e
+I am posting this information.
+0
+
+----------------------------------------------------------------
+ICAP Request Modification Example 2 - ICAP Response
+----------------------------------------------------------------
+ICAP/1.0 200 OK
+Date: Mon, 10 Jan 2000  09:55:21 GMT
+Server: ICAP-Server-Software/1.0
+Connection: close
+ISTag: "W3E4R7U9-L2E4-2"
+Encapsulated: req-hdr=0, req-body=244
+
+POST /origin-resource/form.pl HTTP/1.1
+Host: www.origin-server.com
+Via: 1.0 icap-server.net (ICAP Example ReqMod Service 1.1)
+Accept: text/html, text/plain, image/gif
+Accept-Encoding: gzip, compress
+Pragma: no-cache
+Content-Length: 45
+
+2d
+I am posting this information.  ICAP powered!
+0
+
+----------------------------------------------------------------
+
+
+ICAP Request Modification Example 3 - ICAP Request
+----------------------------------------------------------------
+REQMOD icap://icap-server.net/content-filter ICAP/1.0
+Host: icap-server.net
+Encapsulated: req-hdr=0, null-body=119
+
+GET /naughty-content HTTP/1.1
+Host: www.naughty-site.com
+Accept: text/html, text/plain
+Accept-Encoding: compress
+
+----------------------------------------------------------------
+ICAP Request Modification Example 3 - ICAP Response
+----------------------------------------------------------------
+ICAP/1.0 200 OK
+Date: Mon, 10 Jan 2000  09:55:21 GMT
+Server: ICAP-Server-Software/1.0
+Connection: close
+ISTag: "W3E4R7U9-L2E4-2"
+Encapsulated: res-hdr=0, res-body=213
+
+HTTP/1.1 403 Forbidden
+Date: Wed, 08 Nov 2000 16:02:10 GMT
+Server: Apache/1.3.12 (Unix)
+Last-Modified: Thu, 02 Nov 2000 13:51:37 GMT
+ETag: "63600-1989-3a017169"
+Content-Length: 58
+Content-Type: text/html
+
+3a
+Sorry, you are not allowed to access that naughty content.
+0
+
+----------------------------------------------------------------
+
+
+RESPMOD
+=======
+
+ICAP Response Modification Example 4 - ICAP Request
+----------------------------------------------------------------
+RESPMOD icap://icap.example.org/satisf ICAP/1.0
+Host: icap.example.org
+Encapsulated: req-hdr=0, res-hdr=137, res-body=296
+
+GET /origin-resource HTTP/1.1
+Host: www.origin-server.com
+Accept: text/html, text/plain, image/gif
+Accept-Encoding: gzip, compress
+
+HTTP/1.1 200 OK
+Date: Mon, 10 Jan 2000 09:52:22 GMT
+Server: Apache/1.3.6 (Unix)
+ETag: "63840-1ab7-378d415b"
+Content-Type: text/html
+Content-Length: 51
+
+33
+This is data that was returned by an origin server.
+0
+
+----------------------------------------------------------------
+ICAP Response Modification Example 4 - ICAP Response
+----------------------------------------------------------------
+ICAP/1.0 200 OK
+Date: Mon, 10 Jan 2000  09:55:21 GMT
+Server: ICAP-Server-Software/1.0
+Connection: close
+ISTag: "W3E4R7U9-L2E4-2"
+Encapsulated: res-hdr=0, res-body=222
+
+HTTP/1.1 200 OK
+Date: Mon, 10 Jan 2000  09:55:21 GMT
+Via: 1.0 icap.example.org (ICAP Example RespMod Service 1.1)
+Server: Apache/1.3.6 (Unix)
+ETag: "63840-1ab7-378d415b"
+Content-Type: text/html
+Content-Length: 92
+
+5c
+This is data that was returned by an origin server, but with
+value added by an ICAP server.
+0
+
+----------------------------------------------------------------
+
+
+OPTIONS
+=======
+
 ICAP OPTIONS Example 5 - ICAP OPTIONS Request
 ----------------------------------------------------------------
 OPTIONS icap://icap.server.net/sample-service ICAP/1.0
@@ -37,7 +173,6 @@ Host: icap.server.net
 User-Agent: BazookaDotCom-ICAP-Client-Library/2.3
 
 ----------------------------------------------------------------
-
 ICAP OPTIONS Example 5 - ICAP OPTIONS Response
 ----------------------------------------------------------------
 ICAP/1.0 200 OK
