@@ -20,9 +20,12 @@
 #ifndef ICAP_HEADER_H
 #define ICAP_HEADER_H
 
+#include "common.h"
+
 #include <string>
 #include <map>
 #include <vector>
+
 
 namespace icap {
 
@@ -63,10 +66,12 @@ namespace icap {
 		/**
 		*   Attach header data into the header
 		*
+		*   <pre>
 		*   e.g.
 		*   Host: icap-server.net
 		*   Encapsulated: req-hdr=0, null-body=170
 		*   [key]: [value]
+		*   </pre>
 		*
 		*   @param key header key
 		*   @param value header value
@@ -74,17 +79,33 @@ namespace icap {
 		virtual void attach( std::string key, std::string value ) throw();
 
 		/**
-		*   Attach Encapsulated header data
+		*   Attach Encapsulated header data. This method should only be used
+		*   when reading a raw request / response. Consider using update_encapsulated()
+		*   method for other scenarios.
 		*
+		*   <pre>
 		*   e.g.
 		*   Encapsulated: req-hdr=0, req-body=412
 		*   Encapsulated: req-hdr=0, res-hdr=822, res-body=1655
 		*   Encapsulated: [header_value]
+		*   </pre>
 		*
 		*   @param header_value Encapsulated header value
 		*   @return boolean to denote success or failure
 		*/
 		virtual bool attach_encapsulated( std::string header_value ) throw();
+
+
+		/**
+		*   Update Encapsulated header data using the passed in (icap::payload_t) payload.
+		*   When the request / response has been populated with the payload, calling this
+		*   method will update the encapsulated header entities with appropriate values.
+		*
+		*   This methos will always succeed.
+		*
+		*   @param payload request or response payload
+		*/
+		virtual void update_encapsulated( const payload_t &payload ) throw();
 
 		/**
 		*   Remove header data from the header instance with the given key

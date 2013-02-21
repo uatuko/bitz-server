@@ -63,7 +63,12 @@ namespace icap {
 
 
 	void Response::payload( payload_t payload ) throw() {
+
 		_payload = payload;
+
+		// update encapsulated data
+		_header->update_encapsulated( _payload );
+
 	}
 
 

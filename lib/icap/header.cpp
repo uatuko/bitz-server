@@ -154,5 +154,46 @@ namespace icap {
 
 	}
 
+
+	void Header::update_encapsulated( const payload_t &payload ) throw() {
+
+		unsigned int data_length = 0;
+		unsigned int data_offset = 0;
+
+		// request header
+		if ( payload.req_header != "" ) {
+			_encapsulated["req-hdr"] = data_length;
+			data_offset = data_length;
+			data_length += payload.req_header.length();
+		}
+
+		// request body (POST data)
+		if ( payload.req_body != "" ) {
+			_encapsulated["req-body"] = data_length;
+			data_offset = data_length;
+			data_length += payload.req_body.length();
+		}
+
+		// response header
+		if ( payload.res_header != "" ) {
+			_encapsulated["res-hdr"] = data_length;
+			data_offset = data_length;
+			data_length += payload.res_header.length();
+		}
+
+		// response body
+		if ( payload.res_body != "" ) {
+			_encapsulated["res-body"] = data_length;
+			data_offset = data_length;
+			data_length += payload.res_body.length();
+		}
+
+		// null-body
+		if ( data_offset == 0 ) {
+			_encapsulated["null-body"] = data_length;
+		}
+
+	}
+
 }
 

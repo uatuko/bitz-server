@@ -58,9 +58,6 @@ namespace icap {
 		attach( "Connection" , "close" );
 		attach( "Server", PACKAGE_STRING );
 
-		// FIXME: should be using structures
-		attach( "Encapsulated", "req-hdr=0, null-body=0" );
-
 	}
 
 
