@@ -29,15 +29,12 @@ namespace icap {
 	Header::Header() {
 
 		// initialise defaults
-		_encapsulated.null_body = 0;
-		_encapsulated.opt_body  = 0;
-		_encapsulated.req_body  = 0;
-		_encapsulated.res_body  = 0;
-		_encapsulated.req_hdr   = 0;
-		_encapsulated.res_hdr   = 0;
-
-		// populate mappings
-		populate_encapsulated_map();
+		_encapsulated["req-hdr"]   = -1;
+		_encapsulated["req-body"]  = -1;
+		_encapsulated["res-hdr"]   = -1;
+		_encapsulated["res-body"]  = -1;
+		_encapsulated["opt-body"]  = -1;
+		_encapsulated["null-body"] = -1;
 
 	}
 
@@ -49,7 +46,7 @@ namespace icap {
 	}
 
 
-	const Header::encapsulated_header_t &Header::encapsulated_header() const throw() {
+	Header::encapsulated_header_t Header::encapsulated_header() const throw() {
 		return _encapsulated;
 	}
 
@@ -63,19 +60,20 @@ namespace icap {
 		// check for 'Encapsulated' headers
 		if ( key == "Encapsulated" ) {
 			attach_encapsulated( value );
+		} else {
+			_headers[key] = value;
 		}
-
-		_headers[key] = value;
 
 	}
 
 
-	void Header::attach_encapsulated( std::string header_value ) throw() {
+	bool Header::attach_encapsulated( std::string header_value ) throw() {
 
 		std::vector<std::string> list_data;
 		std::vector<std::string> entity_data;
 
-		_encapsulated_map_index_t idx;
+		encapsulated_header_index_t idx;
+		bool r_status = true;
 
 		// grab the entity list [ req-hdr=0, null-body=170 ]
 		list_data = util::split( util::trim( header_value ), "," );
@@ -87,15 +85,17 @@ namespace icap {
 
 			if ( entity_data.size() == 2 ) {
 
-				idx = _encapsulated_map.find( util::trim( entity_data.at( 0 ) ) );
-				if ( idx != _encapsulated_map.end() ) {
-					*idx->second = atoi( util::trim( entity_data.at( 1 ) ).c_str() );
+				idx = _encapsulated.find( util::trim( entity_data.at( 0 ) ) );
+				if ( idx != _encapsulated.end() ) {
+					idx->second = atoi( util::trim( entity_data.at( 1 ) ).c_str() );
 				}
 
 			} else {
-				// TODO: error parsing the header
+				r_status = false;
 			}
 		}
+
+		return r_status;
 
 	}
 
@@ -105,14 +105,20 @@ namespace icap {
 	}
 
 
-	void Header::populate_encapsulated_map() throw() {
+	const std::string Header::encapsulated_header_str() throw() {
 
-		_encapsulated_map["req-hdr"]   = &_encapsulated.req_hdr;
-		_encapsulated_map["req-body"]  = &_encapsulated.req_body;
-		_encapsulated_map["res-hdr"]   = &_encapsulated.res_hdr;
-		_encapsulated_map["res-body"]  = &_encapsulated.res_body;
-		_encapsulated_map["opt-body"]  = &_encapsulated.opt_body;
-		_encapsulated_map["null-body"] = &_encapsulated.null_body;
+		/*
+		*  Encapsulated request header grammer:
+		*   REQMOD  request  encapsulated_list: [reqhdr] reqbody
+		*   REQMOD  response encapsulated_list: {[reqhdr] reqbody} |
+		*                                       {[reshdr] resbody}
+		*   RESPMOD request  encapsulated_list: [reqhdr] [reshdr] resbody
+		*   RESPMOD response encapsulated_list: [reshdr] resbody
+		*   OPTIONS response encapsulated_list: optbody
+		*/
+
+		// TODO:
+		return "";
 
 	}
 

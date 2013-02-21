@@ -96,5 +96,10 @@ namespace icap {
 
 	}
 
+
+	bool ResponseHeader::attach_encapsulated( std::string header_value ) throw() {
+		return false;
+	}
+
 } /* end of namespace icap */
 

@@ -63,6 +63,16 @@ namespace icap {
 		*/
 		const status_t &status() const throw();
 
+		/**
+		*   Overridden dummy method always returning false.
+		*   Attaching Encapsulated header is not allowed in here. This
+		*   value is calculated within class and can be retrieved using
+		*   encapsulated_header() method.
+		*
+		*   @return false
+		*/
+		bool attach_encapsulated( std::string header_value ) throw();
+
 	private:
 		response_t _response;
 

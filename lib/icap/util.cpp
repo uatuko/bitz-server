@@ -154,10 +154,10 @@ namespace icap {
 
 			// we are interested in req-body or null-body entities only
 			// FIXME: this doesn't cover all the scenarios (e.g. RESMOD)
-			if ( encaps_header.req_body > 0 ) {
-				data_length = encaps_header.req_body;
-			} else if ( encaps_header.null_body > 0 ) {
-				data_length = encaps_header.null_body;
+			if ( encaps_header["req-body"] > 0 ) {
+				data_length = encaps_header["req-body"];
+			} else if ( encaps_header["null-body"] > 0 ) {
+				data_length = encaps_header["null-body"];
 			}
 
 
@@ -191,10 +191,14 @@ namespace icap {
 		}
 
 
-		bool send_headers( icap::Header::headers_t headers, socketlibrary::TCPSocket * socket ) throw() {
+		bool send_headers( icap::Header * header, socketlibrary::TCPSocket * socket ) throw() {
 
 			std::string line;
 			icap::Header::headers_index_t i;
+			icap::ResponseHeader::headers_t headers;
+
+			// headers
+			headers = header->headers();
 
 			for ( i = headers.begin(); i != headers.end(); i++ ) {
 
@@ -208,6 +212,13 @@ namespace icap {
 
 			}
 
+			// send encapsulated header
+			line = "Encapsulated: ";
+			line.append( header->encapsulated_header_str() );
+			if (! send_line( line, socket ) ) {
+				return false;
+			}
+
 			return true;
 
 		}
@@ -218,7 +229,6 @@ namespace icap {
 			bool r_success = true;
 
 			icap::ResponseHeader * header;
-			icap::ResponseHeader::headers_t headers;
 
 			// grab the response header
 			header = response->header();
@@ -235,8 +245,7 @@ namespace icap {
 
 			// response headers (if there are any)
 			if ( r_success ) {
-				headers = header->headers();
-				r_success = send_headers( headers, socket );
+				r_success = send_headers( header, socket );
 			}
 
 			// response content (if there are any)

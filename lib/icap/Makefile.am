@@ -12,8 +12,9 @@ libicap_la_SOURCES      = \
 	request.cpp \
 	response.cpp \
 	util.cpp
-	
+
 libicapinclude_HEADERS  = \
+	common.h \
 	header.h  \
 	request_header.h \
 	response_header.h \
