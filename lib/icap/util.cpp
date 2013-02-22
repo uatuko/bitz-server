@@ -91,6 +91,26 @@ namespace icap {
 		}
 
 
+		bool send_data( const std::string &data, socketlibrary::TCPSocket * socket, bool chunked ) throw() {
+
+			try {
+
+				if ( chunked ) {
+					// TODO: chunked transfer
+				} else {
+					socket->send( data.c_str(), data.size() );
+				}
+
+			} catch( socketlibrary::SocketException &sex ) {
+				// TODO: log errors
+				return false;
+			}
+
+			return true;
+
+		}
+
+
 		std::vector<std::string> split( const std::string &str, const std::string &delimiter ) throw() {
 
 			std::vector<std::string> result;
@@ -258,7 +278,6 @@ namespace icap {
 			// grab the response header
 			header = response->header();
 
-			// send the response back
 			// response status
 			std::string line = header->protocol();
 			line.append( " " );
@@ -268,14 +287,34 @@ namespace icap {
 
 			r_success = send_line( line, socket );
 
-			// response headers (if there are any)
+			// response headers
 			if ( r_success ) {
 				r_success = send_headers( header, socket );
 			}
 
 			// response content (if there are any)
 			if ( r_success ) {
-				// TODO: send
+
+				// req-hdr
+				if ( response->payload().req_header.size() > 0 ) {
+					send_data( response->payload().req_header, socket );
+				}
+
+				// red-body
+				if ( response->payload().req_body.size() > 0 ) {
+					send_data( response->payload().req_body, socket, true );
+				}
+
+				// res-hdr
+				if ( response->payload().res_header.size() > 0 ) {
+					send_data( response->payload().res_header, socket );
+				}
+
+				// res-body
+				if ( response->payload().res_body.size() > 0 ) {
+					send_data( response->payload().res_body, socket, true );
+				}
+
 			}
 
 			return r_success;
