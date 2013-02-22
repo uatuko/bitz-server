@@ -20,9 +20,7 @@
 #include "util.h"
 
 #include <string>
-#include <vector>
 #include <algorithm>
-#include <functional>
 #include <locale>
 #include <iostream>
 
@@ -145,45 +143,73 @@ namespace icap {
 
 		bool read_req_data( icap::Request * request, socketlibrary::TCPSocket * socket ) throw() {
 
+			int data_offset = 0;
 			int data_length = 0;
 			int data_read   = 0;
+			std::vector<icap::Header::encapsulated_header_data_t> sorted_encaps_header;
+			std::vector<icap::Header::encapsulated_header_data_t>::iterator sorted_idx;
+
+			// payload
+			icap::payload_t payload;
+			payload.req_header = "";
+			payload.req_body   = "";
+			payload.res_header = "";
+			payload.res_body   = "";
 
 			// header
 			icap::Header * header = request->header();
+			sorted_encaps_header  = header->sort_encapsulated_header();
 
-			// we are interested in req-body or null-body entities only
-			// FIXME: this doesn't cover all the scenarios (e.g. RESMOD)
-			if ( header->encapsulated_header( "req-body" ) > 0 ) {
-				data_length = header->encapsulated_header( "req-body" );
-			} else if ( header->encapsulated_header("null-body" ) > 0 ) {
-				data_length = header->encapsulated_header( "null-body" );
-			}
+			// loop through the sorted header, for first to (last - 1)
+			for ( sorted_idx = sorted_encaps_header.begin(); sorted_idx != ( sorted_encaps_header.end() - 1 ); sorted_idx++ ) {
 
-
-			/* read request data */
-
-			// is there anything to read?
-			if ( data_length > 0  ) {
-
-				char buffer[data_length];
-
-				// read from the socket
-				data_read = socket->recv( buffer, data_length );
-
-				// sanity check
-				if ( data_read != data_length ) {
-					// something is not right
-					return false;
+				// don't want to read negative headers
+				if ( sorted_idx->second < 0 ) {
+					continue;
 				}
 
-				// end char buffer
-				buffer[data_read] = NULL;
+				data_offset = sorted_idx->second;
+				data_length = ( ( sorted_idx + 1 )->second - data_offset );
 
-				// update request
-				request->payload( buffer );
+
+				/* read request data */
+
+				// is there anything to read?
+				if ( data_length > 0  ) {
+
+					char buffer[data_length];
+
+					// read from the socket
+					data_read = socket->recv( buffer, data_length );
+
+					// sanity check
+					if ( data_read != data_length ) {
+						// something is not right
+						return false;
+					}
+
+					// end char buffer
+					buffer[data_read] = NULL;
+
+					// update payload
+					if ( sorted_idx->first == "req-hdr" ) {
+						payload.req_header = buffer;
+					} else if (  sorted_idx->first == "req-body" ) {
+						payload.req_body   = buffer;
+					} else if (  sorted_idx->first == "res-hdr" ) {
+						payload.res_header = buffer;
+					} else if (  sorted_idx->first == "res-body" ) {
+						payload.res_body   = buffer;
+					} else {
+						// TODO: error?
+					}
+
+				}
 
 			}
 
+			// update request
+			request->payload( payload );
 
 			return true;
 

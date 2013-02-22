@@ -25,6 +25,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <functional>
 
 
 namespace icap {
@@ -43,6 +44,20 @@ namespace icap {
 
 		/* encapsulated header iterator type */
 		typedef encapsulated_header_t::iterator encapsulated_header_index_t;
+
+		/* encapsulated header data type */
+		typedef std::pair<std::string, int> encapsulated_header_data_t;
+
+		/**
+		*   Binary compare structure to compare two encapsulated header
+		*   entity (data) values. Used for sorting.
+		*/
+		struct encapsulated_header_compare
+			: std::binary_function<icap::Header::encapsulated_header_data_t, icap::Header::encapsulated_header_data_t, bool> {
+			inline bool operator()( const icap::Header::encapsulated_header_data_t &lhs, const icap::Header::encapsulated_header_data_t &rhs ) {
+				return lhs.second < rhs.second;
+			}
+		};
 
 
 		Header();
@@ -120,6 +135,15 @@ namespace icap {
 		*   @return encapsulated header value (e.g. res-hdr=0, res-body=213)
 		*/
 		virtual const std::string encapsulated_header_str() throw();
+
+		/**
+		*   Sort the encapsulated header data and return a std::vector of
+		*   encapsulated_header_data_t. The actual header data won't be changed.
+		*
+		*   @return sorted encapsulated header
+		*/
+		virtual std::vector<encapsulated_header_data_t> sort_encapsulated_header();
+
 
 	protected:
 		headers_t _headers;

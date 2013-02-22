@@ -20,6 +20,7 @@
 #ifndef ICAP_REQUEST_H
 #define ICAP_REQUEST_H
 
+#include "common.h"
 #include "request_header.h"
 
 
@@ -37,20 +38,22 @@ namespace icap {
 		RequestHeader * const header() const throw();
 
 		/**
-		*   Return payload data
-		*   @return payload
+		*   Set the payload data for this response instance from a
+		*   icap::payload_t data structure
+		*
+		*   @param payload payload data structure
 		*/
-		const std::string &payload() const throw();
+		void payload( payload_t payload ) throw();
 
 		/**
-		*   Set request payload
-		*   @param payload data
+		*   Return the payload data for this response instance
+		*   @return payload data
 		*/
-		void payload( const char * payload ) throw();
+		const payload_t &payload() const throw();
 
 	private:
 		RequestHeader * _header;
-		std::string _payload;
+		payload_t _payload;
 
 	};
 

@@ -23,8 +23,15 @@
 namespace icap {
 
 	Request::Request( RequestHeader * req_header ) {
+
 		_header  = req_header;
-		_payload = "";
+
+		// initialise defaults
+		_payload.req_header = "";
+		_payload.req_body   = "";
+		_payload.res_header = "";
+		_payload.res_body   = "";
+
 	}
 
 
@@ -36,13 +43,18 @@ namespace icap {
 	}
 
 
-	const std::string &Request::payload() const throw() {
-		return _payload;
+	void Request::payload( payload_t payload ) throw() {
+
+		_payload = payload;
+
+		// update encapsulated data
+		_header->update_encapsulated( _payload );
+
 	}
 
 
-	void Request::payload( const char * payload ) throw() {
-		_payload = payload;
+	const payload_t &Request::payload() const throw() {
+		return _payload;
 	}
 
 } /* end of namespace icap */

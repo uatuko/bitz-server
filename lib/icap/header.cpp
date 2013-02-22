@@ -20,7 +20,7 @@
 #include "header.h"
 #include "util.h"
 
-#include <iostream>
+#include <algorithm>
 #include <stdlib.h>
 
 
@@ -192,6 +192,16 @@ namespace icap {
 		if ( data_offset == 0 ) {
 			_encapsulated["null-body"] = data_length;
 		}
+
+	}
+
+
+	std::vector<Header::encapsulated_header_data_t> Header::sort_encapsulated_header() {
+
+		std::vector<Header::encapsulated_header_data_t> data( _encapsulated.begin(), _encapsulated.end() );
+		std::sort(data.begin(), data.end(), encapsulated_header_compare());
+
+		return data;
 
 	}
 

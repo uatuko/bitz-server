@@ -49,7 +49,7 @@ PyObject * bitz_get_request( PyObject * self, PyObject * pyrequest ) {
 		PyDict_SetItemString( pyreturn, "request", PyString_FromString( request->header()->method().c_str() ) );
 		PyDict_SetItemString( pyreturn, "uri", PyString_FromString( request->header()->uri().c_str() ) );
 		PyDict_SetItemString( pyreturn, "protocol", PyString_FromString( request->header()->protocol().c_str() ) );
-		PyDict_SetItemString( pyreturn, "payload", PyString_FromString( request->payload().c_str() ) );
+		PyDict_SetItemString( pyreturn, "payload", PyString_FromString( request->payload().req_header.c_str() ) );
 
 	} else {
 		logger.warn( "[modpy.interface] failed to get request object pointer" );
