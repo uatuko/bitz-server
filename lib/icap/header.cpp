@@ -161,31 +161,31 @@ namespace icap {
 		unsigned int data_offset = 0;
 
 		// request header
-		if ( payload.req_header != "" ) {
+		if ( payload.req_header.size() > 0 ) {
 			_encapsulated["req-hdr"] = data_length;
 			data_offset = data_length;
-			data_length += payload.req_header.length();
+			data_length += payload.req_header.size();
 		}
 
 		// request body (POST data)
-		if ( payload.req_body != "" ) {
+		if ( payload.req_body.size() > 0 ) {
 			_encapsulated["req-body"] = data_length;
 			data_offset = data_length;
-			data_length += payload.req_body.length();
+			data_length += payload.req_body.size();
 		}
 
 		// response header
-		if ( payload.res_header != "" ) {
+		if ( payload.res_header.size() > 0 ) {
 			_encapsulated["res-hdr"] = data_length;
 			data_offset = data_length;
-			data_length += payload.res_header.length();
+			data_length += payload.res_header.size();
 		}
 
 		// response body
-		if ( payload.res_body != "" ) {
+		if ( payload.res_body.size() > 0 ) {
 			_encapsulated["res-body"] = data_length;
 			data_offset = data_length;
-			data_length += payload.res_body.length();
+			data_length += payload.res_body.size();
 		}
 
 		// null-body
