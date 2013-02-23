@@ -29,6 +29,19 @@ namespace icap {
 
 	namespace util {
 
+		unsigned int hextodec( const std::string &hex ) throw() {
+
+			unsigned int dec;
+			std::stringstream ss;
+
+			ss << std::hex << hex;
+			ss >> dec;
+
+			return dec;
+
+		}
+
+
 		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length, bool incl_endl ) throw() {
 
 			int i  = 0, n;
@@ -72,6 +85,113 @@ namespace icap {
 
 			buf[i] = '\0';
 			return i;
+
+		}
+
+
+		std::string read_line( socketlibrary::TCPSocket * socket, bool incl_endl ) throw() {
+
+			int n;
+			std::string line;
+			char c = '\0';
+
+			try {
+
+				while ( ( n = socket->recv( &c, 1 ) ) > 0 ) {
+
+					if ( c == '\r' ) {
+
+						if ( incl_endl ) {
+							line += c;
+						}
+
+						// peak for \n
+						n = socket->peek( &c, 1 );
+
+						if ( ( n > 0 ) && ( c == '\n' ) ) {
+
+							n = socket->recv( &c, 1 );
+
+							if ( incl_endl ) {
+								line += c;
+							}
+
+							break;    // end of line
+						}
+					}
+
+					line  += c;
+
+				}
+
+			} catch ( socketlibrary::SocketException &sex ) {
+				// TODO: log error?
+				line = "";
+			}
+
+			return line;
+
+		}
+
+
+		std::string read_data( socketlibrary::TCPSocket * socket, int size ) throw() {
+
+			char buffer[size];
+			std::string data = "";
+
+			try {
+				socket->recv( buffer, size );
+				data.append( buffer );
+			} catch ( socketlibrary::SocketException &sex ) {
+				// TODO: log errors ??
+			}
+
+			return data;
+
+		}
+
+
+		unsigned int read_chunk_size( socketlibrary::TCPSocket * socket ) throw() {
+
+			std::string line;
+			std::vector<std::string> chunk_header;
+
+			line = read_line( socket );
+			chunk_header = split( line, ";" );
+
+			return hextodec( chunk_header.at( 0 ) );
+
+		}
+
+
+		std::string read_chunked( socketlibrary::TCPSocket * socket ) throw() {
+
+			unsigned int chunk_size  = 0;
+			unsigned int offset      = 0;
+			std::string chunked_data = "";
+
+			while ( ( chunk_size = read_chunk_size( socket ) ) > 0 ) {
+
+				offset = chunked_data.size();
+
+				// read chunk-data
+				chunked_data.append( read_data( socket, chunk_size ) );
+
+				// sanity check
+				if ( ( chunked_data.size() - offset ) != chunk_size ) {
+					// something went wrong
+					break;
+				}
+
+				// extra \r\n
+				read_data( socket, 2 );
+
+			}
+
+			// read until the end of chunked data
+			while ( read_line( socket, true ).size() > 2 ) ;
+
+			return chunked_data;
 
 		}
 
@@ -148,6 +268,7 @@ namespace icap {
 			int data_read   = 0;
 			std::vector<icap::Header::encapsulated_header_data_t> sorted_encaps_header;
 			std::vector<icap::Header::encapsulated_header_data_t>::iterator sorted_idx;
+			std::string chunked_data;
 
 			// payload
 			icap::payload_t payload;
@@ -160,48 +281,67 @@ namespace icap {
 			icap::Header * header = request->header();
 			sorted_encaps_header  = header->sort_encapsulated_header();
 
-			// loop through the sorted header, for first to (last - 1)
-			for ( sorted_idx = sorted_encaps_header.begin(); sorted_idx != ( sorted_encaps_header.end() - 1 ); sorted_idx++ ) {
+			// loop through the sorted header
+			for ( sorted_idx = sorted_encaps_header.begin(); sorted_idx != sorted_encaps_header.end(); sorted_idx++ ) {
 
 				// don't want to read negative headers
 				if ( sorted_idx->second < 0 ) {
 					continue;
 				}
 
-				data_offset = sorted_idx->second;
-				data_length = ( ( sorted_idx + 1 )->second - data_offset );
+				// if this is the last header entity then check for chunked content
+				if ( sorted_idx == ( sorted_encaps_header.end() - 1 ) ) {
 
-
-				/* read request data */
-
-				// is there anything to read?
-				if ( data_length > 0  ) {
-
-					char buffer[data_length];
-
-					// read from the socket
-					data_read = socket->recv( buffer, data_length );
-
-					// sanity check
-					if ( data_read != data_length ) {
-						// something is not right
-						return false;
+					if ( sorted_idx->first == "req-body" ) {
+						payload.req_body = read_chunked( socket );
+					} else if ( sorted_idx->first == "res-body" ) {
+						payload.res_body = read_chunked( socket );
+					} else {
+						/*
+						*  null-body is the only other legal possibility here
+						*  we take that into account in the previous iterations
+						*/
+						break;
 					}
 
-					// end char buffer
-					buffer[data_read] = NULL;
+				} else {
 
-					// update payload
-					if ( sorted_idx->first == "req-hdr" ) {
-						payload.req_header = buffer;
-					} else if (  sorted_idx->first == "req-body" ) {
-						payload.req_body   = buffer;
-					} else if (  sorted_idx->first == "res-hdr" ) {
-						payload.res_header = buffer;
-					} else if (  sorted_idx->first == "res-body" ) {
-						payload.res_body   = buffer;
-					} else {
-						// TODO: error?
+					data_offset = sorted_idx->second;
+					data_length = ( ( sorted_idx + 1 )->second - data_offset );
+
+
+					/* read request data */
+
+					// is there anything to read?
+					if ( data_length > 0  ) {
+
+						char buffer[data_length];
+
+						// read from the socket
+						data_read = socket->recv( buffer, data_length );
+
+						// sanity check
+						if ( data_read != data_length ) {
+							// something is not right
+							return false;
+						}
+
+						// end char buffer
+						buffer[data_read] = NULL;
+
+						// update payload
+						if ( sorted_idx->first == "req-hdr" ) {
+							payload.req_header = buffer;
+						} else if (  sorted_idx->first == "req-body" ) {
+							payload.req_body   = buffer;
+						} else if (  sorted_idx->first == "res-hdr" ) {
+							payload.res_header = buffer;
+						} else if (  sorted_idx->first == "res-body" ) {
+							payload.res_body   = buffer;
+						} else {
+							// TODO: error?
+						}
+
 					}
 
 				}

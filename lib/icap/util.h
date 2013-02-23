@@ -49,14 +49,59 @@ namespace icap {
 		}
 
 		/**
+		*   Convert a hexadecimal number to a decimal number.
+		*
+		*   @param hex hex to convert to
+		*   @return converted decimal value
+		*/
+		unsigned int hextodec( const std::string &hex ) throw();
+
+		/**
 		*   Read a line (ending with \r\n) from the socket
 		*
 		*   @param socket socket to read from
 		*   @param buf buffer to read the data into
 		*   @param buf_length length / size of the buffer data is read into
+		*   @param incl_endl (optional) switch to control whether to include \r\n in the read line,
+		*          default is false.
 		*   @return number of bytes read
 		*/
 		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length, bool incl_endl = false ) throw();
+
+		/**
+		*   Read a line (ending with \r\n) from the socket
+		*
+		*   @param socket socket instance to read data from
+		*   @param incl_endl (optional) switch to control whether to include \r\n in the read line,
+		*          default is false.
+		*   @return read data
+		*/
+		std::string read_line( socketlibrary::TCPSocket * socket, bool incl_endl = false ) throw();
+
+		/**
+		*   Read data from the socket
+		*
+		*   @param socket socket instance to read data from
+		*   @param size size / length of data to be read
+		*   @return read data
+		*/
+		std::string read_data( socketlibrary::TCPSocket * socket, int size ) throw();
+
+		/**
+		*   Read chunk size. This is a helper method used by read_chunked().
+		*
+		*   @param socket socket instance to read from
+		*   @return chunk size
+		*/
+		unsigned int read_chunk_size( socketlibrary::TCPSocket * socket ) throw();
+
+		/**
+		*   Read chunked data from the given socket
+		*
+		*   @param socket socket instance to read data from
+		*   @return read data (without the control characters)
+		*/
+		std::string read_chunked( socketlibrary::TCPSocket * socket ) throw();
 
 		/**
 		*   Send / write a line (ending with \r\n) to the socket
