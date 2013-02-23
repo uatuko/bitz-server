@@ -41,6 +41,7 @@ namespace bitz {
 		void register_handler( RequestHandler * req_handler ) throw();
 
 	private:
+		std::vector<std::string> _methods;
 
 	};
 

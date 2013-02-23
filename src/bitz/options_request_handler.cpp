@@ -28,8 +28,18 @@ namespace bitz {
 
 	icap::Response * OptionsRequestHandler::process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() {
 
-		// TODO: for the moment we return 500 - Server error
-		icap::Response * response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
+		icap::ResponseHeader * header;
+		icap::Response       * response;
+
+		// header
+		header = new icap::ResponseHeader( icap::ResponseHeader::OK );
+
+		// FIXME: Methods are tied to the URIs
+		header->attach( "Methods", _methods.at( 0 ) );
+		header->attach( "Options-TTL", "3600" );
+		header->attach( "Allow", "204" );
+
+		response = new icap::Response( header );
 		return response;
 
 	}
@@ -37,8 +47,8 @@ namespace bitz {
 
 	void OptionsRequestHandler::register_handler( RequestHandler * req_handler ) throw() {
 
-		// TODO
-
+		// FIXME: Methods are tied to the URIs
+		_methods.push_back( req_handler->method() );
 		return;
 
 	}
