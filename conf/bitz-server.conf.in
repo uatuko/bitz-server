@@ -1,10 +1,10 @@
 #
-# /etc/bitz/bitz-server.conf
+# @sysconfdir@/bitz/bitz-server.conf
 #
 
 port = 1344;
 
-log_file     = "/tmp/bitz-server.log";
+log_file     = "@localstatedir@/log/bitz/bitz-server.log";
 log_category = "bitz-server";
 
 
@@ -15,13 +15,13 @@ req_handlers :
 	class   = "ReqmodRequestHandler";
 	modules :
 	(
-		{
-			name   = "echo";
-			module = "/tmp/root/etc/bitz/modules/mod_echo.so";
-		},
+		#{
+		#	name   = "echo";
+		#	module = "@sysconfdir@/bitz/modules/mod_echo.so";
+		#},
 		{
 			name   = "modpy";
-			module = "/tmp/root/etc/bitz/modules/mod_py.so";
+			module = "@sysconfdir@/bitz/modules/mod_py.so";
 		}
 	)
 });
@@ -33,7 +33,7 @@ modules :
 	modpy :
 	{
 		# search path for python modules
-		module_path = "/tmp/root/etc/bitz/modules/modpy";
+		module_path = "@sysconfdir@/bitz/modules/modpy";
 
 		# python module containing the interface methods
 		module_name = "modpy";
