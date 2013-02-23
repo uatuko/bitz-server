@@ -26,8 +26,8 @@
 #include "request.h"
 #include "response.h"
 
-#ifndef ICAP_BUFFER_LENGTH
-#define ICAP_BUFFER_LENGTH 1024
+#ifndef ICAP_BUFFER_SIZE
+#define ICAP_BUFFER_SIZE 1024
 #endif
 
 

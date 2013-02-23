@@ -267,11 +267,11 @@ namespace icap {
 
 		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket ) throw() {
 
-			char buffer[ICAP_BUFFER_LENGTH];
+			char buffer[ICAP_BUFFER_SIZE];
 			int  n = 0;
 			std::string data = "";
 
-			while ( ( n = read_line( socket, buffer, ICAP_BUFFER_LENGTH, true ) ) > 2 ) {
+			while ( ( n = read_line( socket, buffer, ICAP_BUFFER_SIZE, true ) ) > 2 ) {
 				data.append( buffer );
 			}
 
