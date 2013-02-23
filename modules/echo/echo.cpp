@@ -27,12 +27,26 @@ namespace bitz {
 
 
 	icap::Response * Echo::modify( icap::Request * request ) throw() {
-		return new icap::Response( icap::ResponseHeader::NOT_IMPLEMENTED );
+
+		icap::Response * response;
+		icap::payload_t payload;
+
+		// copy payload from request
+		payload.req_header = request->payload().req_header;
+		payload.req_body   = request->payload().req_body;
+		payload.res_header = request->payload().res_header;
+		payload.res_body   = request->payload().res_body;
+
+
+		response = new icap::Response( icap::ResponseHeader::OK );
+		response->payload( payload );
+
+		return response;
+
 	}
 
 
 	icap::Response * Echo::preview( icap::Request * request ) throw() {
-		// TODO: needs to implement, for the moment we send back
 		// 100 - continue always
 		return new icap::Response( icap::ResponseHeader::CONTINUE );
 	}
