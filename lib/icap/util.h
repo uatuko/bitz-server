@@ -57,6 +57,14 @@ namespace icap {
 		unsigned int hextodec( const std::string &hex ) throw();
 
 		/**
+		*   Convert a decimal number to its hexadecimal value
+		*
+		*   @param dec decimal number
+		*   @return converted hex value
+		*/
+		const std::string dectohex( const unsigned int &dec ) throw();
+
+		/**
 		*   Read a line (ending with \r\n) from the socket
 		*
 		*   @param socket socket to read from
@@ -119,11 +127,18 @@ namespace icap {
 		*
 		*   @param data data to be sent
 		*   @param socket socket instance to write to
-		*   @param chunked (optional) determines whether to use chunked transfer encoding or not,
-		*          defaults to false
 		*   @return boolean to denote success or failure
 		*/
-		bool send_data( const std::string &data, socketlibrary::TCPSocket * socket, bool chunked = false ) throw();
+		bool send_data( const std::string &data, socketlibrary::TCPSocket * socket ) throw();
+
+		/**
+		*   Send / write data to the socket using chunked transfer encoding
+		*
+		*   @param data data to be sent
+		*   @param socket socket instance to write to
+		*   @return boolean to denote success or failure
+		*/
+		bool send_chunked( const std::string &data, socketlibrary::TCPSocket * socket ) throw();
 
 		/**
 		*   split a string into a vector by the given delimiter

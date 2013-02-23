@@ -42,6 +42,19 @@ namespace icap {
 		}
 
 
+		const std::string dectohex( const unsigned int &dec ) throw() {
+
+			std::string hex;
+			std::stringstream ss;
+
+			ss << dec;
+			ss >> std::hex >> hex;
+
+			return hex;
+
+		}
+
+
 		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length, bool incl_endl ) throw() {
 
 			int i  = 0, n;
@@ -211,18 +224,68 @@ namespace icap {
 		}
 
 
-		bool send_data( const std::string &data, socketlibrary::TCPSocket * socket, bool chunked ) throw() {
+		bool send_data( const std::string &data, socketlibrary::TCPSocket * socket ) throw() {
+
+			try {
+				socket->send( data.c_str(), data.size() );
+			} catch( socketlibrary::SocketException &sex ) {
+				// TODO: log errors
+				return false;
+			}
+
+			return true;
+
+		}
+
+
+		bool send_chunked( const std::string &data, socketlibrary::TCPSocket * socket ) throw() {
+
+			std::string chunked_data = "";
+			unsigned int offset      = 0;
+			int chunks               = 0;
+
+			// calculate the number of chunks we need
+			if ( data.size() > ICAP_BUFFER_SIZE ) {
+				chunks = ( data.size() / ICAP_BUFFER_SIZE );
+			}
 
 			try {
 
-				if ( chunked ) {
-					// TODO: chunked transfer
-				} else {
-					socket->send( data.c_str(), data.size() );
+				 do {
+
+					// prepare data for this chunk
+					chunked_data = data.substr( offset, ICAP_BUFFER_SIZE );
+
+					// sanity check
+					if ( chunked_data.size() <= 0 ) {
+						// we shouldn't get here
+						break;
+					}
+
+					// update offset
+					offset += chunked_data.size();
+
+					// send chunk size
+					if (! send_line( dectohex( chunked_data.size() ), socket ) ) {
+						return false;
+					}
+
+					// send chunk
+					if (! send_data( chunked_data, socket ) ) {
+						return false;
+					}
+
+					chunks--;
+
+				} while ( chunks > 0 );
+
+				// end of chunk
+				if (! send_data( "\r\n0\r\n\r\n", socket ) ) {
+					return false;
 				}
 
-			} catch( socketlibrary::SocketException &sex ) {
-				// TODO: log errors
+			} catch ( socketlibrary::SocketException &sex ) {
+				// TODO: log errors ??
 				return false;
 			}
 
@@ -404,6 +467,11 @@ namespace icap {
 				return false;
 			}
 
+			// end of header
+			if (! send_data( "\r\n", socket ) ) {
+				return false;
+			}
+
 			return true;
 
 		}
@@ -442,7 +510,7 @@ namespace icap {
 
 				// red-body
 				if ( response->payload().req_body.size() > 0 ) {
-					send_data( response->payload().req_body, socket, true );
+					send_chunked( response->payload().req_body, socket );
 				}
 
 				// res-hdr
@@ -452,7 +520,7 @@ namespace icap {
 
 				// res-body
 				if ( response->payload().res_body.size() > 0 ) {
-					send_data( response->payload().res_body, socket, true );
+					send_chunked( response->payload().res_body, socket );
 				}
 
 			}
