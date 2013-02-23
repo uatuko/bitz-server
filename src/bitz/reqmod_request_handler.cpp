@@ -91,6 +91,7 @@ namespace bitz {
 
 				// status 200 OK means content modified
 				if ( response->header()->status() == icap::ResponseHeader::OK ) {
+					logger.debug( "[reqmod] OK response received, not getting responses from other modules" );
 					break;
 				}
 
