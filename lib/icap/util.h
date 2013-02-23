@@ -113,6 +113,19 @@ namespace icap {
 		bool send_line( const std::string &line, socketlibrary::TCPSocket * socket ) throw();
 
 		/**
+		*   Send / write data to the socket.
+		*   If chunked is set to true then data will be transferred using
+		*   "chunked" transfer-encoding.
+		*
+		*   @param data data to be sent
+		*   @param socket socket instance to write to
+		*   @param chunked (optional) determines whether to use chunked transfer encoding or not,
+		*          defaults to false
+		*   @return boolean to denote success or failure
+		*/
+		bool send_data( const std::string &data, socketlibrary::TCPSocket * socket, bool chunked = false ) throw();
+
+		/**
 		*   split a string into a vector by the given delimiter
 		*
 		*   @param str input string
