@@ -13,6 +13,36 @@ HOST    = 'localhost'
 SERVICE = 'icap://icap.server.net/sample-service'
 PORT    = 1344
 
+# OPTIONS
+try:
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+except socket.error, msg:
+	sys.stderr.write("[ERROR] %s\n" % msg[1])
+	sys.exit(1)
+
+try:
+	sock.connect((HOST, PORT))
+except socket.error, msg:
+	sys.stderr.write("[ERROR] %s\n" % msg[1])
+	sys.exit(2)
+
+sock.send( "OPTIONS %s ICAP/1.0\r\n" % ( SERVICE ) )
+sock.send( "Host: %s\r\n" % ( HOST ) )
+sock.send( "User-Agent: Python ICAP tester\r\n" )
+sock.send( "\r\n" )
+
+
+data = sock.recv(1024)
+string = ""
+while len(data):
+	string = string + data
+	data = sock.recv(1024)
+sock.close()
+
+print string
+
+
+# REQMOD, GET
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error, msg:
@@ -48,7 +78,7 @@ sock.close()
 
 print string
 
-# POST
+# REQMOD, POST
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error, msg:
