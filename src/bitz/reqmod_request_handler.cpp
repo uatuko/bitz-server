@@ -73,7 +73,10 @@ namespace bitz {
 
 		} else {
 
-			logger.debug( std::string( "[reqmod] payload:\r\n").append( request->payload().req_header ) );
+			logger.debug( std::string( "[reqmod] payload.req-hdr:\r\n").append( request->payload().req_header ) );
+			logger.debug( std::string( "[reqmod] payload.req-body:\r\n").append( request->payload().req_body ) );
+			logger.debug( std::string( "[reqmod] payload.res-hdr:\r\n").append( request->payload().res_header ) );
+			logger.debug( std::string( "[reqmod] payload.res-body:\r\n").append( request->payload().res_body ) );
 
 			// loop through loaded modifier modules and grab responses
 			// we will only send out the response from the last module
