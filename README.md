@@ -27,6 +27,17 @@ there is hope to exploit python programming language.
 * python 2.7 (for modpy module)
 
 
+### Version history
+
+__0.0.1__ - _24th February 2013_
+
+*   Proof of concept. An ICAP server with only a REQMOD handler. Includes a template
+	_echo_ module to demonstrate the pluggable module architecture and the _modpy_ module
+	to demonstrate the python interface.
+
+
+
+
 ### Compiling from source
 
 First you need to initialise the autotools
