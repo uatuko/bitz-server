@@ -47,6 +47,7 @@ there is hope to exploit python programming language.
 
 Please report all bugs and feature requests [here](http://bugs.geniusse.com/) under the
 [bitz-server](http://bugs.geniusse.com/enter_bug.cgi?product=bitz-server) project.
+Known issues can be found [here](http://bugs.geniusse.com/buglist.cgi?query_format=specific&order=relevance%20desc&bug_status=__open__&product=bitz-server&list_id=36)
 
 
 ### Version history
