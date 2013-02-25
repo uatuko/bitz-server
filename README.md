@@ -3,6 +3,22 @@ bitz-server
 
 An ICAP server implementation in C++
 
+### Copyright and License
+
+Copyright (C) 2012 Uditha Atukorala.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+[GNU General Public License](http://gnu.org/licenses/gpl.html)
+for more details.
+
+
 ### The concept
 
 The main goal of this project is to create an ICAP server
@@ -41,7 +57,7 @@ __0.0.1__ - _24th February 2013_
 	_echo_ module to demonstrate the pluggable module architecture and the _modpy_ module
 	to demonstrate the python interface.
 
-
+---------------------------------------
 
 
 ### Compiling from source
