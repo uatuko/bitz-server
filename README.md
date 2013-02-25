@@ -27,6 +27,12 @@ there is hope to exploit python programming language.
 * python 2.7 (for modpy module)
 
 
+### Bugs and Feature Requests
+
+Please report all bugs and feature requests [here](http://bugs.geniusse.com/) under the
+[bitz-server](http://bugs.geniusse.com/enter_bug.cgi?product=bitz-server) project.
+
+
 ### Version history
 
 __0.0.1__ - _24th February 2013_
