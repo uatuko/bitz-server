@@ -8,7 +8,8 @@ bitz_server_LDADD       = $(top_builddir)/lib/socket/libsocket.la \
 	$(top_builddir)/lib/icap/libicap.la \
 	${libconfig_LIBS} ${log4cpp_LIBS}
 
-bitz_server_SOURCES     = bitz-server.cpp \
+bitz_server_SOURCES     = main.cpp \
+	bitz-server.h bitz-server.cpp \
 	bitz/exception.h bitz/exception.cpp \
 	bitz/manager_exception.h bitz/manager_exception.cpp \
 	bitz/config.h bitz/config.cpp \

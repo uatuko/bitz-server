@@ -33,10 +33,21 @@ namespace bitz {
 		*/
 		struct server_t {
 			int pid_handle;
-			volatile sig_atomic_t termination_in_progress;
+			volatile sig_atomic_t terminating;
 
 			bitz::Manager * manager;
-		} globals;
+		};
+
+		void init();
+		void init_signal_handlers();
+		void init_sigchld_handler();
+		void init_sigterm_handler();
+		void init_sigquit_handler();
+		void init_sigint_handler();
+		void sigchld_handler( int signal, siginfo_t * sig_info, void * context );
+		void sigterm_handler( int signal, siginfo_t * sig_info, void * context );
+		void sigquit_handler( int signal, siginfo_t * sig_info, void * context );
+		void sigint_handler( int signal, siginfo_t * sig_info, void * context );
 
 		void daemonize( char * run_dir, char * pid_file );
 		void shutdown_daemon();

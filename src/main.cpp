@@ -17,58 +17,63 @@
  *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <config.h>
+#include "bitz-server.h"
+#include "bitz/config.h"
+#include "bitz/logger.h"
+
 
 int main() {
 
 	// initialise signal handlers
-	init_signal_handlers();
+	bitz::server::init_signal_handlers();
 
 	// daemonize
-	daemonize( "/tmp", "/tmp/root/var/run.pid" );
+//	daemonize( "/tmp", "/tmp/root/var/run.pid" );
 
 	// initialise configurations
-	Config &server_config = Config::instance();
+	bitz::Config &server_config = bitz::Config::instance();
 	const bitz::config_t &config = server_config.initialise();
 
 	// initialise the logger
-	Logger &logger = Logger::instance( config.log_file, config.log_category );
+	bitz::Logger &logger = bitz::Logger::instance( config.log_file, config.log_category );
 	logger.info( std::string( PACKAGE_STRING ) + " initialised" );
 
 	// manager
-	Manager * manager;
-
-	try {
-		// start-up the manager
-		manager = MANAGER = new Manager( config.port );
-
-		// spawn workers
-		manager->spawn( 1, 2 );
-	} catch( ManagerException &mex ) {
-		std::cout << mex.what() << std::endl;
-		return ( EXIT_FAILURE );
-	}
-
-
-	/* loop until termination signal arrives */
-	sigset_t mask, oldmask;
-	sigemptyset( &mask );
-	sigaddset( &mask, SIGTERM );
-	sigaddset( &mask, SIGQUIT );
-	sigaddset( &mask, SIGINT );
-
-	sigprocmask ( SIG_BLOCK, &mask, &oldmask );
-
-	while (! termination_in_progress ) {
-		std::cout << "[" << getpid() << "] inside termination loop" << std::endl;
-		sigsuspend (&oldmask);
-		sigprocmask (SIG_UNBLOCK, &mask, NULL);
-		manager->manager_workers();
-		sigprocmask (SIG_BLOCK, &mask, &oldmask);
-	}
+//	Manager * manager;
+//
+//	try {
+//		// start-up the manager
+//		manager = MANAGER = new Manager( config.port );
+//
+//		// spawn workers
+//		manager->spawn( 1, 2 );
+//	} catch( ManagerException &mex ) {
+//		std::cout << mex.what() << std::endl;
+//		return ( EXIT_FAILURE );
+//	}
+//
+//
+//	/* loop until termination signal arrives */
+//	sigset_t mask, oldmask;
+//	sigemptyset( &mask );
+//	sigaddset( &mask, SIGTERM );
+//	sigaddset( &mask, SIGQUIT );
+//	sigaddset( &mask, SIGINT );
+//
+//	sigprocmask ( SIG_BLOCK, &mask, &oldmask );
+//
+//	while (! termination_in_progress ) {
+//		std::cout << "[" << getpid() << "] inside termination loop" << std::endl;
+//		sigsuspend (&oldmask);
+//		sigprocmask (SIG_UNBLOCK, &mask, NULL);
+//		manager->manager_workers();
+//		sigprocmask (SIG_BLOCK, &mask, &oldmask);
+//	}
 
 	std::cout << "no mans land" << std::endl;
 	// clean-up (in theory we shouldn't get here)
-	delete manager;
+//	delete manager;
 
 	return( EXIT_SUCCESS );
 
