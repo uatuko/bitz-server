@@ -34,7 +34,7 @@ namespace bitz {
 
 	namespace server {
 
-		server_t globals;
+		static server_t globals;
 
 		void init() {
 
@@ -42,6 +42,9 @@ namespace bitz {
 			globals.pid_handle  = -1;
 			globals.manager     = NULL;
 			globals.terminating = 0;
+
+			// signal handlers
+			init_signal_handlers();
 
 		}
 

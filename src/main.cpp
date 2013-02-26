@@ -25,8 +25,17 @@
 
 int main() {
 
-	// initialise signal handlers
-	bitz::server::init_signal_handlers();
+	// initialise the server
+	bitz::server::init();
+
+	/*
+	 * TODO: notes
+	 *   + read options and act accordingly
+	 *   + deamonize if needed
+	 *   + start( port, children, requests )
+	 *   + run() <- loop
+	 *   + end
+	 */
 
 	// daemonize
 //	daemonize( "/tmp", "/tmp/root/var/run.pid" );
