@@ -21,6 +21,9 @@
 #include <string>
 #include <cstdlib>
 #include <csignal>
+#include <fcntl.h>
+#include <unistd.h>
+#include <syslog.h>
 #include <sys/wait.h>
 
 #include "config.h"
@@ -42,14 +45,25 @@ void sigquit_handler( int, siginfo_t *, void * );
 void sigint_handler( int, siginfo_t *, void * );
 
 void termination_handler( int, siginfo_t *, void * );
+void daemonize( char *rundir, char *pidfile );
+void shutdown_daemon();
 
 
 // globals
 Manager * MANAGER;
 
+int pid_handle;
 volatile sig_atomic_t termination_in_progress = 0;
 
+
+
 int main() {
+
+	// initialise signal handlers
+	init_signal_handlers();
+
+	// daemonize
+	daemonize( "/tmp", "/tmp/root/var/run.pid" );
 
 	// initialise configurations
 	Config &server_config = Config::instance();
@@ -58,9 +72,6 @@ int main() {
 	// initialise the logger
 	Logger &logger = Logger::instance( config.log_file, config.log_category );
 	logger.info( std::string( PACKAGE_STRING ) + " initialised" );
-
-	// initialise signal handlers
-	init_signal_handlers();
 
 	// manager
 	Manager * manager;
@@ -84,7 +95,7 @@ int main() {
 	sigaddset( &mask, SIGQUIT );
 	sigaddset( &mask, SIGINT );
 
-	sigprocmask (SIG_BLOCK, &mask, &oldmask);
+	sigprocmask ( SIG_BLOCK, &mask, &oldmask );
 
 	while (! termination_in_progress ) {
 		std::cout << "[" << getpid() << "] inside termination loop" << std::endl;
@@ -106,10 +117,21 @@ int main() {
 
 /* signal handlers */
 void init_signal_handlers() {
+
+	sigset_t ignore_mask;
+
+	// set signal mask - signals we want to block
+	sigemptyset(&ignore_mask);
+	sigaddset(&ignore_mask, SIGTSTP);				// ignore Tty stop signals
+	sigaddset(&ignore_mask, SIGTTOU);				// ignore Tty background writes
+	sigaddset(&ignore_mask, SIGTTIN);				// ignore Tty background reads
+	sigprocmask(SIG_BLOCK, &ignore_mask, NULL);		// block the above specified signals
+
 	init_sigchld_handler();
 	init_sigterm_handler();
 	init_sigquit_handler();
 	init_sigint_handler();
+
 }
 
 
@@ -171,6 +193,7 @@ void init_sigterm_handler() {
 	}
 
 }
+
 
 
 void sigterm_handler( int sig, siginfo_t *siginfo, void *context ) {
@@ -266,11 +289,93 @@ void termination_handler( int sig, siginfo_t *siginfo, void *context ) {
 	manager->shutdown();
 
 	// clean-up
+	shutdown_daemon();
 	delete manager;
 
 	// re-raise the signal after reactivating the signal's default action
 	signal( sig, SIG_DFL );
 	raise( sig );
 
+}
+
+
+
+void daemonize( char *rundir, char *pidfile ) {
+
+	pid_t pid, sid;
+	long i;
+	char str[10];
+
+	// logger (syslog)
+	setlogmask( LOG_UPTO( LOG_INFO ) );
+	openlog( PACKAGE_STRING, LOG_CONS, LOG_USER );
+	syslog( LOG_INFO, "starting daemon (version %s)", PACKAGE_VERSION );
+
+	// check parent process id value
+	if ( getppid() == 1 ) {
+		// we are already a daemon
+		return;
+	}
+
+	/* fork daemon */
+	pid = fork();
+	if ( pid < 0 ) {
+		exit( EXIT_FAILURE );
+	}
+
+	// exit the parent
+	if ( pid > 0 ) {
+		exit( EXIT_SUCCESS );
+	}
+
+
+	/* child (a.k.a daemon) continues */
+
+	// set file permissions (750)
+	umask( 027 );
+
+	// get a new process group
+	sid = setsid();
+	if ( sid < 0 ) {
+		exit(EXIT_FAILURE);
+	}
+
+	// route I/O connections
+	close( STDIN_FILENO );
+	close( STDOUT_FILENO );
+	close( STDERR_FILENO );
+
+	// change running directory
+	chdir( rundir );
+
+
+	/* lock pid file to ensure we have only one copy */
+
+	pid_handle = open( pidfile, O_RDWR | O_CREAT, 0600 );
+	if ( pid_handle == -1 ) {
+		syslog( LOG_ERR, "could not open pid lock file: %s", pidfile );
+		exit( EXIT_FAILURE );
+	}
+
+	if ( lockf( pid_handle, F_TLOCK, 0 ) == -1 ) {
+		syslog( LOG_ERR, "could not lock pid lock file: %s", pidfile);
+		exit( EXIT_FAILURE );
+	}
+
+	// get and format pid
+	sprintf( str, "%d\n", getpid() );
+
+	// write pid to lockfile
+	write( pid_handle, str, strlen( str ) );
+
+	// cleanup
+	closelog();
+
+}
+
+
+
+void shutdown_daemon() {
+	close( pid_handle );
 }
 
