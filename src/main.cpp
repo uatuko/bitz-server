@@ -40,7 +40,15 @@ int main( int argc, char **argv ) {
 
 	// initialise configurations
 	bitz::Config &server_config = bitz::Config::instance();
-	const bitz::config_t &config = server_config.initialise();
+
+	if ( opt.config_file != "" ) {
+		server_config.initialise( opt.config_file );
+	} else {
+		server_config.initialise();
+	}
+
+	// get a copy of the configs
+	const bitz::config_t &config = server_config.configs();
 
 	// initialise the logger
 	bitz::Logger &logger = bitz::Logger::instance( config.log_file, config.log_category );
