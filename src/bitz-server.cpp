@@ -316,6 +316,7 @@ namespace bitz {
 				{ "config", required_argument, 0, 'c' },
 				{ "debug", no_argument, &options.debug_flag, 1 },
 				{ "help", no_argument, 0, 'h' },
+				{ "usage", no_argument, 0, 'h' },
 				{ "version", no_argument, 0, 'v' },
 				{ 0, 0, 0, 0 }
 			};
@@ -340,8 +341,7 @@ namespace bitz {
 						break;
 
 					case 'h':
-						// TODO:
-						std::cout << "help message" << std::endl;
+						print_usage();
 						exit( EXIT_SUCCESS );
 						break;
 
@@ -350,6 +350,7 @@ namespace bitz {
 						exit( EXIT_SUCCESS );
 
 					case '?':
+						print_usage();
 						exit( EXIT_FAILURE );
 						break;
 
@@ -382,6 +383,18 @@ namespace bitz {
 			std::cout << "GNU General Public License (http://gnu.org/licenses/gpl.html)" << std::endl;
 			std::cout << "for more details." << std::endl;
 			std::cout << "" << std::endl;
+
+		}
+
+
+		void print_usage() {
+
+			std::cout << "usage: " << PACKAGE_NAME << " "
+				<< "[--version] [--help] [--usage] [--debug] [--config=<config file>]"
+				<< std::endl;
+
+			std::cout << "" << std::endl;
+			std::cout << "See the man pages for more information" << std::endl;
 
 		}
 

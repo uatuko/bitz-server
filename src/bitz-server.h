@@ -82,6 +82,11 @@ namespace bitz {
 		*/
 		void print_version();
 
+		/**
+		*   Print usage message to the standard output
+		*/
+		void print_usage();
+
 	} /* end of namespace server */
 
 } /* end of namespace bitz */
