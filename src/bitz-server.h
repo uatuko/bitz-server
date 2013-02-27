@@ -77,6 +77,11 @@ namespace bitz {
 		*/
 		options_t read_options( int argc, char **argv );
 
+		/**
+		*   Print version information to the standard output
+		*/
+		void print_version();
+
 	} /* end of namespace server */
 
 } /* end of namespace bitz */

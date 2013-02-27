@@ -346,7 +346,7 @@ namespace bitz {
 						break;
 
 					case 'v':
-						std::cout << PACKAGE_STRING << std::endl;
+						print_version();
 						exit( EXIT_SUCCESS );
 
 					case '?':
@@ -361,6 +361,27 @@ namespace bitz {
 			}
 
 			return options;
+
+		}
+
+
+		void print_version() {
+
+			std::cout << PACKAGE_STRING << std::endl;
+			std::cout << "" << std::endl;
+			std::cout << "Copyright (C) 2012 Uditha Atukorala" << std::endl;
+			std::cout << "" << std::endl;
+			std::cout << "This program is free software; you can redistribute it and/or modify" << std::endl;
+			std::cout << "it under the terms of the GNU General Public License as published by" << std::endl;
+			std::cout << "the Free Software Foundation; either version 3 of the License, or" << std::endl;
+			std::cout << "(at your option) any later version." << std::endl;
+			std::cout << "" << std::endl;
+			std::cout << "This program is distributed in the hope that it will be useful," << std::endl;
+			std::cout << "but WITHOUT ANY WARRANTY; without even the implied warranty of" << std::endl;
+			std::cout << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the" << std::endl;
+			std::cout << "GNU General Public License (http://gnu.org/licenses/gpl.html)" << std::endl;
+			std::cout << "for more details." << std::endl;
+			std::cout << "" << std::endl;
 
 		}
 
