@@ -33,15 +33,6 @@ int main( int argc, char **argv ) {
 	// read command line options
 	bitz::server::options_t opt = bitz::server::read_options( argc, argv );
 
-	/*
-	 * TODO: notes
-	 *   + read options and act accordingly
-	 *   + deamonize if needed
-	 *   + start( port, children, requests )
-	 *   + run() <- loop
-	 *   + end
-	 */
-
 	// daemonize
 	if ( opt.debug_flag != 1 ) {
 		bitz::server::daemonize( "/tmp", "/tmp/root/var/run.pid" );
@@ -55,41 +46,14 @@ int main( int argc, char **argv ) {
 	bitz::Logger &logger = bitz::Logger::instance( config.log_file, config.log_category );
 	logger.info( std::string( PACKAGE_STRING ) + " initialised" );
 
-	// manager
-//	Manager * manager;
-//
-//	try {
-//		// start-up the manager
-//		manager = MANAGER = new Manager( config.port );
-//
-//		// spawn workers
-//		manager->spawn( 1, 2 );
-//	} catch( ManagerException &mex ) {
-//		std::cout << mex.what() << std::endl;
-//		return ( EXIT_FAILURE );
-//	}
-//
-//
-//	/* loop until termination signal arrives */
-//	sigset_t mask, oldmask;
-//	sigemptyset( &mask );
-//	sigaddset( &mask, SIGTERM );
-//	sigaddset( &mask, SIGQUIT );
-//	sigaddset( &mask, SIGINT );
-//
-//	sigprocmask ( SIG_BLOCK, &mask, &oldmask );
-//
-//	while (! termination_in_progress ) {
-//		std::cout << "[" << getpid() << "] inside termination loop" << std::endl;
-//		sigsuspend (&oldmask);
-//		sigprocmask (SIG_UNBLOCK, &mask, NULL);
-//		manager->manager_workers();
-//		sigprocmask (SIG_BLOCK, &mask, &oldmask);
-//	}
+	// start the server
+	bitz::server::start( config.port, 1, 2 );
 
-	std::cout << "no mans land" << std::endl;
-	// clean-up (in theory we shouldn't get here)
-//	delete manager;
+	// run the server
+	bitz::server::run();
+
+	// we should never get here
+	bitz::server::shutdown();
 
 	return( EXIT_SUCCESS );
 

@@ -36,6 +36,7 @@ namespace bitz {
 		struct server_t {
 			int pid_handle;
 			volatile sig_atomic_t terminating;
+			bool daemon;
 
 			bitz::Manager * manager;
 		};
@@ -86,6 +87,23 @@ namespace bitz {
 		*   Print usage message to the standard output
 		*/
 		void print_usage();
+
+		/**
+		*   Start the server by creating a bitz::Manager instance and spawn
+		*   workers.
+		*
+		*   @param port port number to listen to
+		*   @param children number of children to spawn
+		*   @param max_request maximum number of requests that a child will serve
+		*/
+		void start( int port, unsigned int children, int max_requests );
+
+		/**
+		*   Run the server managing workers until a termination signal is received.
+		*   This process will never return, instead the termination signal will
+		*   end the process.
+		*/
+		void run();
 
 	} /* end of namespace server */
 

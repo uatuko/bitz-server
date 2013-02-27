@@ -44,6 +44,7 @@ namespace bitz {
 			globals.pid_handle  = -1;
 			globals.manager     = NULL;
 			globals.terminating = 0;
+			globals.daemon      = false;
 
 			// logger (syslog)
 			setlogmask( LOG_UPTO( LOG_INFO ) );
@@ -201,6 +202,7 @@ namespace bitz {
 			long i;
 			char str[10];
 
+			// notify
 			syslog( LOG_NOTICE, "starting daemon (version %s)", PACKAGE_VERSION );
 
 			// check parent process id value
@@ -260,11 +262,19 @@ namespace bitz {
 			// write pid to lockfile
 			write( globals.pid_handle, str, strlen( str ) );
 
+			// update status
+			globals.daemon = true;
+
 
 		}
 
 
 		void shutdown() {
+
+			// notify
+			if ( globals.daemon && ( getppid() == 1 ) ) {
+				syslog( LOG_NOTICE, "shutting down daemon (version %s)", PACKAGE_VERSION );
+			}
 
 			// close pid file
 			if ( globals.pid_handle != -1 ) {
@@ -402,6 +412,55 @@ namespace bitz {
 
 			std::cout << "" << std::endl;
 			std::cout << "See the man pages for more information" << std::endl;
+
+		}
+
+
+		void start( int port, unsigned int children, int max_requests ) {
+
+			try {
+				globals.manager = new bitz::Manager( port );
+				globals.manager->spawn( children, max_requests );
+			} catch ( bitz::ManagerException &mex ) {
+				syslog( LOG_ERR, "failed to start, exception: %s", mex.what() );
+				exit( EXIT_FAILURE );
+			}
+
+		}
+
+
+		void run() {
+
+			sigset_t mask, oldmask;
+
+			// sanity check
+			if ( globals.manager == NULL ) {
+				return;
+			}
+
+			// block termination signals until we are ready
+			sigemptyset( &mask );
+			sigaddset( &mask, SIGTERM );
+			sigaddset( &mask, SIGQUIT );
+			sigaddset( &mask, SIGINT );
+			sigprocmask ( SIG_BLOCK, &mask, &oldmask );
+
+			// loop until a termination signal is received
+			while (! globals.terminating ) {
+
+				// capture any signals
+				sigsuspend( &oldmask );
+
+				// unblock termination signals
+				sigprocmask( SIG_UNBLOCK, &mask, NULL );
+
+				// manage workers
+				globals.manager->manager_workers();
+
+				// block termination signals
+				sigprocmask( SIG_BLOCK, &mask, &oldmask );
+
+			}
 
 		}
 
