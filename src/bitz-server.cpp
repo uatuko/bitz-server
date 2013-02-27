@@ -20,9 +20,11 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include <csignal>
+#include <cstdio>
+#include <cstring>
 #include <fcntl.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <syslog.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -299,6 +301,66 @@ namespace bitz {
 			// re-raise the signal after reactivating the signal's default action
 			signal( sig, SIG_DFL );
 			raise( sig );
+
+		}
+
+
+		options_t read_options( int argc, char **argv ) {
+
+			int optidx, optchar;
+			options_t options;
+
+			options.config_file = "";
+
+			struct option lopts[] = {
+				{ "config", required_argument, 0, 'c' },
+				{ "debug", no_argument, &options.debug_flag, 1 },
+				{ "help", no_argument, 0, 'h' },
+				{ "version", no_argument, 0, 'v' },
+				{ 0, 0, 0, 0 }
+			};
+
+			while ( true ) {
+
+				optidx  = 0;
+				optchar = getopt_long( argc, argv, "c:hv", lopts, &optidx );
+
+				// sanity check
+				if ( optchar == -1 ) {
+					break;
+				}
+
+				switch ( optchar ) {
+					case 0:
+						// TODO:
+						break;
+
+					case 'c':
+						options.config_file = optarg;
+						break;
+
+					case 'h':
+						// TODO:
+						std::cout << "help message" << std::endl;
+						exit( EXIT_SUCCESS );
+						break;
+
+					case 'v':
+						std::cout << PACKAGE_STRING << std::endl;
+						exit( EXIT_SUCCESS );
+
+					case '?':
+						exit( EXIT_FAILURE );
+						break;
+
+					default:
+						// TODO:
+						break;
+				}
+
+			}
+
+			return options;
 
 		}
 

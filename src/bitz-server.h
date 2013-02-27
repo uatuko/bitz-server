@@ -22,6 +22,8 @@
 
 #include "bitz/manager.h"
 
+#include <csignal>
+
 
 namespace bitz {
 
@@ -36,6 +38,14 @@ namespace bitz {
 			volatile sig_atomic_t terminating;
 
 			bitz::Manager * manager;
+		};
+
+		/**
+		*   Structure to hold command line options.
+		*/
+		struct options_t {
+			int          debug_flag;
+			std::string  config_file;
 		};
 
 		void init();
@@ -53,6 +63,19 @@ namespace bitz {
 		void shutdown_daemon();
 		void termination_handler( int signal, siginfo_t * sig_info, void * context );
 
+		/**
+		*   Read command line options and return a options_t structure.
+		*   This method will terminate the program with an exit status
+		*   of EXIT_FAILURE if any errors are found while reading options.
+		*   If --version or --help options are found this will print the
+		*   appropriate message to the standard output and terminate with
+		*   EXIT_SUCCESS.
+		*
+		*   @param argc same as main() argc
+		*   @param argv same as main() argv
+		*   @return read options
+		*/
+		options_t read_options( int argc, char **argv );
 
 	} /* end of namespace server */
 

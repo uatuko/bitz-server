@@ -17,16 +17,21 @@
  *	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <cstdlib>
+
 #include <config.h>
 #include "bitz-server.h"
 #include "bitz/config.h"
 #include "bitz/logger.h"
 
 
-int main() {
+int main( int argc, char **argv ) {
 
 	// initialise the server
 	bitz::server::init();
+
+	// read command line options
+	bitz::server::options_t opt = bitz::server::read_options( argc, argv );
 
 	/*
 	 * TODO: notes
