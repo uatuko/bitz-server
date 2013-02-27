@@ -45,6 +45,10 @@ namespace bitz {
 			globals.manager     = NULL;
 			globals.terminating = 0;
 
+			// logger (syslog)
+			setlogmask( LOG_UPTO( LOG_INFO ) );
+			openlog( PACKAGE_NAME, LOG_CONS, LOG_USER );
+
 			// signal handlers
 			init_signal_handlers();
 
@@ -197,10 +201,7 @@ namespace bitz {
 			long i;
 			char str[10];
 
-			// logger (syslog)
-			setlogmask( LOG_UPTO( LOG_INFO ) );
-			openlog( PACKAGE_STRING, LOG_CONS, LOG_USER );
-			syslog( LOG_INFO, "starting daemon (version %s)", PACKAGE_VERSION );
+			syslog( LOG_NOTICE, "starting daemon (version %s)", PACKAGE_VERSION );
 
 			// check parent process id value
 			if ( getppid() == 1 ) {
@@ -259,18 +260,24 @@ namespace bitz {
 			// write pid to lockfile
 			write( globals.pid_handle, str, strlen( str ) );
 
-			// cleanup
+
+		}
+
+
+		void shutdown() {
+
+			// close pid file
+			if ( globals.pid_handle != -1 ) {
+				close( globals.pid_handle );
+			}
+
+			// close logger (syslog)
 			closelog();
 
 		}
 
 
-		void shutdown_daemon() {
-			close( globals.pid_handle );
-		}
-
-
-		void termination_handler( int sig, siginfo_t *siginfo, void *context ) {
+		void termination_handler( int sig, siginfo_t * sig_info, void * context ) {
 
 			std::cout << "[" << getpid() << "] inside termination handler" << std::endl;
 
@@ -296,7 +303,7 @@ namespace bitz {
 			}
 
 			// cleanup
-			shutdown_daemon();
+			shutdown();
 
 			// re-raise the signal after reactivating the signal's default action
 			signal( sig, SIG_DFL );

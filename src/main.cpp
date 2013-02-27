@@ -43,7 +43,9 @@ int main( int argc, char **argv ) {
 	 */
 
 	// daemonize
-//	daemonize( "/tmp", "/tmp/root/var/run.pid" );
+	if ( opt.debug_flag != 1 ) {
+		bitz::server::daemonize( "/tmp", "/tmp/root/var/run.pid" );
+	}
 
 	// initialise configurations
 	bitz::Config &server_config = bitz::Config::instance();
