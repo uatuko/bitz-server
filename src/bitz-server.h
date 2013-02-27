@@ -54,14 +54,14 @@ namespace bitz {
 		void init_sigterm_handler();
 		void init_sigquit_handler();
 		void init_sigint_handler();
-		void sigchld_handler( int signal, siginfo_t * sig_info, void * context );
-		void sigterm_handler( int signal, siginfo_t * sig_info, void * context );
-		void sigquit_handler( int signal, siginfo_t * sig_info, void * context );
-		void sigint_handler( int signal, siginfo_t * sig_info, void * context );
+		void sigchld_handler( int sig, siginfo_t * sig_info, void * context );
+		void sigterm_handler( int sig, siginfo_t * sig_info, void * context );
+		void sigquit_handler( int sig, siginfo_t * sig_info, void * context );
+		void sigint_handler( int sig, siginfo_t * sig_info, void * context );
 
 		void daemonize( char * run_dir, char * pid_file );
-		void shutdown_daemon();
-		void termination_handler( int signal, siginfo_t * sig_info, void * context );
+		void shutdown();
+		void termination_handler( int sig, siginfo_t * sig_info, void * context );
 
 		/**
 		*   Read command line options and return a options_t structure.
