@@ -34,6 +34,10 @@ namespace bitz {
 		_config.req_handlers_count = 0;
 		_config.req_handlers       = NULL;
 
+		_config.max_workers         = 0;
+		_config.max_worker_requests = 0;
+
+
 		// defaults
 		_lconfig = NULL;
 
@@ -77,6 +81,9 @@ namespace bitz {
 			config->lookupValue( "port", _config.port );
 			config->lookupValue( "log_file", _config.log_file );
 			config->lookupValue( "log_category", _config.log_category );
+
+			config->lookupValue( "max_workers", _config.max_workers );
+			config->lookupValue( "max_worker_requests", _config.max_worker_requests );
 
 		} catch( const libconfig::SettingNotFoundException &e ) {
 			std::cerr << "[config] failed to load core configs, "

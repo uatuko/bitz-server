@@ -55,7 +55,7 @@ int main( int argc, char **argv ) {
 	logger.info( std::string( PACKAGE_STRING ) + " initialised" );
 
 	// start the server
-	bitz::server::start( config.port, 1, 2 );
+	bitz::server::start( config.port, config.max_workers, config.max_worker_requests );
 
 	// run the server
 	bitz::server::run();

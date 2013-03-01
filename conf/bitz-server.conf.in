@@ -7,6 +7,12 @@ port = 1344;
 log_file     = "@localstatedir@/log/bitz/bitz-server.log";
 log_category = "bitz-server";
 
+# maximum number of workers
+max_workers         = 1;
+
+# maximum number of requests a worker will serve
+max_worker_requests = 100;
+
 
 # request handlers
 req_handlers :
