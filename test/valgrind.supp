@@ -1,0 +1,29 @@
+#
+# valgrind.supp
+#
+
+# Python
+{
+	Python 2.7 (libpython2.7.so.1.0)
+	Memcheck:Value4
+	obj:/usr/lib/libpython2.7.so.1.0
+}
+
+{
+	Python 2.7 (libpython2.7.so.1.0)
+	Memcheck:Addr4
+	obj:/usr/lib/libpython2.7.so.1.0
+}
+
+{
+	Python 2.7 (libpython2.7.so.1.0)
+	Memcheck:Value8
+	obj:/usr/lib/libpython2.7.so.1.0
+}
+
+{
+	Python 2.7 (libpython2.7.so.1.0)
+	Memcheck:Cond
+	obj:/usr/lib/libpython2.7.so.1.0
+}
+
