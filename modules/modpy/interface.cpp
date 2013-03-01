@@ -60,6 +60,9 @@ PyObject * bitz_get_request( PyObject * self, PyObject * pyrequest ) {
 
 		PyDict_SetItemString( pyreturn, "payload", pypayload );
 
+		// cleanup
+		Py_DECREF( pypayload );
+
 	} else {
 		logger.warn( "[modpy.interface] failed to get request object pointer" );
 	}
