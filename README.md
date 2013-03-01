@@ -108,3 +108,8 @@ e.g.
 
 	$ ./configure --with-config=/[path to source code]/conf/bitz-server.conf
 
+
+##### valgrind checks
+
+	$ valgrind --leak-check=full --read-var-info=yes --trace-children=yes --suppressions=test/valgrind.supp --log-file=valgrind.log ./src/bitz-server --debug
+
