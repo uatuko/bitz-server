@@ -1,0 +1,38 @@
+.TH bitz-server 1 "March 2013" Linux "User Manuals"
+.SH NAME
+bitz-server \- An ICAP server
+.SH SYNOPSIS
+.B bitz-server
+[--version] [--help] [--usage] [--debug] [--config=<config file>]
+.SH DESCRIPTION
+.B bitz-server
+is an ICAP server implementation in C++. Starting from scratch,
+the server is developed with a modular architecture in mind.
+The server core (written in C++) will handle the client requests,
+manage workers (child processes) etc. and will provide basic handlers
+to serve ICAP requests but won't do any actual content adaptation.
+.P
+To extend this core functionality and do some actual content adaptation
+the pluggable modules architecture is used. These modules will provide
+features like content filtering, anti-virus scanning etc. and to make it
+easier to write (and faster to implement) such modules a python interface
+module is included.
+.SH OPTIONS
+.TP
+.B --version, -v
+Prints version information
+.TP
+.B --help, --usage, -h
+Prints the synopsis
+.TP
+.B --debug
+Run the server in debug mode. This will force the server to run in the
+terminal rather than in the background.
+.TP
+.B --config=<config file>
+Set the alternative config file to use instead of the compiled default.
+.SH BUGS
+Please report all bugs and feature requests at <http://bugs.geniusse.com/>
+.SH AUTHOR
+Uditha Atukorala <uditha at bitzinternetsecurity dot com>
+
