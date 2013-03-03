@@ -31,8 +31,17 @@ terminal rather than in the background.
 .TP
 .B --config=<config file>
 Set the alternative config file to use instead of the compiled default.
+.SH FILES
+.I /etc/bitz/bitz-server.conf
+.RS
+Default configuration file. See
+.BR bitz-server.conf (5)
+for further details.
+.RE
 .SH BUGS
 Please report all bugs and feature requests at <http://bugs.geniusse.com/>
 .SH AUTHOR
 Uditha Atukorala <udi at geniusse dot com>
+.SH "SEE ALSO"
+.BR bitz-server.conf (5)
 

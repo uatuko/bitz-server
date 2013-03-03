@@ -1,0 +1,59 @@
+.TH bitz-server.conf 5 "March 2013" Linux "File Formats Manual"
+.SH NAME
+bitz-server.conf \- bitz-server configuration file
+.SH SYNOPSIS
+.B /etc/bitz/bitz-server.conf
+.SH DESCRIPTION
+.BR bitz-server (1)
+obtains configuration data from a config file, the location of which is specified
+at compile-time and can be overridden by command-line options during run-time.
+.SS Grammer
+Below is the BNF grammar for configuration files. Comments and include directives
+are not part of the grammar, so they are not included here.
+.PP
+.RS
+.nf
+configuration = setting-list | empty
+setting-list = setting | setting-list setting
+setting = name (":" | "=") value (";" | "," | empty)
+value = scalar-value | array | list | group
+value-list = value | value-list "," value
+scalar-value = boolean | integer | integer64 | hex | hex64 | float | string
+scalar-value-list = scalar-value | scalar-value-list "," scalar-value
+array = "[" (scalar-value-list | empty) "]"
+list = "(" (value-list | empty) ")"
+group = "{" (setting-list | empty) "}"
+empty =
+.fi
+.RE
+.PP
+Terminals are defined below as regular expressions:
+.TP
+.B boolean
+([Tt][Rr][Uu][Ee])|([Ff][Aa][Ll][Ss][Ee])
+.TP
+.B string
+\\"([^\\"\\\\]|\\\\.)*\\"
+.TP
+.B name
+[A-Za-z\\*][-A-Za-z0-9_\\*]*
+.TP
+.B integer
+[-+]?[0-9]+
+.TP
+.B integer64
+[-+]?[0-9]+L(L)?
+.TP
+.B hex
+0[Xx][0-9A-Fa-f]+
+.TP
+.B hex64
+0[Xx][0-9A-Fa-f]+L(L)?
+.TP
+.B float
+([-+]?([0-9]*)?\\.[0-9]*([eE][-+]?[0-9]+)?)|([-+]([0-9]+)(\\.[0-9]*)?[eE][-+]?[0-9]+)
+.SH AUTHOR
+Uditha Atukorala <udi at geniusse dot com>
+.SH "SEE ALSO"
+.BR bitz-server (1)
+
