@@ -34,5 +34,5 @@ Set the alternative config file to use instead of the compiled default.
 .SH BUGS
 Please report all bugs and feature requests at <http://bugs.geniusse.com/>
 .SH AUTHOR
-Uditha Atukorala <uditha at bitzinternetsecurity dot com>
+Uditha Atukorala <udi at geniusse dot com>
 
