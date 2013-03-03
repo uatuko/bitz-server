@@ -52,6 +52,16 @@ Known issues can be found [here](http://bugs.geniusse.com/buglist.cgi?query_form
 
 ### Version history
 
+__0.1.0__ - _03rd March 2013_
+
+*   Daemonized version ([bug #18](http://bugs.geniusse.com/show_bug.cgi?id=18)), hence
+	the minor version bump. Server core is re-organised with bitz::server namespace to
+	be more cleaner and easier to read.
+*   Make it possible to pass in command-line options
+*   Closed a memory leak in modpy module
+*   Fixing bugs [#20](http://bugs.geniusse.com/show_bug.cgi?id=20) and [#21](http://bugs.geniusse.com/show_bug.cgi?id=21)
+
+
 __0.0.1__ - _24th February 2013_
 
 *   Proof of concept. An ICAP server with only a REQMOD handler. Includes a template
