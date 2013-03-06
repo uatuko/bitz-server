@@ -52,6 +52,9 @@ Known issues can be found [here](http://bugs.geniusse.com/buglist.cgi?query_form
 
 ### Version history
 
+__0.1.1__ - _06th March 2013_
+*   Fixing bugs [#19](http://bugs.geniusse.com/show_bug.cgi?id=19) and [#22](http://bugs.geniusse.com/show_bug.cgi?id=22)
+
 __0.1.0__ - _03rd March 2013_
 
 *   Daemonized version ([bug #18](http://bugs.geniusse.com/show_bug.cgi?id=18)), hence
