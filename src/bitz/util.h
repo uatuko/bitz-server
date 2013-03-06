@@ -60,6 +60,30 @@ namespace bitz {
 		*/
 		void delete_req_handlers( req_handlers_t req_handlers ) throw();
 
+		/**
+		*   Extract directory path from a path
+		*
+		*   @param path path to extract the directory from
+		*   @return directory path
+		*/
+		std::string dirpath( const std::string &path ) throw();
+
+		/**
+		*   Extract the file name from a path
+		*
+		*   @param path path to extract the file name from
+		*   @return file name
+		*/
+		std::string filename( const std::string &path ) throw();
+
+		/**
+		*   Create a directory tree recursively
+		*
+		*   @param path full directory path
+		*   @return boolean to denote success or failure
+		*/
+		bool mkdirp( const std::string &path ) throw();
+
 	} /* end of namespace util */
 
 } /* end of namespace bitz */

@@ -19,6 +19,9 @@
 
 #include "util.h"
 
+#include <cerrno>
+#include <sys/stat.h>
+
 
 namespace bitz {
 
@@ -54,6 +57,64 @@ namespace bitz {
 			return;
 
 		}
+
+
+		std::string dirpath( const std::string &path ) throw() {
+			return path.substr( 0, path.find_last_of( '/' ) );
+		}
+
+
+		std::string filename( const std::string &path ) throw() {
+			return path.substr( path.find_last_of( '/' ) );
+		}
+
+
+		bool mkdirp( const std::string &path ) throw() {
+
+			bool r_success = false;
+
+
+			if ( ::mkdir( path.c_str(), 0755 ) == -1 ) {
+
+				switch( errno ) {
+
+					case ENOENT:
+
+						// parent didn't exist, try to create it
+						if ( mkdirp( path.substr( 0, path.find_last_of( '/' ) ) ) ) {
+
+							// try creating the dir again
+							r_success = ( 0 == ::mkdir( path.c_str(), 0755 ) );
+
+						} else {
+
+							// failed to create parent
+							r_success = false;
+						}
+
+						break;
+
+					case EEXIST:
+
+						// already exists
+						r_success = true;
+						break;
+
+					default:
+						r_success = false;
+						break;
+
+				}
+
+			} else {
+				r_success = true;
+			}
+
+
+			return r_success;
+
+		}
+
 
 	} /* end of namespace util */
 

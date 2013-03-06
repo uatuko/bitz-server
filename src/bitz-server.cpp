@@ -196,7 +196,7 @@ namespace bitz {
 		}
 
 
-		void daemonize( char *rundir, char *pidfile ) {
+		void daemonize( const char *rundir, const char *pidfile ) {
 
 			pid_t pid, sid;
 			long i;

@@ -4,6 +4,7 @@
 
 port = 1344;
 
+pid_file     = "@localstatedir@/run/bitz/bitz-server.pid";
 log_file     = "@localstatedir@/log/bitz/bitz-server.log";
 log_category = "bitz-server";
 

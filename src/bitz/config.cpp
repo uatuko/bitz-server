@@ -29,6 +29,7 @@ namespace bitz {
 
 		// initialise config_t values
 		_config.port            = 1344;
+		_config.pid_file        = "/dev/null";
 		_config.log_file        = "/dev/null";
 		_config.log_category    = "bitz";
 		_config.req_handlers_count = 0;
@@ -79,6 +80,7 @@ namespace bitz {
 
 			// read core configs
 			config->lookupValue( "port", _config.port );
+			config->lookupValue( "pid_file", _config.pid_file );
 			config->lookupValue( "log_file", _config.log_file );
 			config->lookupValue( "log_category", _config.log_category );
 

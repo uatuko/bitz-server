@@ -60,7 +60,7 @@ namespace bitz {
 		void sigquit_handler( int sig, siginfo_t * sig_info, void * context );
 		void sigint_handler( int sig, siginfo_t * sig_info, void * context );
 
-		void daemonize( char * run_dir, char * pid_file );
+		void daemonize( const char * run_dir, const char * pid_file );
 		void shutdown();
 		void termination_handler( int sig, siginfo_t * sig_info, void * context );
 

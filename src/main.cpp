@@ -23,6 +23,7 @@
 #include "bitz-server.h"
 #include "bitz/config.h"
 #include "bitz/logger.h"
+#include "bitz/util.h"
 
 
 int main( int argc, char **argv ) {
@@ -32,11 +33,6 @@ int main( int argc, char **argv ) {
 
 	// read command line options
 	bitz::server::options_t opt = bitz::server::read_options( argc, argv );
-
-	// daemonize
-	if ( opt.debug_flag != 1 ) {
-		bitz::server::daemonize( "/tmp", "/tmp/root/var/run.pid" );
-	}
 
 	// initialise configurations
 	bitz::Config &server_config = bitz::Config::instance();
@@ -49,6 +45,16 @@ int main( int argc, char **argv ) {
 
 	// get a copy of the configs
 	const bitz::config_t &config = server_config.configs();
+
+	// create directories
+	bitz::util::mkdirp( bitz::util::dirpath( config.pid_file ) );
+	bitz::util::mkdirp( bitz::util::dirpath( config.log_file ) );
+
+
+	// daemonize
+	if ( opt.debug_flag != 1 ) {
+		bitz::server::daemonize( bitz::util::dirpath( config.pid_file ).c_str(), config.pid_file.c_str() );
+	}
 
 	// initialise the logger
 	bitz::Logger &logger = bitz::Logger::instance( config.log_file, config.log_category );
