@@ -47,8 +47,15 @@ int main( int argc, char **argv ) {
 	const bitz::config_t &config = server_config.configs();
 
 	// create directories
-	bitz::util::mkdirp( bitz::util::dirpath( config.pid_file ) );
-	bitz::util::mkdirp( bitz::util::dirpath( config.log_file ) );
+	if ( ( opt.debug_flag != 1 ) && (! bitz::util::mkdirp( bitz::util::dirpath( config.pid_file ) ) ) ) {
+		std::cerr << "[core] failed to create run dir" << std::endl;
+		exit( EXIT_FAILURE );
+	}
+
+	if (! bitz::util::mkdirp( bitz::util::dirpath( config.log_file ) ) ) {
+		std::cerr << "[core] failed to create log dir" << std::endl;
+		exit( EXIT_FAILURE );
+	}
 
 
 	// daemonize
