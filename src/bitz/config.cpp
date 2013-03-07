@@ -21,6 +21,7 @@
 #include "logger.h"
 
 #include <iostream>
+#include <cstdlib>
 
 
 namespace bitz {
@@ -70,10 +71,13 @@ namespace bitz {
 		try {
 			config->readFile( config_file.c_str() );
 		} catch( const libconfig::FileIOException &ex ) {
-			std::cerr << "[config] failed to read config file: " << ex.what() << std::endl;
+			std::cerr << "[config] failed to read config file: " << config_file
+					<< ", exception: " << ex.what() << std::endl;
+			exit( EXIT_FAILURE );
 		} catch( const libconfig::ParseException &pex ) {
 			std::cerr << "[config] parse error at " << pex.getFile()
 					<< ":" << pex.getLine() << " - " << pex.getError() << std::endl;
+			exit( EXIT_FAILURE );
 		}
 
 		try {
