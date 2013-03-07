@@ -53,7 +53,7 @@ namespace bitz {
 	icap::Response * ReqmodRequestHandler::process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() {
 
 		icap::Request  * request;
-		icap::Response * response;
+		icap::Response * response = NULL;
 		Modifier       * modifier;
 
 		int i = 0;
@@ -78,25 +78,34 @@ namespace bitz {
 			logger.debug( std::string( "[reqmod] payload.res-hdr:\r\n").append( request->payload().res_header ) );
 			logger.debug( std::string( "[reqmod] payload.res-body:\r\n").append( request->payload().res_body ) );
 
-			// loop through loaded modifier modules and grab responses
-			// we will only send out the response from the last module
-			// unless a icap::ResponseHeader::OK is received
+			/*
+			*  loop through loaded modifier modules and grab responses
+			*
+			*  we will only send out the response from the last module
+			*  unless a icap::ResponseHeader::OK is received
+			*/
 			for ( i = 0 ; i < _handlers_count; i++ ) {
+
+				// sanity check
+				if ( _handlers[i].name == "" ) {
+					logger.info( "[reqmod] modifier not loaded, not trying to get a response" );
+					continue;
+				}
 
 				// grab the response from modifier
 				// FIXME: preview or modify ??
-				logger.debug( std::string( "[reqmod] getting response from module: " ).append( _handlers[i].name ) );
+				logger.debug( std::string( "[reqmod] getting response from modifier: " ).append( _handlers[i].name ) );
 				modifier = _handlers[i].symbols.create();
 				response = modifier->modify( request );
 
 				// status 200 OK means content modified
 				if ( response->header()->status() == icap::ResponseHeader::OK ) {
-					logger.debug( "[reqmod] OK response received, not getting responses from other modules" );
+					logger.debug( "[reqmod] OK response received, not getting responses from other modifiers" );
 					break;
 				}
 
 				// cleanup
-				logger.debug( std::string( "[reqmod] cleaning up module: " ).append( _handlers[i].name ) );
+				logger.debug( std::string( "[reqmod] cleaning up modifier: " ).append( _handlers[i].name ) );
 				_handlers[i].symbols.destroy( modifier );
 
 			}
@@ -116,6 +125,12 @@ namespace bitz {
 
 		// cleanup
 		delete request;
+
+		// sanity check
+		if ( response == NULL ) {
+			logger.warn( "[reqmod] no valid response from modifiers, creating a server error (500) response" );
+			response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
+		}
 
 		return response;
 
