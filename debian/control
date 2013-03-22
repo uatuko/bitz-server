@@ -1,0 +1,12 @@
+Source: bitz-server
+Section: unknown
+Priority: extra
+Maintainer: Uditha Atukorala <udi@geniusse.com>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev
+Standards-Version: 3.9.2
+
+Package: bitz-server
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: ICAP server implementation in C++
+
