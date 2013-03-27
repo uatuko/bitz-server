@@ -13,7 +13,7 @@ manage workers (child processes) etc. and will provide basic handlers
 to serve ICAP requests but won't do any actual content adaptation.
 .P
 To extend this core functionality and do some actual content adaptation
-the pluggable modules architecture is used. These modules will provide
+a pluggable modules architecture is used. These modules will provide
 features like content filtering, anti-virus scanning etc. and to make it
 easier to write (and faster to implement) such modules a python interface
 module is included.
