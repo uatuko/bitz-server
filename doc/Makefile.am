@@ -4,7 +4,8 @@
 man1_MANS = bitz-server.man
 man5_MANS = bitz-server.conf.man
 
-dist_man_MANS = \
+# extra dist files
+EXTRA_DIST = \
 	bitz-server.man \
 	bitz-server.conf.man
 
