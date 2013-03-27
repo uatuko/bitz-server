@@ -12,3 +12,8 @@ SUBDIRS = \
 	modules \
 	src
 
+# extra dist files
+EXTRA_DIST = \
+	$(top_srcdir)/debian \
+	README.md
+

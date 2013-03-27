@@ -2,12 +2,16 @@
 configdir		= $(sysconfdir)/bitz
 config_DATA		= bitz-server.conf
 
+# extra dist files
+EXTRA_DIST = \
+	bitz-server.conf.in
+
 
 edit = sed \
 	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
 	-e 's|@localstatedir[@]|$(localstatedir)|g'
 
-bitz-server.conf: Makefile
+bitz-server.conf: bitz-server.conf.in
 	rm -f $@ $@.tmp
 	srcdir=''; \
 		test -f ./$@.in || srcdir=$(srcdir)/; \

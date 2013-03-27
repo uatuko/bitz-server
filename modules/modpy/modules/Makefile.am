@@ -2,6 +2,6 @@
 
 if MODPY
 modpydir        = $(sysconfdir)/bitz/modules/modpy
-modpy_DATA      = modpy.py
+modpy_PYTHON    = modpy.py
 endif
 

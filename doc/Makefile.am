@@ -4,6 +4,11 @@
 man1_MANS = bitz-server.man
 man5_MANS = bitz-server.conf.man
 
+dist_man_MANS = \
+	bitz-server.man \
+	bitz-server.conf.man
+
+
 # doxygen
 if HAVE_DOXYGEN
 
