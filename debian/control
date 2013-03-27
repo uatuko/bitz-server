@@ -1,5 +1,5 @@
 Source: bitz-server
-Section: unknown
+Section: web
 Priority: extra
 Maintainer: Uditha Atukorala <udi@geniusse.com>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev, libconfig++-dev, liblog4cpp5-dev
@@ -8,5 +8,14 @@ Standards-Version: 3.9.2
 Package: bitz-server
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: ICAP server implementation in C++
+Description: ICAP server (RFC 3507) implementation in C++
+ bitz-server is an ICAP server implementation in C++. Starting from scratch,
+ the server is developed with a modular architecture in mind.
+ The server core (written in C++) will handle the client requests,
+ manage workers (child processes) etc. and will provide basic handlers
+ to serve ICAP requests but won't do any actual content adaptation.
+ .
+ To extend this core functionality and do some actual content adaptation
+ a pluggable modules architecture is used. These modules will provide
+ features like content filtering, anti-virus scanning etc.
 
