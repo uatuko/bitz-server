@@ -22,13 +22,9 @@ req_handlers :
 	class   = "ReqmodRequestHandler";
 	modules :
 	(
-		#{
-		#	name   = "echo";
-		#	module = "@sysconfdir@/bitz/modules/mod_echo.so";
-		#},
 		{
 			name   = "modpy";
-			module = "@sysconfdir@/bitz/modules/mod_py.so";
+			module = "@pkglibdir@/modules/mod_py.so";
 		}
 	)
 });
@@ -40,7 +36,7 @@ modules :
 	modpy :
 	{
 		# search path for python modules
-		module_path = "@sysconfdir@/bitz/modules/modpy";
+		module_path = "@pkglibdir@/modules/modpy";
 
 		# python module containing the interface methods
 		module_name = "modpy";

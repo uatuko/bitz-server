@@ -9,7 +9,8 @@ EXTRA_DIST = \
 
 edit = sed \
 	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
-	-e 's|@localstatedir[@]|$(localstatedir)|g'
+	-e 's|@localstatedir[@]|$(localstatedir)|g' \
+	-e 's|@pkglibdir[@]|$(pkglibdir)|g'
 
 bitz-server.conf: bitz-server.conf.in
 	rm -f $@ $@.tmp

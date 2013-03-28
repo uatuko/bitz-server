@@ -54,3 +54,20 @@ Description: C++ library for ICAP communications
  .
  This package contains the libicap development files.
 
+Package: libbitz-server-mod-py
+Section: web
+Architecture: any
+Depends: bitz-server (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Module for bitz-server implementing a python interface
+ Pluggable module for bitz-server to extend core functionality. mod_py
+ provides a python interface so the content adaptation logic can be written
+ in python.
+
+Package: libbitz-server-mod-py-modules
+Section: web
+Architecture: any
+Depends: libbitz-server-mod-py (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Python extension modules for bitz-server mod_py module
+ This package provides content adaptation logic written in python for
+ the bitz-server mod_py module.
+

@@ -5,7 +5,7 @@ EXTRA_DIST = \
 	modpy.py
 
 if MODPY
-modpydir        = $(sysconfdir)/bitz/modules/modpy
+modpydir        = $(pkglibdir)/modules/modpy
 modpy_DATA      = modpy.py
 endif
 

@@ -1,7 +1,7 @@
 ## src/
 AM_CPPFLAGS             = -I$(top_srcdir)/lib ${libconfig_CFLAGS} ${log4cpp_CFLAGS}
 
-bitzincludedir          = $(includedir)/bitz
+bitzincludedir          = $(pkgincludedir)
 sbin_PROGRAMS           = bitz-server
 bitz_server_LDFLAGS     = -export-dynamic
 bitz_server_LDADD       = $(top_builddir)/lib/socket/libsocket.la \

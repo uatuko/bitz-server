@@ -3,7 +3,7 @@
 SUBDIRS = modules
 
 if MODPY
-modlibdir               = $(sysconfdir)/bitz/modules
+modlibdir               = $(pkglibdir)/modules
 modlib_LTLIBRARIES      = mod_py.la
 mod_py_la_LDFLAGS       = -module -avoid-version
 mod_py_la_SOURCES       = \
