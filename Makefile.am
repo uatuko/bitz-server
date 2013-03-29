@@ -14,6 +14,5 @@ SUBDIRS = \
 
 # extra dist files
 EXTRA_DIST = \
-	$(top_srcdir)/debian \
 	README.md
 
