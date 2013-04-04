@@ -25,10 +25,12 @@
 
 
 PyObject * bitz_get_request( PyObject * self, PyObject * pyrequest );
+PyObject * bitz_get_response( PyObject * self, PyObject * args );
 PyObject * bitz_get_response_from_status( PyObject * self, PyObject * args);
 
 static PyMethodDef bitz_methods[] = {
 		{ "get_request", bitz_get_request, METH_O, "Convert a capsule request into a python dictionary" },
+		{ "get_response", bitz_get_response, METH_VARARGS, "Get a response capsule (takes in status and payload dictionary as args)" },
 		{ "get_response_from_status", bitz_get_response_from_status, METH_VARARGS, "Get a response capsule from a response status" },
 		{ NULL, NULL, 0, NULL }
 };

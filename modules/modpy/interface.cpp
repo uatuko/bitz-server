@@ -72,7 +72,7 @@ PyObject * bitz_get_request( PyObject * self, PyObject * pyrequest ) {
 }
 
 
-PyObject * bitz_get_response_from_status( PyObject * self, PyObject * args) {
+PyObject * bitz_get_response_from_status( PyObject * self, PyObject * args ) {
 
 	PyObject * pyresponse;
 	icap::Response * response;
@@ -86,6 +86,38 @@ PyObject * bitz_get_response_from_status( PyObject * self, PyObject * args) {
 	// parse args
 	if ( PyArg_ParseTuple( args, "I", &resp_status ) ) {
 		response = new icap::Response( (icap::ResponseHeader::status_t) resp_status );
+	} else {
+		logger.warn( "[modpy.interface] failed to parse arguments" );
+		response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
+	}
+
+	// convert the response into a capsule
+	pyresponse = PyCapsule_New( (void *) response, "response", NULL );
+
+	return pyresponse;
+
+}
+
+
+PyObject * bitz_get_response( PyObject * self, PyObject * args ) {
+
+	PyObject * pyresponse;
+	PyObject * pypayload;
+	icap::Response * response;
+
+	unsigned int resp_status;
+
+
+	// logger
+	bitz::Logger &logger = bitz::Logger::instance();
+	logger.debug( "[modpy.interface] get_response()" );
+
+	// parse args
+	if ( PyArg_ParseTuple( args, "IO!", &resp_status, &PyDict_Type, &pypayload ) ) {
+
+		response = new icap::Response( (icap::ResponseHeader::status_t) resp_status );
+		// TODO: add payload to response
+
 	} else {
 		logger.warn( "[modpy.interface] failed to parse arguments" );
 		response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
