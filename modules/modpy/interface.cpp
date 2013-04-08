@@ -106,6 +106,7 @@ PyObject * bitz_get_response( PyObject * self, PyObject * args ) {
 	icap::Response * response;
 
 	unsigned int resp_status;
+	icap::payload_t payload;
 
 
 	// logger
@@ -115,8 +116,13 @@ PyObject * bitz_get_response( PyObject * self, PyObject * args ) {
 	// parse args
 	if ( PyArg_ParseTuple( args, "IO!", &resp_status, &PyDict_Type, &pypayload ) ) {
 
+		payload.req_header = PyString_AsString( PyDict_GetItemString( pypayload, "req_header" ) );
+		payload.req_body   = PyString_AsString( PyDict_GetItemString( pypayload, "req_body" ) );
+		payload.res_header = PyString_AsString( PyDict_GetItemString( pypayload, "res_header" ) );
+		payload.res_body   = PyString_AsString( PyDict_GetItemString( pypayload, "res_body" ) );
+
 		response = new icap::Response( (icap::ResponseHeader::status_t) resp_status );
-		// TODO: add payload to response
+		response->payload( payload );
 
 	} else {
 		logger.warn( "[modpy.interface] failed to parse arguments" );
