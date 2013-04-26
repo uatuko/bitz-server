@@ -251,7 +251,7 @@ namespace icap {
 
 			try {
 
-				 do {
+				do {
 
 					// prepare data for this chunk
 					chunked_data = data.substr( offset, ICAP_BUFFER_SIZE );

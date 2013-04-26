@@ -42,11 +42,11 @@ namespace bitz {
 		log4cpp::PatternLayout * log_layout = new log4cpp::PatternLayout();
 		log_layout->setConversionPattern( "%d %p %c %x: %m%n" );
 
-	    log_appender->setLayout( log_layout );
-	    this->LOGGER->setAppender( log_appender );
-	    this->LOGGER->setPriority( this->getPriorityValue( "DEBUG" ) );
+		log_appender->setLayout( log_layout );
+		this->LOGGER->setAppender( log_appender );
+		this->LOGGER->setPriority( this->getPriorityValue( "DEBUG" ) );
 
-	    this->LOGGER->debug( "logger initialised, log_file: " + log_file );
+		this->LOGGER->debug( "logger initialised, log_file: " + log_file );
 
 	}
 
