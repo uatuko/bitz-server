@@ -70,6 +70,15 @@ namespace icap {
 		const headers_t &headers() const throw();
 
 		/**
+		*   Returns the header value for the given header key or an empty string
+		*   if the header is not found.
+		*
+		*   @param key header key
+		*   @return header value 
+		*/
+		const std::string value( const std::string &key ) throw();
+
+		/**
 		*   Return Encapsulated header value for the given entity
 		*   or -1 if the given entity is invalid.
 		*

@@ -51,6 +51,15 @@ namespace icap {
 		*/
 		const payload_t &payload() const throw();
 
+		/**
+		*   Returns the number of preview bytes in the request. If the preview
+		*   header is not present in the request then a minus (-1) value will be
+		*   returned.
+		*   
+		*   @return preview bytes
+		*/
+	   const int preview_size() throw();	
+
 	private:
 		RequestHeader * _header;
 		payload_t _payload;

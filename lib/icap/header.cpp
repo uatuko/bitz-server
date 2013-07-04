@@ -21,7 +21,7 @@
 #include "util.h"
 
 #include <algorithm>
-#include <stdlib.h>
+#include <cstdlib>
 
 
 namespace icap {
@@ -43,6 +43,20 @@ namespace icap {
 
 	const Header::headers_t &Header::headers() const throw() {
 		return _headers;
+	}
+
+
+	const std::string Header::value( const std::string &key ) throw() {
+
+		std::string value           = "";
+		Header::headers_index_t idx = _headers.find( key );
+
+		if ( idx != _headers.end() ) {
+			value = idx->second;
+		}
+
+		return value;
+
 	}
 
 

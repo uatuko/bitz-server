@@ -19,6 +19,8 @@
 
 #include "request.h"
 
+#include <cstdlib>
+
 
 namespace icap {
 
@@ -55,6 +57,26 @@ namespace icap {
 
 	const payload_t &Request::payload() const throw() {
 		return _payload;
+	}
+
+
+	const int Request::preview_size() throw() {
+
+		int size = -1;
+
+		// grab the size from request header
+		std::string s_size = _header->value( "Preview" );
+
+		// sanity check
+		if (! s_size.empty() ) {
+
+			// convert string to integer
+			size = atoi( s_size.c_str() );
+
+		}
+
+		return size;
+
 	}
 
 } /* end of namespace icap */

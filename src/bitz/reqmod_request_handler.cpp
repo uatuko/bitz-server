@@ -20,6 +20,7 @@
 #include "reqmod_request_handler.h"
 #include "config.h"
 #include "logger.h"
+#include "util.h"
 
 #include <icap/util.h>
 
@@ -93,10 +94,30 @@ namespace bitz {
 				}
 
 				// grab the response from modifier
-				// FIXME: preview or modify ??
 				logger.debug( std::string( "[reqmod] getting response from modifier: " ).append( _handlers[i].name ) );
 				modifier = _handlers[i].symbols.create();
-				response = modifier->modify( request );
+
+
+				// check whether this is a preview request
+				if ( request->preview_size() >= 0 ) {
+
+					logger.debug( std::string( "[reqmod] message preview request, preview: " ).append( util::itoa( request->preview_size() ) ) );
+
+					/* TODO: preview
+					*  notes:
+					*    + check for preview
+					*        - if preview, user the preview() from the module to get the response
+					*        - if the response is "100 continue" send it back to the client here and
+					*          then read and append to the request obj and use modify() to get the response
+					*/
+
+				} else {
+
+					logger.debug( "[reqmod] modify request" );
+					response = modifier->modify( request );
+
+				}
+
 
 				// status 200 OK means content modified
 				if ( response->header()->status() == icap::ResponseHeader::OK ) {
@@ -111,17 +132,6 @@ namespace bitz {
 			}
 
 		}
-
-		/*
-		 * TODO notes:
-		 *    + read the remaining data and construct the request object
-		 *    + check for preview
-		 *        - if preview, user the preview() from the module to get the response
-		 *        - if the response is "100 continue" send it back to the client here and
-		 *          then read and append to the request obj and use modify() to get the response
-		 *    + if not in preview use the modify() to get the response and return
-		 *
-		 */
 
 		// cleanup
 		delete request;
