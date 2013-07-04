@@ -35,6 +35,12 @@ namespace icap {
 
 	namespace util {
 
+		struct chunk_t {
+			unsigned int size;
+			std::string  extention;
+			std::string  data;
+		};
+
 		/**
 		*   Convert a number into a string
 		*
@@ -104,12 +110,37 @@ namespace icap {
 		unsigned int read_chunk_size( socketlibrary::TCPSocket * socket ) throw();
 
 		/**
+		*   Read chunk header from the given socket.
+		*
+		*   @param socket socket instance to read data from
+		*   @param chunk chunk data structure to store header data
+		*/
+		void read_chunk_header( socketlibrary::TCPSocket * socket, chunk_t &chunk ) throw();
+
+		/**
+		*   Read a data chunk from a HTTP chunked transfer encoded data stream.
+		*
+		*   @param socket socket instance to read data from
+		*   @return chunk data structure
+		*/
+		chunk_t read_chunk( socketlibrary::TCPSocket * socket ) throw();
+
+		/**
 		*   Read chunked data from the given socket
 		*
 		*   @param socket socket instance to read data from
 		*   @return read data (without the control characters)
 		*/
 		std::string read_chunked( socketlibrary::TCPSocket * socket ) throw();
+
+		/**
+		*   Read chunked payload data from the given socket
+		*
+		*   @param socket socket instance to read data from
+		*   @param payload payload to read data into
+		*   @return boolean flag to denote the presence of "ieof"
+		*/
+		bool read_chunked_payload( socketlibrary::TCPSocket * socket, std::string &payload ) throw();
 
 		/**
 		*   Send / write a line (ending with \r\n) to the socket

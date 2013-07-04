@@ -177,6 +177,57 @@ namespace icap {
 		}
 
 
+		void read_chunk_header( socketlibrary::TCPSocket * socket, chunk_t &chunk ) throw() {
+
+			std::string line;
+			std::vector<std::string> chunk_header;
+
+			line = read_line( socket );
+			chunk_header = split( line, ";" );
+
+			// sanity check
+			if ( chunk_header.size() > 0 ) {
+
+				chunk.size = hextodec( chunk_header.at( 0 ) );
+
+				// check for chunk-extension
+				if ( chunk_header.size() == 2 ) {
+					chunk.extention = trim( chunk_header.at( 1 ) );
+				}
+			}
+
+			return;
+
+		}
+
+
+		chunk_t read_chunk( socketlibrary::TCPSocket * socket ) throw() {
+
+			chunk_t chunk;
+			std::string line;
+			std::vector<std::string> chunk_header;
+
+			// initialise chunk
+			chunk.size      = 0;
+			chunk.extention = "";
+			chunk.data      = "";
+
+			// read chunk header
+			read_chunk_header( socket, chunk );
+
+			// read chunk data
+			if ( chunk.size > 0 ) {
+				chunk.data = read_data( socket, chunk.size );
+			}
+
+			// read \r\n ending for the chunk
+			read_data( socket, 2 );
+
+			return chunk;
+
+		}
+
+
 		std::string read_chunked( socketlibrary::TCPSocket * socket ) throw() {
 
 			unsigned int chunk_size  = 0;
@@ -205,6 +256,37 @@ namespace icap {
 			while ( read_line( socket, true ).size() > 2 ) ;
 
 			return chunked_data;
+
+		}
+
+
+		bool read_chunked_payload( socketlibrary::TCPSocket * socket, std::string &payload ) throw() {
+
+			chunk_t chunk;
+			bool ieof = false;
+
+			do {
+
+				// read chunk
+				chunk = read_chunk( socket );
+
+				// append to payload
+				payload.append( chunk.data );
+
+				// sanity check
+				if ( chunk.data.size() != chunk.size ) {
+					// something went wrong
+					break;
+				}
+
+			} while( chunk.size > 0 );
+
+			// check for ieof
+			if ( chunk.extention == "ieof" ) {
+				ieof = true;
+			}
+
+			return ieof;
 
 		}
 
