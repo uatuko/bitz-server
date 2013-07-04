@@ -119,15 +119,15 @@ namespace bitz {
 				}
 
 
+				// cleanup
+				logger.debug( std::string( "[reqmod] cleaning up modifier: " ).append( _handlers[i].name ) );
+				_handlers[i].symbols.destroy( modifier );
+
 				// status 200 OK means content modified
 				if ( response->header()->status() == icap::ResponseHeader::OK ) {
 					logger.debug( "[reqmod] OK response received, not getting responses from other modifiers" );
 					break;
 				}
-
-				// cleanup
-				logger.debug( std::string( "[reqmod] cleaning up modifier: " ).append( _handlers[i].name ) );
-				_handlers[i].symbols.destroy( modifier );
 
 			}
 
