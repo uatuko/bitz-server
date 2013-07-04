@@ -55,9 +55,6 @@ namespace bitz {
 
 		icap::Request  * request;
 		icap::Response * response = NULL;
-		Modifier       * modifier;
-
-		int i = 0;
 
 		// logger
 		Logger &logger = Logger::instance();
@@ -79,55 +76,27 @@ namespace bitz {
 			logger.debug( std::string( "[reqmod] payload.res-hdr:\r\n").append( request->payload().res_header ) );
 			logger.debug( std::string( "[reqmod] payload.res-body:\r\n").append( request->payload().res_body ) );
 
+
+			// check for message preview
+			if ( request->preview_size() >= 0 ) {
+
+				// process preview
+				logger.debug( std::string( "[reqmod] message preview request, preview: " ).append( util::itoa( request->preview_size() ) ) );
+				response = process_preview( request, socket );
+
+			}
+
 			/*
-			*  loop through loaded modifier modules and grab responses
-			*
-			*  we will only send out the response from the last module
-			*  unless a icap::ResponseHeader::OK is received
+			*  When we get here, if the response is NULL then either this is a
+			*  pure REQMOD request without message preview or the preview was
+			*  inconclusive (i.e. 100 Continue) and we have requested for the full
+			*  request.
 			*/
-			for ( i = 0 ; i < _handlers_count; i++ ) {
+			if ( response == NULL ) {
 
-				// sanity check
-				if ( _handlers[i].name == "" ) {
-					logger.info( "[reqmod] modifier not loaded, not trying to get a response" );
-					continue;
-				}
-
-				// grab the response from modifier
-				logger.debug( std::string( "[reqmod] getting response from modifier: " ).append( _handlers[i].name ) );
-				modifier = _handlers[i].symbols.create();
-
-
-				// check whether this is a preview request
-				if ( request->preview_size() >= 0 ) {
-
-					logger.debug( std::string( "[reqmod] message preview request, preview: " ).append( util::itoa( request->preview_size() ) ) );
-
-					/* TODO: preview
-					*  notes:
-					*    + check for preview
-					*        - if preview, user the preview() from the module to get the response
-					*        - if the response is "100 continue" send it back to the client here and
-					*          then read and append to the request obj and use modify() to get the response
-					*/
-
-				} else {
-
-					logger.debug( "[reqmod] modify request" );
-					response = modifier->modify( request );
-
-				}
-
-
-				// cleanup
-				logger.debug( std::string( "[reqmod] cleaning up modifier: " ).append( _handlers[i].name ) );
-				_handlers[i].symbols.destroy( modifier );
-
-				// status 200 OK means content modified
-				if ( response->header()->status() == icap::ResponseHeader::OK ) {
-					logger.debug( "[reqmod] OK response received, not getting responses from other modifiers" );
-					break;
-				}
+				// process modify
+				logger.debug( "[reqmod] modify request" );
+				response = process_modify( request );
 
 			}
 
@@ -204,6 +173,115 @@ namespace bitz {
 			unload_modifier( _handlers[i].symbols.modifier );
 
 		}
+
+	}
+
+
+	icap::Response * ReqmodRequestHandler::process_preview( icap::Request * request, socketlibrary::TCPSocket * socket ) throw() {
+
+		icap::Response * response = NULL;
+		Modifier       * modifier;
+
+		int i = 0;
+
+		// logger
+		Logger &logger = Logger::instance();
+
+
+		/*
+		*  Loop through loaded modifier modules and grab responses
+		*
+		*  We will only get a chance to get a response from the first
+		*  module. But if the first module returns a '100 Continue' response
+		*  then we read the rest of the request here before returning a NULL
+		*  response.
+		*/
+		for ( i = 0 ; i < _handlers_count; i++ ) {
+
+			// sanity check
+			if ( _handlers[i].name == "" ) {
+				logger.info( "[reqmod] modifier not loaded, not trying to get a response" );
+				continue;
+			}
+
+			// grab the response from modifier
+			logger.debug( std::string( "[reqmod] getting preview response from modifier: " ).append( _handlers[i].name ) );
+			modifier = _handlers[i].symbols.create();
+			response = modifier->preview( request );
+
+			// cleanup
+			logger.debug( std::string( "[reqmod] cleaning up modifier: " ).append( _handlers[i].name ) );
+			_handlers[i].symbols.destroy( modifier );
+
+			// check response status
+			if ( ( response->header()->status() == icap::ResponseHeader::NO_CONTENT )
+					|| ( response->header()->status() == icap::ResponseHeader::OK ) ) {
+				// no further action needed, break out of the loop
+				break;
+			}
+
+			if ( response->header()->status() == icap::ResponseHeader::CONTINUE ) {
+
+				// TODO: read the full response
+
+				// set the response to NULL
+				response = NULL;
+				break;
+
+			}
+
+			// usually we shouldn't have got this far
+
+		}
+
+		return response;
+
+	}
+
+
+	icap::Response * ReqmodRequestHandler::process_modify( icap::Request * request ) throw() {
+
+		icap::Response * response = NULL;
+		Modifier       * modifier;
+
+		int i = 0;
+
+		// logger
+		Logger &logger = Logger::instance();
+
+
+		/*
+		*  Loop through loaded modifier modules and grab responses
+		*
+		*  We will only return the response from the last module
+		*  unless a icap::ResponseHeader::OK is received
+		*/
+		for ( i = 0 ; i < _handlers_count; i++ ) {
+
+			// sanity check
+			if ( _handlers[i].name == "" ) {
+				logger.info( "[reqmod] modifier not loaded, not trying to get a response" );
+				continue;
+			}
+
+			// grab the response from modifier
+			logger.debug( std::string( "[reqmod] getting modify response from modifier: " ).append( _handlers[i].name ) );
+			modifier = _handlers[i].symbols.create();
+			response = modifier->modify( request );
+
+			// cleanup
+			logger.debug( std::string( "[reqmod] cleaning up modifier: " ).append( _handlers[i].name ) );
+			_handlers[i].symbols.destroy( modifier );
+
+			// status 200 OK means content modified
+			if ( response->header()->status() == icap::ResponseHeader::OK ) {
+				logger.debug( "[reqmod] OK response received, not getting responses from other modifiers" );
+				break;
+			}
+
+		}
+
+		return response;
 
 	}
 

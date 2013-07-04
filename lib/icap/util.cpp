@@ -441,6 +441,7 @@ namespace icap {
 			payload.req_body   = "";
 			payload.res_header = "";
 			payload.res_body   = "";
+			payload.ieof       = false;
 
 			// header
 			icap::Header * header = request->header();
@@ -458,9 +459,9 @@ namespace icap {
 				if ( sorted_idx == ( sorted_encaps_header.end() - 1 ) ) {
 
 					if ( sorted_idx->first == "req-body" ) {
-						payload.req_body = read_chunked( socket );
+						payload.ieof = read_chunked_payload( socket, payload.req_body );
 					} else if ( sorted_idx->first == "res-body" ) {
-						payload.res_body = read_chunked( socket );
+						payload.ieof = read_chunked_payload( socket, payload.res_body );
 					} else {
 						/*
 						*  null-body is the only other legal possibility here

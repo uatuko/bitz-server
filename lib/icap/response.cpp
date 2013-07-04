@@ -37,6 +37,7 @@ namespace icap {
 		_payload.req_body   = "";
 		_payload.res_header = "";
 		_payload.res_body   = "";
+		_payload.ieof       = false;
 
 	}
 

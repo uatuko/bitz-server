@@ -33,6 +33,7 @@ namespace icap {
 		std::string req_body;      /**< request body    */
 		std::string res_header;    /**< response header */
 		std::string res_body;      /**< response body   */
+		bool ieof;                 /**< boolen flag to store the presence of "ieof" */
 	};
 
 } /* end of namespace icap */
