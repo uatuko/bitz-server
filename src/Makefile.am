@@ -1,4 +1,5 @@
 ## src/
+AUTOMAKE_OPTIONS        = subdir-objects
 AM_CPPFLAGS             = -I$(top_srcdir)/lib ${libconfig_CFLAGS} ${log4cpp_CFLAGS}
 
 bitzincludedir          = $(pkgincludedir)
