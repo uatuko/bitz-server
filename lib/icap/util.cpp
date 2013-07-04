@@ -47,8 +47,8 @@ namespace icap {
 			std::string hex;
 			std::stringstream ss;
 
-			ss << dec;
-			ss >> std::hex >> hex;
+			ss << std::hex << dec;
+			ss >> hex;
 
 			return hex;
 
