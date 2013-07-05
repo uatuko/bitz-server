@@ -4,6 +4,7 @@ Priority: extra
 Maintainer: Uditha Atukorala <udi@geniusse.com>
 Build-Depends: debhelper (>= 9.0.0), autotools-dev, libconfig++-dev, liblog4cpp5-dev
 Standards-Version: 3.9.4
+Homepage: https://github.com/uditha-atukorala/bitz-server
 
 Package: bitz-server
 Architecture: any
