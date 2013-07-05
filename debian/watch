@@ -1,0 +1,5 @@
+# watch control file for uscan
+
+version=3
+https://github.com/uditha-atukorala/bitz-server/releases /uditha-atukorala/bitz-server/archive/v(.*)\.tar\.gz
+
