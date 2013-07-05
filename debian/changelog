@@ -1,3 +1,9 @@
+bitz-server (0.1.1-2) unstable; urgency=low
+
+  * Removing unnecessary OpenSSL dependency
+
+ -- Uditha Atukorala <udi@geniusse.com>  Fri, 05 Jul 2013 17:36:10 +0100
+
 bitz-server (0.1.1-1) unstable; urgency=low
 
   * Initial Release.
