@@ -78,9 +78,7 @@ PKG_CHECK_MODULES([libconfig], [libconfig++ >= 1.4],,
 PKG_CHECK_MODULES([log4cpp], [log4cpp >= 1.0],,
 	AC_MSG_ERROR([log4cpp 1.0 or newer not found.])
 )
-PKG_CHECK_MODULES([openssl], [openssl >= 1.0.1],,
-	AC_MSG_ERROR([openssl 1.0.1 or newer not found.])
-)
+
 
 # Checks for header files.
 #AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stddef.h stdlib.h string.h sys/socket.h syslog.h unistd.h])
