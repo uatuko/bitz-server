@@ -57,6 +57,7 @@ PyObject * bitz_get_request( PyObject * self, PyObject * pyrequest ) {
 		PyDict_SetItemString( pypayload, "req_body", PyString_FromString( request->payload().req_body.c_str() ) );
 		PyDict_SetItemString( pypayload, "res_header", PyString_FromString( request->payload().res_header.c_str() ) );
 		PyDict_SetItemString( pypayload, "res_body", PyString_FromString( request->payload().res_body.c_str() ) );
+		PyDict_SetItemString( pypayload, "ieof", PyBool_FromLong( request->payload().ieof ) );
 
 		PyDict_SetItemString( pyreturn, "payload", pypayload );
 
@@ -120,6 +121,7 @@ PyObject * bitz_get_response( PyObject * self, PyObject * args ) {
 		payload.req_body   = PyString_AsString( PyDict_GetItemString( pypayload, "req_body" ) );
 		payload.res_header = PyString_AsString( PyDict_GetItemString( pypayload, "res_header" ) );
 		payload.res_body   = PyString_AsString( PyDict_GetItemString( pypayload, "res_body" ) );
+		payload.ieof       = PyBool_Check( PyDict_GetItemString( pypayload, "ieof" ) );
 
 		response = new icap::Response( (icap::ResponseHeader::status_t) resp_status );
 		response->payload( payload );

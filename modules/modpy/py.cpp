@@ -54,88 +54,17 @@ namespace bitz {
 
 	icap::Response * Py::modify( icap::Request * request ) throw() {
 
-		/*
-		*  notes:
-		*    + pass icap::Request to python module as a PyCapsule object
-		*      so it can be used to grab the data needed using the C/C++ interface.
-		*    + process data (within the python module) and use the C/C++ interface
-		*      to create a icap::Response and pass it back to this method
-		*      using a PyCapsule object
-		*/
-
-		icap::Response * response;
-
-		PyObject * pymethod;
-		PyObject * pyargs;
-		PyObject * pyrequest, * pyresponse;
-
-		// logger
-		Logger &logger = Logger::instance();
-
-		// initialise the response object
-		response = NULL;
-
-		// check for the interface module
-		if ( _pymodule != NULL ) {
-
-			/* call modify() in the interface module */
-			pymethod  = PyObject_GetAttrString( _pymodule, "modify" );
-			pyargs    = PyTuple_New( 1 );
-			pyrequest = PyCapsule_New( (void *) request, "request", NULL );
-			PyTuple_SetItem( pyargs, 0, pyrequest );
-
-			if ( pymethod && PyCallable_Check( pymethod ) ) {
-
-				// get the response capsule
-				pyresponse = PyObject_CallObject( pymethod, pyargs );
-
-				// sanity check
-				if ( pyresponse != NULL ) {
-
-					void * p = PyCapsule_GetPointer( pyresponse, "response" );
-
-					// sanity check
-					if ( p != NULL ) {
-
-						// construct the response
-						response = static_cast<icap::Response *>(p);
-
-					} else {
-						logger.warn( "[modpy] invalid capsule response from modify()" );
-					}
-
-					Py_DECREF( pyresponse );
-
-				} else {
-					logger.warn( "[modpy] modify() response is NULL" );
-				}
-
-
-			} else {
-				logger.warn ( "[modpy] failed to call modify() in interface module" );
-			}
-
-			// cleanup
-			// pyrequest is created from the reference passed in
-			Py_DECREF( pyargs );
-			Py_DECREF( pymethod );
-
-		}
-
-		// sanity check
-		if ( response == NULL ) {
-			response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
-		}
-
-		return response;
+		// get the modify response
+		return python_response( request, "modify" );
 
 	}
 
 
 	icap::Response * Py::preview( icap::Request * request ) throw() {
-		// TODO: needs to implement, for the moment we send back
-		// 100 - continue always
-		return new icap::Response( icap::ResponseHeader::CONTINUE );
+
+		// get the preview response
+		return python_response( request, "preview" );
+
 	}
 
 
@@ -249,6 +178,86 @@ namespace bitz {
 
 		// finalise python core
 		Py_Finalize();
+
+	}
+
+
+	icap::Response * Py::python_response( icap::Request * request, const std::string &method ) throw() {
+
+		/*
+		*  notes:
+		*    + pass icap::Request to python module as a PyCapsule object
+		*      so it can be used to grab the data needed using the C/C++ interface.
+		*    + process data (within the python module) and use the C/C++ interface
+		*      to create a icap::Response and pass it back to this method
+		*      using a PyCapsule object
+		*/
+
+		icap::Response * response;
+
+		PyObject * pymethod;
+		PyObject * pyargs;
+		PyObject * pyrequest, * pyresponse;
+
+		// logger
+		Logger &logger = Logger::instance();
+
+		// initialise the response object
+		response = NULL;
+
+		// check for the interface module
+		if ( _pymodule != NULL ) {
+
+			/* call the [method]() in the interface module */
+			pymethod  = PyObject_GetAttrString( _pymodule, method.c_str() );
+			pyargs    = PyTuple_New( 1 );
+			pyrequest = PyCapsule_New( (void *) request, "request", NULL );
+			PyTuple_SetItem( pyargs, 0, pyrequest );
+
+			if ( pymethod && PyCallable_Check( pymethod ) ) {
+
+				// get the response capsule
+				pyresponse = PyObject_CallObject( pymethod, pyargs );
+
+				// sanity check
+				if ( pyresponse != NULL ) {
+
+					void * p = PyCapsule_GetPointer( pyresponse, "response" );
+
+					// sanity check
+					if ( p != NULL ) {
+
+						// construct the response
+						response = static_cast<icap::Response *>(p);
+
+					} else {
+						logger.warn( std::string( "[modpy] invalid capsule response, method: " ).append( method ) );
+					}
+
+					Py_DECREF( pyresponse );
+
+				} else {
+					logger.warn( std::string( "[modpy] response is NULL, method: " ).append( method ) );
+				}
+
+
+			} else {
+				logger.warn ( std::string( "[modpy] failed to call the method in interface module, method: " ).append( method ) );
+			}
+
+			// cleanup
+			// pyrequest is created from the reference passed in
+			Py_DECREF( pyargs );
+			Py_DECREF( pymethod );
+
+		}
+
+		// sanity check
+		if ( response == NULL ) {
+			response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
+		}
+
+		return response;
 
 	}
 

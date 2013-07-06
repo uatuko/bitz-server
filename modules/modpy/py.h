@@ -49,6 +49,8 @@ namespace bitz {
 		void init_python() throw();
 		void cleanup_python() throw();
 
+		icap::Response * python_response( icap::Request * request, const std::string &method ) throw();
+
 	};
 
 } /* end of namespace bitz */

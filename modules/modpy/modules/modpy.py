@@ -11,13 +11,23 @@ def init():
 def cleanup():
 	print "cleanup() called";
 
-def preview():
-	print "preview() called";
+def preview( request ):
+	request     = bitz.get_request( request );
+	req_payload = request['payload'];
+	print "preview payload: \r\n", req_payload;
+
+	# response
+	if req_payload['ieof']:
+		response = bitz.get_response_from_status( 204 );
+	else:
+		response = bitz.get_response_from_status( 100 );
+
+	return response;
 
 def modify( request ):
 	request     = bitz.get_request( request );
 	req_payload = request['payload'];
-	print "payload: \r\n", req_payload;
+	print "modify payload: \r\n", req_payload;
 
 	# response
 	resp_payload = {};
@@ -25,6 +35,7 @@ def modify( request ):
 	resp_payload['req_body']   = req_payload['req_body'];
 	resp_payload['res_header'] = req_payload['res_header'];
 	resp_payload['res_body']   = req_payload['res_body'];
+	resp_payload['ieof']       = True;
 
 	response = bitz.get_response( 200, resp_payload );
 	return response;
