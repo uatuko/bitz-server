@@ -53,13 +53,13 @@ Known issues can be found [here](http://bugs.geniusse.com/buglist.cgi?query_form
 ### Version history
 
 __0.1.2__ - _07th July 2013_
-*   Added a RESPMOD handler ([bug #16][http://bugs.geniusse.com/show_bug.cgi?id=16])
-*   Added Message Preview features ([bug #17][http://bugs.geniusse.com/show_bug.cgi?id=17])
+*   Added a RESPMOD handler ([bug #16](http://bugs.geniusse.com/show_bug.cgi?id=16))
+*   Added Message Preview features ([bug #17](http://bugs.geniusse.com/show_bug.cgi?id=17))
 *   Code cleanup and optimisations
-*   Fixing bugs [#15][http://bugs.geniusse.com/show_bug.cgi?id=15]
-	[#23][http://bugs.geniusse.com/show_bug.cgi?id=23],
-	[#24][http://bugs.geniusse.com/show_bug.cgi?id=24],
-	[#25][http://bugs.geniusse.com/show_bug.cgi?id=25]
+*   Fixing bugs [#15](http://bugs.geniusse.com/show_bug.cgi?id=15)
+	[#23](http://bugs.geniusse.com/show_bug.cgi?id=23),
+	[#24](http://bugs.geniusse.com/show_bug.cgi?id=24),
+	[#25](http://bugs.geniusse.com/show_bug.cgi?id=25)
 
 __0.1.1__ - _06th March 2013_
 *   Fixing bugs [#19](http://bugs.geniusse.com/show_bug.cgi?id=19) and [#22](http://bugs.geniusse.com/show_bug.cgi?id=22)
