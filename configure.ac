@@ -33,7 +33,7 @@ AC_CONFIG_HEADERS([include/config.h])
 # CURRENT : REVISION : AGE
 
 # lib versions
-ICAP_LT_VERSION=0:0:1
+ICAP_LT_VERSION=0:1:0
 AC_SUBST(ICAP_LT_VERSION)
 
 # Init
