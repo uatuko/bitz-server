@@ -27,6 +27,17 @@ req_handlers :
 			module = "@pkglibdir@/modules/mod_py.so";
 		}
 	)
+},
+{
+	handler = "RESPMOD";
+	class   = "RespmodRequestHandler";
+	modules :
+	(
+		{
+			name   = "modpy";
+			module = "@pkglibdir@/modules/mod_py.so";
+		}
+	)
 });
 
 

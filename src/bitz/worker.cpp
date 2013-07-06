@@ -22,6 +22,7 @@
 #include "util.h"
 #include "options_request_handler.h"
 #include "reqmod_request_handler.h"
+#include "respmod_request_handler.h"
 
 #include <icap/util.h>
 #include <icap/request_header.h>
@@ -121,9 +122,15 @@ namespace bitz {
 		options_handler = new OptionsRequestHandler();
 		_req_handlers["OPTIONS"] = options_handler;
 
-		// FIXME: these should be able to dynamically loaded and configurable
+		/* request handlers */
+
+		// REQMOD
 		_req_handlers["REQMOD"]  = new ReqmodRequestHandler();
 		options_handler->register_handler( _req_handlers["REQMOD"] );
+
+		// RESPMOD
+		_req_handlers["RESPMOD"] = new RespmodRequestHandler();
+		options_handler->register_handler( _req_handlers["RESPMOD"] );
 
 	}
 
