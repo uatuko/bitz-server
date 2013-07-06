@@ -18,7 +18,6 @@
  */
 
 #include "reqmod_request_handler.h"
-#include "config.h"
 #include "logger.h"
 #include "util.h"
 
@@ -29,24 +28,10 @@ namespace bitz {
 
 	ReqmodRequestHandler::ReqmodRequestHandler() : RequestHandler( "REQMOD" ) {
 
-		// initialise defaults
-		_handlers_count = 0;
-		_handlers       = NULL;
-
-		// load modifier modules
-		load_modules();
-
 	}
 
 
 	ReqmodRequestHandler::~ReqmodRequestHandler() {
-
-		// cleanup modifier modules
-		cleanup_modules();
-
-		if ( _handlers != NULL ) {
-			delete [] _handlers;
-		}
 
 	}
 
@@ -112,67 +97,6 @@ namespace bitz {
 		}
 
 		return response;
-
-	}
-
-
-	void ReqmodRequestHandler::load_modules() throw() {
-
-		int i = 0;
-		int j = 0;
-		const bitz::config_t &config = Config::instance().configs();
-
-		// search for request handlers
-		for ( i = 0; i < config.req_handlers_count; i++ ) {
-
-			// we are only interested in REQMOD handlers
-			if ( config.req_handlers[i].name == "REQMOD" ) {
-
-				if ( config.req_handlers[i].modules_count > 0 ) {
-
-					_handlers_count = config.req_handlers[i].modules_count;
-					_handlers       = new handler_t[_handlers_count];
-
-					// search for request handler modules
-					for (j = 0; j < _handlers_count; j++ ) {
-
-						// load module
-						if ( load_modifier( config.req_handlers[i].modules[j].module, _handlers[j].symbols ) ) {
-							_handlers[j].name = config.req_handlers[i].modules[j].name;
-						} else {
-							_handlers[j].name = "";
-							// FIXME: error handling
-						}
-
-					}
-
-				}
-
-				// not interested in duplicate config entries
-				break;
-			}
-
-		}
-
-
-	}
-
-
-	void ReqmodRequestHandler::cleanup_modules() throw() {
-
-		int i = 0;
-
-		// logger
-		Logger &logger = Logger::instance();
-
-		for ( i = 0; i < _handlers_count; i++ ) {
-
-			logger.debug( std::string( "[reqmod] unloading module: " ).append( _handlers[i].name ) );
-
-			// unload
-			unload_modifier( _handlers[i].symbols.modifier );
-
-		}
 
 	}
 

@@ -36,6 +36,11 @@ namespace bitz {
 			std::string method;
 		};
 
+		struct handler_t {
+			std::string name;
+			Modifier::symbols_t symbols;
+		};
+
 		RequestHandler( const std::string &method );
 		virtual ~RequestHandler();
 
@@ -58,6 +63,9 @@ namespace bitz {
 
 	protected:
 
+		unsigned int _handlers_count;
+		handler_t * _handlers;
+
 		/**
 		*   Load a modifier module
 		*
@@ -74,6 +82,15 @@ namespace bitz {
 		*/
 		void unload_modifier( void * modifier ) throw();
 
+		/**
+		*   Load all the configured modifier modules for this request handler
+		*/
+		void load_modules() throw();
+
+		/**
+		*  Cleanup all the loaded modifier modules
+		*/
+		void cleanup_modules() throw();
 
 	private:
 
