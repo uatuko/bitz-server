@@ -51,7 +51,7 @@ namespace bitz {
 		}
 
 		Logger &logger = Logger::instance();
-		logger.debug( std::string( "exiting request handler [" ).append( _req_handler.method ).append( "]" ) );
+		logger.debug( std::string( "[req] exiting request handler [" ).append( _req_handler.method ).append( "]" ) );
 
 	}
 
@@ -70,11 +70,11 @@ namespace bitz {
 		const char* dlsym_error;
 
 		// load the modifier module
-		logger.debug( "loading modifier: " + file );
+		logger.debug( "[req] loading modifier: " + file );
 		symbols.modifier = dlopen( file.c_str(), RTLD_LAZY | RTLD_LOCAL );
 
 		if (! symbols.modifier ) {
-			logger.warn( std::string( "failed to load modifier: " ).append( file ).append( dlerror() ) );
+			logger.warn( std::string( "[req] failed to load modifier: " ).append( file ).append( dlerror() ) );
 			return false;
 		}
 
@@ -86,7 +86,7 @@ namespace bitz {
 		dlsym_error    = dlerror();
 
 		if ( dlsym_error ) {
-			logger.warn( std::string( "failed to load create symbol: " ).append( dlsym_error ) );
+			logger.warn( std::string( "[req] failed to load create symbol: " ).append( dlsym_error ) );
 			return false;
 		}
 
@@ -94,7 +94,7 @@ namespace bitz {
 		dlsym_error     = dlerror();
 
 		if ( dlsym_error ) {
-			logger.warn( std::string( "failed to load destroy symbol: " ).append( dlsym_error ) );
+			logger.warn( std::string( "[req] failed to load destroy symbol: " ).append( dlsym_error ) );
 			return false;
 		}
 
