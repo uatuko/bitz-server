@@ -31,22 +31,7 @@ namespace bitz {
 		ReqmodRequestHandler();
 		virtual ~ReqmodRequestHandler();
 
-		/**
-		*   Process the ICAP request and return a response object which can
-		*   be used to send the final response back to the client.
-		*
-		*   @param req_header request header
-		*   @param socket communication socket
-		*   @return response object
-		*/
-		icap::Response * process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw();
-
 	private:
-
-		icap::Response * process_preview( icap::Request * request, socketlibrary::TCPSocket * socket ) throw();
-		icap::Response * process_modify( icap::Request * request ) throw();
-
-		bool preview_continue( icap::Response * response, icap::Request * request, socketlibrary::TCPSocket * socket ) throw();
 
 	};
 

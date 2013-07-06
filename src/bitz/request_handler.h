@@ -58,7 +58,7 @@ namespace bitz {
 		*   @param socket socket object to read the data from
 		*   @return response object
 		*/
-		virtual icap::Response * process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() =0;
+		virtual icap::Response * process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw();
 
 
 	protected:
@@ -91,6 +91,35 @@ namespace bitz {
 		*  Cleanup all the loaded modifier modules
 		*/
 		void cleanup_modules() throw();
+
+		/**
+		*   Given a request instance and a socket instance to communicate, this method will use the
+		*   loaded handler modules to grab a preview response. This will return a icap::Response
+		*   object or NULL after processing a '100 Continue' response.
+		*
+		*   @param request request object
+		*   @param socket socket object to read data from
+		*   @return preview response (response object)
+		*/
+		icap::Response * process_preview( icap::Request * request, socketlibrary::TCPSocket * socket ) throw();
+
+		/**
+		*   This method will use the loaded handler modules to get a response to the request.
+		*
+		*   @param request request object
+		*   @return response object
+		*/
+		icap::Response * process_modify( icap::Request * request ) throw();
+
+		/**
+		*   Helper method to set a '100 Continue' response back to the client and read the full request.
+		*
+		*   @param response response object with status 100
+		*   @param request request object
+		*   @param socket socket object to read / write data
+		*   @return
+		*/
+		bool preview_continue( icap::Response * response, icap::Request * request, socketlibrary::TCPSocket * socket ) throw();
 
 	private:
 
