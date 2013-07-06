@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([bitz-server], [0.1.1], [http://bugs.geniusse.com/])
+AC_INIT([bitz-server], [0.1.2], [http://bugs.geniusse.com/])
 AC_CONFIG_AUX_DIR([aux-build])
 AC_CONFIG_MACRO_DIR([aux-build/m4])
 AC_CONFIG_HEADERS([include/config.h])
@@ -33,7 +33,7 @@ AC_CONFIG_HEADERS([include/config.h])
 # CURRENT : REVISION : AGE
 
 # lib versions
-ICAP_LT_VERSION=0:0:0
+ICAP_LT_VERSION=0:0:1
 AC_SUBST(ICAP_LT_VERSION)
 
 # Init
