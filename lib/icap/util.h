@@ -222,6 +222,16 @@ namespace icap {
 		bool read_req_data( icap::Request * request, socketlibrary::TCPSocket * socket ) throw();
 
 		/**
+		*   Read icap request data after a '100 Continue' response. This will not look for any
+		*   additional headers and will treat any data coming through the socket as payload data.
+		*
+		*   @param request request object to read data into
+		*   @param socket socket object to read data from
+		*   @return boolean to denote success or failure
+		*/
+		bool read_req_continue_data( icap::Request * request, socketlibrary::TCPSocket * socket ) throw();
+
+		/**
 		*   Send / write header data to a socket
 		*
 		*   @param headers headers to be sent

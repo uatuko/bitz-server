@@ -55,8 +55,12 @@ namespace icap {
 
 		update_timestamp();
 		generate_istag();
-		attach( "Connection" , "close" );
 		attach( "Server", PACKAGE_STRING );
+
+		// close connection header
+		if ( _response.status != ResponseHeader::CONTINUE ) {
+			attach( "Connection" , "close" );
+		}
 
 	}
 

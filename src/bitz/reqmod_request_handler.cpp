@@ -183,6 +183,7 @@ namespace bitz {
 		Modifier       * modifier;
 
 		int i = 0;
+		bool continue_status = false;
 
 		// logger
 		Logger &logger = Logger::instance();
@@ -222,15 +223,32 @@ namespace bitz {
 
 			if ( response->header()->status() == icap::ResponseHeader::CONTINUE ) {
 
-				// TODO: read the full response
+				// read the full response
+				continue_status = preview_continue( response, request, socket );
 
-				// set the response to NULL
-				response = NULL;
+				// cleanup
+				delete response;
+
+				// sanity check
+				if ( continue_status ) {
+
+					// success - set the response to NULL
+					response = NULL;
+
+				} else {
+
+					// something went wrong, server error
+					response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
+
+				}
+
+				// exit the loop
 				break;
 
 			}
 
-			// usually we shouldn't have got this far
+			// we shouldn't have got this far
+			logger.info( std::string( "[reqmod] unrecognised preview response from modifier: " ).append( _handlers[i].name ) );
 
 		}
 
@@ -282,6 +300,39 @@ namespace bitz {
 		}
 
 		return response;
+
+	}
+
+
+	bool ReqmodRequestHandler::preview_continue( icap::Response * response, icap::Request * request, socketlibrary::TCPSocket * socket ) throw() {
+
+		bool status = false;
+
+		// logger
+		Logger &logger = Logger::instance();
+
+
+		// sanity check
+		if ( request->payload().ieof ) {
+
+			// we can process a '100 Continue' only if an 'ieof' is not received
+			logger.warn( "[reqmod] illegal '100 Continue' response" );
+
+		} else {
+
+			/* read the full request */
+
+			// send back the response first
+			if ( icap::util::send_response( response, socket ) ) {
+
+				// read the rest of the request
+				status = icap::util::read_req_continue_data( request, socket );
+
+			}
+
+		}
+
+		return status;
 
 	}
 

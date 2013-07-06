@@ -433,7 +433,6 @@ namespace icap {
 			int data_read   = 0;
 			std::vector<icap::Header::encapsulated_header_data_t> sorted_encaps_header;
 			std::vector<icap::Header::encapsulated_header_data_t>::iterator sorted_idx;
-			std::string chunked_data;
 
 			// payload
 			icap::payload_t payload;
@@ -511,6 +510,51 @@ namespace icap {
 					}
 
 				}
+
+			}
+
+			// update request
+			request->payload( payload );
+
+			return true;
+
+		}
+
+
+		bool read_req_continue_data( icap::Request * request, socketlibrary::TCPSocket * socket ) throw() {
+
+			std::vector<icap::Header::encapsulated_header_data_t> sorted_encaps_header;
+			icap::Header::encapsulated_header_data_t header_idx;
+
+			// copy the payload from request so we can append to it
+			icap::payload_t payload;
+			payload.req_header = request->payload().req_header;
+			payload.req_body   = request->payload().req_body;
+			payload.res_header = request->payload().res_header;
+			payload.res_body   = request->payload().res_body;
+			payload.ieof       = request->payload().ieof;
+
+			// header
+			icap::Header * header = request->header();
+			sorted_encaps_header  = header->sort_encapsulated_header();
+
+			// sanity check
+			if ( sorted_encaps_header.size() > 0 ) {
+
+				// we are only interested in the last header entity
+				header_idx = sorted_encaps_header.back();
+
+				// read payload data
+				if ( header_idx.first == "req-body" ) {
+					payload.ieof = read_chunked_payload( socket, payload.req_body );
+				} else if ( header_idx.first == "res-body" ) {
+					payload.ieof = read_chunked_payload( socket, payload.res_body );
+				}
+
+			} else {
+
+				// something isn't quite right
+				return false;
 
 			}
 

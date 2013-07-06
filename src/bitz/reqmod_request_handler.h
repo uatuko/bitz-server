@@ -56,6 +56,8 @@ namespace bitz {
 		icap::Response * process_preview( icap::Request * request, socketlibrary::TCPSocket * socket ) throw();
 		icap::Response * process_modify( icap::Request * request ) throw();
 
+		bool preview_continue( icap::Response * response, icap::Request * request, socketlibrary::TCPSocket * socket ) throw();
+
 	};
 
 } /* end of namespace bitz */
