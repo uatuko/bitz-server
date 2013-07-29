@@ -53,10 +53,10 @@ PyObject * bitz_get_request( PyObject * self, PyObject * pyrequest ) {
 
 		// payload dictionary
 		pypayload = PyDict_New();
-		PyDict_SetItemString( pypayload, "req_header", PyString_FromString( request->payload().req_header.c_str() ) );
-		PyDict_SetItemString( pypayload, "req_body", PyString_FromString( request->payload().req_body.c_str() ) );
-		PyDict_SetItemString( pypayload, "res_header", PyString_FromString( request->payload().res_header.c_str() ) );
-		PyDict_SetItemString( pypayload, "res_body", PyString_FromString( request->payload().res_body.c_str() ) );
+		PyDict_SetItemString( pypayload, "req_header", PyString_FromStringAndSize( request->payload().req_header.c_str(), request->payload().req_header.size() ) );
+		PyDict_SetItemString( pypayload, "req_body", PyString_FromStringAndSize( request->payload().req_body.c_str(), request->payload().req_body.size() ) );
+		PyDict_SetItemString( pypayload, "res_header", PyString_FromStringAndSize( request->payload().res_header.c_str(), request->payload().res_header.size() ) );
+		PyDict_SetItemString( pypayload, "res_body", PyString_FromStringAndSize( request->payload().res_body.c_str(), request->payload().res_body.size() ) );
 		PyDict_SetItemString( pypayload, "ieof", PyBool_FromLong( request->payload().ieof ) );
 
 		PyDict_SetItemString( pyreturn, "payload", pypayload );
