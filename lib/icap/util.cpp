@@ -153,8 +153,13 @@ namespace icap {
 			std::string data = "";
 
 			try {
-				socket->recv( buffer, size );
-				data.append( buffer );
+
+				// read from socket and update size with actual bytes read
+				size = socket->recv( buffer, size );
+
+				// append to data
+				data.append( buffer, size );
+
 			} catch ( socketlibrary::SocketException &sex ) {
 				// TODO: log errors ??
 			}
