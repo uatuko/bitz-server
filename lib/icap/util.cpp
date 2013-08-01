@@ -149,19 +149,28 @@ namespace icap {
 
 		std::string read_data( socketlibrary::TCPSocket * socket, int size ) throw() {
 
-			char buffer[size];
+			char buffer[ICAP_BUFFER_SIZE];
 			std::string data = "";
+			int n;
 
-			try {
+			// loop until we have read all the bytes
+			while ( size > 0 ) {
 
-				// read from socket and update size with actual bytes read
-				size = socket->recv( buffer, size );
+				try {
 
-				// append to data
-				data.append( buffer, size );
+					// read from socket
+					n = socket->recv( buffer, min( size, ICAP_BUFFER_SIZE ) );
 
-			} catch ( socketlibrary::SocketException &sex ) {
-				// TODO: log errors ??
+					// append to data
+					data.append( buffer, n );
+
+					// update size with remaining bytes
+					size -= n;
+
+				} catch ( socketlibrary::SocketException &sex ) {
+					// TODO: log errors ??
+				}
+
 			}
 
 			return data;
