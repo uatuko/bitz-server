@@ -161,6 +161,11 @@ namespace icap {
 					// read from socket
 					n = socket->recv( buffer, min( size, ICAP_BUFFER_SIZE ) );
 
+					// sanity check
+					if ( n == 0 ) {
+						break;
+					}
+
 					// append to data
 					data.append( buffer, n );
 
@@ -202,7 +207,10 @@ namespace icap {
 			// sanity check
 			if ( chunk_header.size() > 0 ) {
 
-				chunk.size = hextodec( chunk_header.at( 0 ) );
+				// sanity check
+				if ( chunk_header.at( 0 ).size() > 0 ) {
+					chunk.size = hextodec( chunk_header.at( 0 ) );
+				}
 
 				// check for chunk-extension
 				if ( chunk_header.size() == 2 ) {
@@ -494,29 +502,15 @@ namespace icap {
 					// is there anything to read?
 					if ( data_length > 0  ) {
 
-						char buffer[data_length];
-
-						// read from the socket
-						data_read = socket->recv( buffer, data_length );
-
-						// sanity check
-						if ( data_read != data_length ) {
-							// something is not right
-							return false;
-						}
-
-						// end char buffer
-						buffer[data_read] = NULL;
-
 						// update payload
 						if ( sorted_idx->first == "req-hdr" ) {
-							payload.req_header = buffer;
+							payload.req_header = read_data( socket, data_length );
 						} else if (  sorted_idx->first == "req-body" ) {
-							payload.req_body   = buffer;
+							payload.req_body   = read_data( socket, data_length );
 						} else if (  sorted_idx->first == "res-hdr" ) {
-							payload.res_header = buffer;
+							payload.res_header = read_data( socket, data_length );
 						} else if (  sorted_idx->first == "res-body" ) {
-							payload.res_body   = buffer;
+							payload.res_body   = read_data( socket, data_length );
 						} else {
 							// TODO: error?
 						}
