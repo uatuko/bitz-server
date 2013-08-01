@@ -52,6 +52,10 @@ Known issues can be found [here](http://bugs.geniusse.com/buglist.cgi?query_form
 
 ### Version history
 
+__0.1.4__ - _01st August 2013_
+*   Code optimisations
+*   Fixing bug [#34](http://bugs.geniusse.com/show_bug.cgi?id=34)
+
 __0.1.3__ - _29th July 2013_
 *   Fixing bugs
 	[#31](http://bugs.geniusse.com/show_bug.cgi?id=31),
