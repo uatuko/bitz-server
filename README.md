@@ -39,7 +39,6 @@ there is hope to exploit python programming language.
 
 * [libconfig++ >= 1.4](http://www.hyperrealm.com/libconfig/)
 * log4cpp >= 1.0
-* openssl >= 1.0.1c
 * python 2.7 (for modpy module)
 
 
