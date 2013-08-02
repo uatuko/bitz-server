@@ -143,3 +143,10 @@ e.g.
 
 	$ valgrind --leak-check=full --read-var-info=yes --trace-children=yes --suppressions=test/valgrind.supp --log-file=valgrind.log ./src/bitz-server --debug
 
+
+##### Debian packaging
+
+If you are interested in debian packages, the debian sources can be found at
+[bitz-server-debian](https://github.com/uditha-atukorala/bitz-server-debian) git
+repository.
+
