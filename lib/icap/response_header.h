@@ -28,7 +28,7 @@ namespace icap {
 	class ResponseHeader : public Header {
 	public:
 
-		typedef enum status_t {
+		enum status_t {
 			CONTINUE            = 100,
 			OK                  = 200,
 			NO_CONTENT          = 204,
