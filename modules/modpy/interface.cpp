@@ -104,10 +104,14 @@ PyObject * bitz_get_response( PyObject * self, PyObject * args ) {
 
 	PyObject * pyresponse;
 	PyObject * pypayload;
-	icap::Response * response;
+	icap::Response * response = NULL;
 
 	unsigned int resp_status;
 	icap::payload_t payload;
+
+	// vars to ferry across strings from python dictionary to c++
+	char * pybuffer;
+	Py_ssize_t pybuflen;
 
 
 	// logger
@@ -117,17 +121,32 @@ PyObject * bitz_get_response( PyObject * self, PyObject * args ) {
 	// parse args
 	if ( PyArg_ParseTuple( args, "IO!", &resp_status, &PyDict_Type, &pypayload ) ) {
 
-		payload.req_header = PyString_AsString( PyDict_GetItemString( pypayload, "req_header" ) );
-		payload.req_body   = PyString_AsString( PyDict_GetItemString( pypayload, "req_body" ) );
-		payload.res_header = PyString_AsString( PyDict_GetItemString( pypayload, "res_header" ) );
-		payload.res_body   = PyString_AsString( PyDict_GetItemString( pypayload, "res_body" ) );
-		payload.ieof       = PyBool_Check( PyDict_GetItemString( pypayload, "ieof" ) );
+		// copy strings from python dictionary
+		PyString_AsStringAndSize( PyDict_GetItemString( pypayload, "req_header" ), &pybuffer, &pybuflen );
+		payload.req_header.assign( pybuffer, pybuflen );
 
+		PyString_AsStringAndSize( PyDict_GetItemString( pypayload, "req_body" ), &pybuffer, &pybuflen );
+		payload.req_body.assign( pybuffer, pybuflen );
+
+		PyString_AsStringAndSize( PyDict_GetItemString( pypayload, "res_header" ), &pybuffer, &pybuflen );
+		payload.res_header.assign( pybuffer, pybuflen );
+
+		PyString_AsStringAndSize( PyDict_GetItemString( pypayload, "res_body" ), &pybuffer, &pybuflen );
+		payload.res_body.assign( pybuffer, pybuflen );
+
+		// copy other data types from python dictionary
+		payload.ieof = PyBool_Check( PyDict_GetItemString( pypayload, "ieof" ) );
+
+		// construct the response object
 		response = new icap::Response( (icap::ResponseHeader::status_t) resp_status );
 		response->payload( payload );
 
 	} else {
 		logger.warn( "[modpy.interface] failed to parse arguments" );
+	}
+
+	// sanity check
+	if ( response == NULL ) {
 		response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
 	}
 
