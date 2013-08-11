@@ -14,6 +14,7 @@ SERVICE = 'icap://icap.server.net/sample-service'
 PORT    = 1344
 
 # OPTIONS
+print "----- OPTIONS -----"
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error, msg:
@@ -43,6 +44,7 @@ print string
 
 
 # REQMOD, GET
+print "----- REQMOD - GET -----"
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error, msg:
@@ -78,7 +80,9 @@ sock.close()
 
 print string
 
+
 # REQMOD, POST
+print "----- REQMOD - POST -----"
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error, msg:
@@ -116,7 +120,9 @@ sock.close()
 
 print string
 
+
 # REQMOD - Message preview
+print "----- REQMOD - Message preview -----"
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error, msg:
