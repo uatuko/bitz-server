@@ -387,7 +387,7 @@ namespace bitz {
 
 			std::cout << PACKAGE_STRING << std::endl;
 			std::cout << "" << std::endl;
-			std::cout << "Copyright (C) 2012 Uditha Atukorala" << std::endl;
+			std::cout << "Copyright (C) 2012-2013 Uditha Atukorala" << std::endl;
 			std::cout << "" << std::endl;
 			std::cout << "This program is free software; you can redistribute it and/or modify" << std::endl;
 			std::cout << "it under the terms of the GNU General Public License as published by" << std::endl;
