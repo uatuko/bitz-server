@@ -154,5 +154,52 @@ sock.close()
 
 print string
 
+
+# RESPMOD
+print "----- RESPMOD -----"
+try:
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+except socket.error, msg:
+	sys.stderr.write("[ERROR] %s\n" % msg[1])
+	sys.exit(1)
+
+try:
+	sock.connect((HOST, PORT))
+except socket.error, msg:
+	sys.stderr.write("[ERROR] %s\n" % msg[1])
+	sys.exit(2)
+
+sock.send( "RESPMOD %s ICAP/1.0\r\n" % ( SERVICE ) )
+sock.send( "Host: %s\r\n" % ( HOST ) )
+sock.send( "Encapsulated: req-hdr=0, res-hdr=137, res-body=296\r\n" )
+sock.send( "\r\n" )
+
+sock.send( "GET /origin-resource HTTP/1.1\r\n" )
+sock.send( "Host: www.origin-server.com\r\n" )
+sock.send( "Accept: text/html, text/plain, image/gif\r\n" )
+sock.send( "Accept-Encoding: gzip, compress\r\n" )
+sock.send( "\r\n" )
+sock.send( "HTTP/1.1 200 OK\r\n" )
+sock.send( "Date: Mon, 10 Jan 2000 09:52:22 GMT\r\n" )
+sock.send( "Server: Apache/1.3.6 (Unix)\r\n" )
+sock.send( 'ETag: "63840-1ab7-378d415b"\r\n' )
+sock.send( "Content-Type: text/html\r\n" )
+sock.send( "Content-Length: 51\r\n" )
+sock.send( "\r\n" )
+sock.send( "33\r\n" )
+sock.send( "This is data that was returned by an origin server.\r\n" )
+sock.send( "0\r\n" )
+sock.send( "\r\n" )
+
+data = sock.recv(1024)
+string = ""
+while len(data):
+	string = string + data
+	data = sock.recv(1024)
+sock.close()
+
+print string
+
+
 sys.exit(0)
 
