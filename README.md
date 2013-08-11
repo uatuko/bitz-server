@@ -35,6 +35,11 @@ scanning etc. and to make it easier to write (and faster to implement) such modu
 there is hope to exploit python programming language.
 
 
+### Acknowledgements
+
+* Many thanks to Kenneth Oksanen for his support in finding and fixing bugs
+
+
 ### Dependencies
 
 * [libconfig++ >= 1.4](http://www.hyperrealm.com/libconfig/)
