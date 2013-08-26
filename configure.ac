@@ -37,7 +37,7 @@ ICAP_LT_VERSION=0:3:0
 AC_SUBST(ICAP_LT_VERSION)
 
 # Init
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 LT_INIT()
 
 # Check for programs
