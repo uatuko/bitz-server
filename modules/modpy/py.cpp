@@ -108,7 +108,7 @@ namespace bitz {
 
 			logger.debug( std::string( "[modpy] appending to sys.path, module_path: " ).append( _config.module_path ) );
 
-			sys_path      = PySys_GetObject( "path" );
+			sys_path      = PySys_GetObject( (char *) "path" );
 			pymodule_path = PyString_FromString( _config.module_path.c_str() );
 			PyList_Append( sys_path, pymodule_path );
 

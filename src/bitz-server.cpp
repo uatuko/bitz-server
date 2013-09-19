@@ -102,7 +102,7 @@ namespace bitz {
 
 			std::cout << "[" << getpid() << "] inside zombie deleter: ";
 			while ( ( worker_pid = waitpid( WAIT_ANY, &status, WNOHANG ) ) > 0 ) {
-				printf( "child %ld terminated with status %d\n", worker_pid, status );
+				std::cout << "child " << worker_pid << " terminated with status " << status << std::endl;
 
 				if ( globals.manager != NULL ) {
 					globals.manager->reap_worker( worker_pid );
