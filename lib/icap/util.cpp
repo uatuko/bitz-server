@@ -55,41 +55,38 @@ namespace icap {
 		}
 
 
-		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length, bool incl_endl ) throw() {
+		int read_line( psocksxx::iosockstream * socket, char * buf, int buf_length, bool incl_endl ) throw() {
 
-			int i  = 0, n;
-			char c = '\0';
+			int i = 0;
+			char c      = '\0';
+			char c_last = '\0';
 
 			while ( i < ( buf_length - 1 ) ) {
 
-				n = socket->recv( &c, 1 );
+				if ( ( c = socket->get() ) > 0 ) {
 
-				if ( n > 0 ) {
-					if ( c == '\r' ) {
+					if ( c_last == '\r' ) {
 
-						if ( incl_endl ) {
-							buf[i] = c;
-							i++;
-						}
-
-						// peak for \n
-						n = socket->peek( &c, 1 );
-
-						if ( ( n > 0 ) && ( c == '\n' ) ) {
-
-							n = socket->recv( &c, 1 );
+						if ( c == '\n' ) {
 
 							if ( incl_endl ) {
 								buf[i] = c;
 								i++;
+							} else {
+								i--;
 							}
 
-							break;    // end of line
+							break;
+
 						}
+
 					}
 
 					buf[i] = c;
 					i++;
+
+					c_last = c;
+
 				} else {
 					break;    // nothing read from socket
 				}
@@ -102,42 +99,39 @@ namespace icap {
 		}
 
 
-		std::string read_line( socketlibrary::TCPSocket * socket, bool incl_endl ) throw() {
+		std::string read_line( psocksxx::iosockstream * socket, bool incl_endl ) throw() {
 
 			int n;
 			std::string line;
 			char c = '\0';
+			char c_last = '\0';
 
 			try {
 
-				while ( ( n = socket->recv( &c, 1 ) ) > 0 ) {
+				while ( ( c = socket->get() ) > 0 ) {
 
-					if ( c == '\r' ) {
+					if ( c_last == '\r' ) {
 
-						if ( incl_endl ) {
-							line += c;
-						}
-
-						// peak for \n
-						n = socket->peek( &c, 1 );
-
-						if ( ( n > 0 ) && ( c == '\n' ) ) {
-
-							n = socket->recv( &c, 1 );
+						if ( c == '\n' ) {
 
 							if ( incl_endl ) {
 								line += c;
+							} else {
+								line.erase( line.size() - 1 );
 							}
 
-							break;    // end of line
+							break;
+
 						}
+
 					}
 
 					line  += c;
+					c_last = c;
 
 				}
 
-			} catch ( socketlibrary::SocketException &sex ) {
+			} catch ( psocksxx::sockexception &e ) {
 				// TODO: log error?
 				line = "";
 			}
@@ -147,7 +141,7 @@ namespace icap {
 		}
 
 
-		std::string read_data( socketlibrary::TCPSocket * socket, int size ) throw() {
+		std::string read_data( psocksxx::iosockstream * socket, int size ) throw() {
 
 			char buffer[ICAP_BUFFER_SIZE];
 			std::string data = "";
@@ -159,20 +153,20 @@ namespace icap {
 				try {
 
 					// read from socket
-					n = socket->recv( buffer, min( size, ICAP_BUFFER_SIZE ) );
+					socket->read( buffer, std::min( size, ICAP_BUFFER_SIZE ) );
 
 					// sanity check
-					if ( n == 0 ) {
+					if (! socket->good() ) {
 						break;
 					}
 
 					// append to data
-					data.append( buffer, n );
+					data.append( buffer, socket->gcount() );
 
 					// update size with remaining bytes
-					size -= n;
+					size -= socket->gcount();
 
-				} catch ( socketlibrary::SocketException &sex ) {
+				} catch ( psocksxx::sockexception &e ) {
 					// TODO: log errors ??
 				}
 
@@ -183,7 +177,7 @@ namespace icap {
 		}
 
 
-		unsigned int read_chunk_size( socketlibrary::TCPSocket * socket ) throw() {
+		unsigned int read_chunk_size( psocksxx::iosockstream * socket ) throw() {
 
 			std::string line;
 			std::vector<std::string> chunk_header;
@@ -196,7 +190,7 @@ namespace icap {
 		}
 
 
-		void read_chunk_header( socketlibrary::TCPSocket * socket, chunk_t &chunk ) throw() {
+		void read_chunk_header( psocksxx::iosockstream * socket, chunk_t &chunk ) throw() {
 
 			std::string line;
 			std::vector<std::string> chunk_header;
@@ -223,7 +217,7 @@ namespace icap {
 		}
 
 
-		chunk_t read_chunk( socketlibrary::TCPSocket * socket ) throw() {
+		chunk_t read_chunk( psocksxx::iosockstream * socket ) throw() {
 
 			chunk_t chunk;
 			std::string line;
@@ -250,7 +244,7 @@ namespace icap {
 		}
 
 
-		std::string read_chunked( socketlibrary::TCPSocket * socket ) throw() {
+		std::string read_chunked( psocksxx::iosockstream * socket ) throw() {
 
 			unsigned int chunk_size  = 0;
 			unsigned int offset      = 0;
@@ -282,7 +276,7 @@ namespace icap {
 		}
 
 
-		bool read_chunked_payload( socketlibrary::TCPSocket * socket, std::string &payload ) throw() {
+		bool read_chunked_payload( psocksxx::iosockstream * socket, std::string &payload ) throw() {
 
 			chunk_t chunk;
 			bool ieof = false;
@@ -313,12 +307,12 @@ namespace icap {
 		}
 
 
-		bool send_line( const std::string &line, socketlibrary::TCPSocket * socket ) throw() {
+		bool send_line( const std::string &line, psocksxx::iosockstream * socket ) throw() {
 
 			try {
-				socket->send( line.c_str(), line.length() );
-				socket->send( "\r\n", 2 );
-			} catch ( socketlibrary::SocketException &sex ) {
+				socket->write( line.c_str(), line.length() );
+				socket->write( "\r\n", 2 );
+			} catch ( psocksxx::sockexception &e ) {
 				// TODO: log errors
 				return false;
 			}
@@ -328,11 +322,11 @@ namespace icap {
 		}
 
 
-		bool send_data( const std::string &data, socketlibrary::TCPSocket * socket ) throw() {
+		bool send_data( const std::string &data, psocksxx::iosockstream * socket ) throw() {
 
 			try {
-				socket->send( data.c_str(), data.size() );
-			} catch( socketlibrary::SocketException &sex ) {
+				socket->write( data.c_str(), data.size() );
+			} catch( psocksxx::sockexception &e ) {
 				// TODO: log errors
 				return false;
 			}
@@ -342,7 +336,7 @@ namespace icap {
 		}
 
 
-		bool send_chunked( const std::string &data, socketlibrary::TCPSocket * socket ) throw() {
+		bool send_chunked( const std::string &data, psocksxx::iosockstream * socket ) throw() {
 
 			std::string chunked_data = "";
 			unsigned int offset      = 0;
@@ -388,7 +382,7 @@ namespace icap {
 					return false;
 				}
 
-			} catch ( socketlibrary::SocketException &sex ) {
+			} catch ( psocksxx::sockexception &e ) {
 				// TODO: log errors ??
 				return false;
 			}
@@ -432,7 +426,7 @@ namespace icap {
 		}
 
 
-		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket ) throw() {
+		icap::RequestHeader * read_req_header( psocksxx::iosockstream * socket ) throw() {
 
 			char buffer[ICAP_BUFFER_SIZE];
 			int  n = 0;
@@ -448,7 +442,7 @@ namespace icap {
 		}
 
 
-		bool read_req_data( icap::Request * request, socketlibrary::TCPSocket * socket ) throw() {
+		bool read_req_data( icap::Request * request, psocksxx::iosockstream * socket ) throw() {
 
 			int data_offset = 0;
 			int data_length = 0;
@@ -529,7 +523,7 @@ namespace icap {
 		}
 
 
-		bool read_req_continue_data( icap::Request * request, socketlibrary::TCPSocket * socket ) throw() {
+		bool read_req_continue_data( icap::Request * request, psocksxx::iosockstream * socket ) throw() {
 
 			std::vector<icap::Header::encapsulated_header_data_t> sorted_encaps_header;
 			icap::Header::encapsulated_header_data_t header_idx;
@@ -574,7 +568,7 @@ namespace icap {
 		}
 
 
-		bool send_headers( icap::Header * header, socketlibrary::TCPSocket * socket ) throw() {
+		bool send_headers( icap::Header * header, psocksxx::iosockstream * socket ) throw() {
 
 			std::string line;
 			icap::Header::headers_index_t i;
@@ -612,7 +606,7 @@ namespace icap {
 		}
 
 
-		bool send_response( icap::Response * response, socketlibrary::TCPSocket * socket ) throw() {
+		bool send_response( icap::Response * response, psocksxx::iosockstream * socket ) throw() {
 
 			bool r_success = true;
 

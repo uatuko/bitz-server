@@ -40,13 +40,16 @@ namespace bitz {
 
 		// initialise listening socket
 		try {
-			if ( address.empty() ) {
-				_manager.socket = new socketlibrary::TCPServerSocket( port, backlog );
-			} else {
-				_manager.socket = new socketlibrary::TCPServerSocket( address, port, backlog );
-			}
-		} catch ( socketlibrary::SocketException &sex ) {
-			throw ManagerException( "failed to initialise socket" );
+
+			// network socket address
+			psocksxx::nsockaddr naddr( address.c_str(), port );
+
+			_manager.socket = new psocksxx::tcpnsockstream();
+			_manager.socket->bind( &naddr, true );
+			_manager.socket->listen( backlog );
+
+		} catch ( psocksxx::sockexception &e ) {
+			throw ManagerException( std::string( "failed to initialise socket, " ).append( e.what() ) );
 		}
 
 		Logger &logger = Logger::instance();

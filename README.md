@@ -42,6 +42,7 @@ there is hope to exploit python programming language.
 
 ### Dependencies
 
+* [psocksxx >= 0.0.1](https://github.com/uditha-atukorala/psocksxx)
 * [libconfig++ >= 1.4](http://www.hyperrealm.com/libconfig/)
 * log4cpp >= 1.0
 * python 2.7 (for modpy module)

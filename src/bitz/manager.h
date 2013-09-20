@@ -20,8 +20,8 @@
 #ifndef BITZ_MANAGER_H
 #define BITZ_MANAGER_H
 
-#include <unistd.h>            // pid_t, fork() etc.
-#include <socket/socket.h>     // socket-library
+#include <unistd.h>
+#include <psocksxx/tcpnsockstream.h>
 
 #include "manager_exception.h"
 #include "worker.h"
@@ -53,7 +53,7 @@ namespace bitz {
 			unsigned int workers_count;
 			unsigned int worker_id;
 
-			socketlibrary::TCPServerSocket * socket;
+			psocksxx::tcpnsockstream * socket;
 			worker_pool_t * worker_pool;
 		};
 
@@ -61,7 +61,7 @@ namespace bitz {
 		/**
 		*   Note: backlog = SOMAXCONN (from sys/socket.h)
 		*/
-		Manager( unsigned short port, const std::string &address = "", int backlog = 128 ) throw( ManagerException );
+		Manager( unsigned short port, const std::string &address = "0.0.0.0", int backlog = 128 ) throw( ManagerException );
 
 		/**
 		*   deconstructor

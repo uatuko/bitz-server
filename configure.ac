@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([bitz-server], [0.1.5], [http://bugs.geniusse.com/])
+AC_INIT([bitz-server], [1.0.0], [http://bugs.geniusse.com/])
 AC_CONFIG_AUX_DIR([aux-build])
 AC_CONFIG_MACRO_DIR([aux-build/m4])
 AC_CONFIG_HEADERS([include/config.h])
@@ -33,7 +33,7 @@ AC_CONFIG_HEADERS([include/config.h])
 # CURRENT : REVISION : AGE
 
 # lib versions
-ICAP_LT_VERSION=0:3:0
+ICAP_LT_VERSION=1:0:0
 AC_SUBST(ICAP_LT_VERSION)
 
 # Init
@@ -77,6 +77,9 @@ PKG_CHECK_MODULES([libconfig], [libconfig++ >= 1.4],,
 )
 PKG_CHECK_MODULES([log4cpp], [log4cpp >= 1.0],,
 	AC_MSG_ERROR([log4cpp 1.0 or newer not found.])
+)
+PKG_CHECK_MODULES([psocksxx], [psocksxx >= 0.0.1],,
+	AC_MSG_ERROR([psocksxx 0.0.1 or newer not found.])
 )
 
 
@@ -134,7 +137,6 @@ AC_CONFIG_FILES([ \
 	doc/Makefile \
 	include/Makefile \
 	lib/Makefile \
-	lib/socket/Makefile \
 	lib/icap/Makefile \
 	src/Makefile \
 	modules/Makefile \

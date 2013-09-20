@@ -26,7 +26,7 @@ namespace bitz {
 	OptionsRequestHandler::~OptionsRequestHandler() { }
 
 
-	icap::Response * OptionsRequestHandler::process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() {
+	icap::Response * OptionsRequestHandler::process( icap::RequestHeader * req_header, psocksxx::iosockstream * socket ) throw() {
 
 		icap::ResponseHeader * header;
 		icap::Response       * response;

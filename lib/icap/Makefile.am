@@ -1,9 +1,9 @@
 ## [icap-library] lib/icap/
-AM_CPPFLAGS             = -I$(top_srcdir)/lib
+AM_CPPFLAGS             = -I$(top_srcdir)/lib ${psocksxx_CFLAGS}
 libicapincludedir       = $(includedir)/icap
 
 lib_LTLIBRARIES         = libicap.la
-libicap_la_LIBADD       = $(top_builddir)/lib/socket/libsocket.la
+libicap_la_LIBADD       = ${psocksxx_LIBS}
 libicap_la_LDFLAGS      = -version-info @ICAP_LT_VERSION@ -no-undefined
 libicap_la_SOURCES      = \
 	header.cpp \

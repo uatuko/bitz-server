@@ -22,7 +22,7 @@
 
 #include <sstream>
 
-#include <socket/socket.h>
+#include <psocksxx/iosockstream.h>
 #include "request.h"
 #include "response.h"
 
@@ -80,7 +80,7 @@ namespace icap {
 		*          default is false.
 		*   @return number of bytes read
 		*/
-		int read_line( socketlibrary::TCPSocket * socket, char * buf, int buf_length, bool incl_endl = false ) throw();
+		int read_line( psocksxx::iosockstream * socket, char * buf, int buf_length, bool incl_endl = false ) throw();
 
 		/**
 		*   Read a line (ending with \r\n) from the socket
@@ -90,7 +90,7 @@ namespace icap {
 		*          default is false.
 		*   @return read data
 		*/
-		std::string read_line( socketlibrary::TCPSocket * socket, bool incl_endl = false ) throw();
+		std::string read_line( psocksxx::iosockstream * socket, bool incl_endl = false ) throw();
 
 		/**
 		*   Read data from the socket
@@ -99,7 +99,7 @@ namespace icap {
 		*   @param size size / length of data to be read
 		*   @return read data
 		*/
-		std::string read_data( socketlibrary::TCPSocket * socket, int size ) throw();
+		std::string read_data( psocksxx::iosockstream * socket, int size ) throw();
 
 		/**
 		*   Read chunk size. This is a helper method used by read_chunked().
@@ -107,7 +107,7 @@ namespace icap {
 		*   @param socket socket instance to read from
 		*   @return chunk size
 		*/
-		unsigned int read_chunk_size( socketlibrary::TCPSocket * socket ) throw();
+		unsigned int read_chunk_size( psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   Read chunk header from the given socket.
@@ -115,7 +115,7 @@ namespace icap {
 		*   @param socket socket instance to read data from
 		*   @param chunk chunk data structure to store header data
 		*/
-		void read_chunk_header( socketlibrary::TCPSocket * socket, chunk_t &chunk ) throw();
+		void read_chunk_header( psocksxx::iosockstream * socket, chunk_t &chunk ) throw();
 
 		/**
 		*   Read a data chunk from a HTTP chunked transfer encoded data stream.
@@ -123,7 +123,7 @@ namespace icap {
 		*   @param socket socket instance to read data from
 		*   @return chunk data structure
 		*/
-		chunk_t read_chunk( socketlibrary::TCPSocket * socket ) throw();
+		chunk_t read_chunk( psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   Read chunked data from the given socket
@@ -131,7 +131,7 @@ namespace icap {
 		*   @param socket socket instance to read data from
 		*   @return read data (without the control characters)
 		*/
-		std::string read_chunked( socketlibrary::TCPSocket * socket ) throw();
+		std::string read_chunked( psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   Read chunked payload data from the given socket
@@ -140,7 +140,7 @@ namespace icap {
 		*   @param payload payload to read data into
 		*   @return boolean flag to denote the presence of "ieof"
 		*/
-		bool read_chunked_payload( socketlibrary::TCPSocket * socket, std::string &payload ) throw();
+		bool read_chunked_payload( psocksxx::iosockstream * socket, std::string &payload ) throw();
 
 		/**
 		*   Send / write a line (ending with \r\n) to the socket
@@ -149,7 +149,7 @@ namespace icap {
 		*   @param socket socket object to write the data to
 		*   @return boolean to denote success or failure
 		*/
-		bool send_line( const std::string &line, socketlibrary::TCPSocket * socket ) throw();
+		bool send_line( const std::string &line, psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   Send / write data to the socket.
@@ -160,7 +160,7 @@ namespace icap {
 		*   @param socket socket instance to write to
 		*   @return boolean to denote success or failure
 		*/
-		bool send_data( const std::string &data, socketlibrary::TCPSocket * socket ) throw();
+		bool send_data( const std::string &data, psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   Send / write data to the socket using chunked transfer encoding
@@ -169,7 +169,7 @@ namespace icap {
 		*   @param socket socket instance to write to
 		*   @return boolean to denote success or failure
 		*/
-		bool send_chunked( const std::string &data, socketlibrary::TCPSocket * socket ) throw();
+		bool send_chunked( const std::string &data, psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   split a string into a vector by the given delimiter
@@ -209,7 +209,7 @@ namespace icap {
 		*   @param socket socket object to read data from
 		*   @return icap request header object
 		*/
-		icap::RequestHeader * read_req_header( socketlibrary::TCPSocket * socket ) throw();
+		icap::RequestHeader * read_req_header( psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   Read icap request into the icap::Request instance
@@ -219,7 +219,7 @@ namespace icap {
 		*   @param socket socket object to read data from
 		*   @return boolean to denote success or failure
 		*/
-		bool read_req_data( icap::Request * request, socketlibrary::TCPSocket * socket ) throw();
+		bool read_req_data( icap::Request * request, psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   Read icap request data after a '100 Continue' response. This will not look for any
@@ -229,7 +229,7 @@ namespace icap {
 		*   @param socket socket object to read data from
 		*   @return boolean to denote success or failure
 		*/
-		bool read_req_continue_data( icap::Request * request, socketlibrary::TCPSocket * socket ) throw();
+		bool read_req_continue_data( icap::Request * request, psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   Send / write header data to a socket
@@ -238,7 +238,7 @@ namespace icap {
 		*   @param socket socket object to write the data to
 		*   @return boolean to denote success or failure
 		*/
-		bool send_headers( icap::Header::headers_t headers, socketlibrary::TCPSocket * socket ) throw();
+		bool send_headers( icap::Header::headers_t headers, psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   Output a response using the passed in icap::Response class to the
@@ -248,7 +248,7 @@ namespace icap {
 		*   @param socket socket object to send the data to
 		*   @return boolean to denote success or failure
 		*/
-		bool send_response( icap::Response * response, socketlibrary::TCPSocket * socket ) throw();
+		bool send_response( icap::Response * response, psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   Returns the response status text for the given status

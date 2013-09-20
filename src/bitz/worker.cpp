@@ -51,11 +51,11 @@ namespace bitz {
 	}
 
 
-	void Worker::run( socketlibrary::TCPServerSocket * server_sock, unsigned int max_requests ) throw() {
+	void Worker::run( psocksxx::tcpnsockstream * server_sock, unsigned int max_requests ) throw() {
 
 		Logger &logger = Logger::instance();
 
-		socketlibrary::TCPSocket * client_sock;
+		psocksxx::nsockstream * client_sock;
 		icap::RequestHeader * req_header;
 		icap::Response * response;
 		RequestHandler * req_handler;
@@ -68,8 +68,11 @@ namespace bitz {
 				logger.debug( std::string( "[worker] waiting for a connection" ) );
 
 				client_sock = server_sock->accept();
-				logger.debug( std::string( "[worker] new connection accepted on " ).append( client_sock->getForeignAddress() )
-						.append( ":" ).append( util::itoa( client_sock->getForeignPort() ) ) );
+
+				// FIXME
+				logger.debug( std::string( "[worker] new connection accepted on [...]" ) );
+//				.append( client_sock->getForeignAddress() )
+//						.append( ":" ).append( util::itoa( client_sock->getForeignPort() ) ) );
 
 				// request header
 				req_header  = icap::util::read_req_header( client_sock );
@@ -107,8 +110,8 @@ namespace bitz {
 
 			}
 
-		} catch( socketlibrary::SocketException &sex ) {
-			logger.error( std::string( "[worker] ERROR: " ).append( sex.what() ) );
+		} catch( psocksxx::sockexception &e ) {
+			logger.error( std::string( "[worker] ERROR: " ).append( e.what() ) );
 		}
 
 	}

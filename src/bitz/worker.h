@@ -20,7 +20,7 @@
 #ifndef BITZ_WORKER_H
 #define BITZ_WORKER_H
 
-#include <socket/socket.h>
+#include <psocksxx/tcpnsockstream.h>
 
 #include "common.h"
 
@@ -32,7 +32,7 @@ namespace bitz {
 		Worker();
 		virtual ~Worker();
 
-		virtual void run( socketlibrary::TCPServerSocket * server_sock, unsigned int max_requests ) throw();
+		virtual void run( psocksxx::tcpnsockstream * server_sock, unsigned int max_requests ) throw();
 
 	private:
 		req_handlers_t    _req_handlers;

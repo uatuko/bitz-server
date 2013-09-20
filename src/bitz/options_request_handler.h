@@ -30,7 +30,7 @@ namespace bitz {
 		OptionsRequestHandler();
 		virtual ~OptionsRequestHandler();
 
-		icap::Response * process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw();
+		icap::Response * process( icap::RequestHeader * req_header, psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   Register a request handler so it is known to the OPTIONS

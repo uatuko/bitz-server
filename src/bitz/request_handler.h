@@ -24,7 +24,7 @@
 
 #include <icap/response.h>
 #include <icap/request.h>
-#include <socket/socket.h>
+#include <psocksxx/iosockstream.h>
 
 
 namespace bitz {
@@ -58,7 +58,7 @@ namespace bitz {
 		*   @param socket socket object to read the data from
 		*   @return response object
 		*/
-		virtual icap::Response * process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw();
+		virtual icap::Response * process( icap::RequestHeader * req_header, psocksxx::iosockstream * socket ) throw();
 
 
 	protected:
@@ -101,7 +101,7 @@ namespace bitz {
 		*   @param socket socket object to read data from
 		*   @return preview response (response object)
 		*/
-		icap::Response * process_preview( icap::Request * request, socketlibrary::TCPSocket * socket ) throw();
+		icap::Response * process_preview( icap::Request * request, psocksxx::iosockstream * socket ) throw();
 
 		/**
 		*   This method will use the loaded handler modules to get a response to the request.
@@ -119,7 +119,7 @@ namespace bitz {
 		*   @param socket socket object to read / write data
 		*   @return
 		*/
-		bool preview_continue( icap::Response * response, icap::Request * request, socketlibrary::TCPSocket * socket ) throw();
+		bool preview_continue( icap::Response * response, icap::Request * request, psocksxx::iosockstream * socket ) throw();
 
 	private:
 

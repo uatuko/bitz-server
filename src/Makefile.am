@@ -1,13 +1,13 @@
 ## src/
 AUTOMAKE_OPTIONS        = subdir-objects
-AM_CPPFLAGS             = -I$(top_srcdir)/lib ${libconfig_CFLAGS} ${log4cpp_CFLAGS}
+AM_CPPFLAGS             = -I$(top_srcdir)/lib ${libconfig_CFLAGS} ${log4cpp_CFLAGS} ${psocksxx_CFLAGS}
 
 bitzincludedir          = $(pkgincludedir)
 sbin_PROGRAMS           = bitz-server
 bitz_server_LDFLAGS     = -ldl -export-dynamic
-bitz_server_LDADD       = $(top_builddir)/lib/socket/libsocket.la \
-	$(top_builddir)/lib/icap/libicap.la \
-	${libconfig_LIBS} ${log4cpp_LIBS}
+bitz_server_LDADD       = $(top_builddir)/lib/icap/libicap.la \
+	${libconfig_LIBS} ${log4cpp_LIBS} \
+	${psocksxx_LIBS}
 
 bitz_server_SOURCES     = main.cpp \
 	bitz-server.h bitz-server.cpp \

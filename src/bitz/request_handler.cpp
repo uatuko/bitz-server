@@ -63,7 +63,7 @@ namespace bitz {
 	}
 
 
-	icap::Response * RequestHandler::process( icap::RequestHeader * req_header, socketlibrary::TCPSocket * socket ) throw() {
+	icap::Response * RequestHandler::process( icap::RequestHeader * req_header, psocksxx::iosockstream * socket ) throw() {
 
 
 		icap::Request  * request;
@@ -238,7 +238,7 @@ namespace bitz {
 	}
 
 
-	icap::Response * RequestHandler::process_preview( icap::Request * request, socketlibrary::TCPSocket * socket ) throw() {
+	icap::Response * RequestHandler::process_preview( icap::Request * request, psocksxx::iosockstream * socket ) throw() {
 
 		icap::Response * response = NULL;
 		Modifier       * modifier;
@@ -365,7 +365,7 @@ namespace bitz {
 	}
 
 
-	bool RequestHandler::preview_continue( icap::Response * response, icap::Request * request, socketlibrary::TCPSocket * socket ) throw() {
+	bool RequestHandler::preview_continue( icap::Response * response, icap::Request * request, psocksxx::iosockstream * socket ) throw() {
 
 		bool status = false;
 
