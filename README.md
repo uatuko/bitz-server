@@ -5,7 +5,7 @@ An ICAP server implementation in C++
 
 ### Copyright and License
 
-Copyright (C) 2012 Uditha Atukorala.
+Copyright (C) 2012-2013 Uditha Atukorala.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
