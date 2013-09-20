@@ -108,7 +108,15 @@ AS_IF([test "x$with_config" != xno],
 	AC_DEFINE_UNQUOTED([BITZ_SERVER_CONFIG_FILE],
 		["$with_config"],
 		[server configuration file]
-	)
+	),
+	[
+		AS_AC_EXPAND(SYSCONFDIR, $sysconfdir)
+		AC_DEFINE_UNQUOTED(
+			[BITZ_SERVER_CONFIG_FILE],
+			["${SYSCONFDIR}/bitz/bitz-server.conf"],
+			[server configuration file]
+		)
+	]
 )
 
 # doxygen
