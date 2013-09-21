@@ -160,5 +160,5 @@ e.g.
 If you are interested in debian packages, the debian sources can be found at
 [bitz-server-debian](https://github.com/uditha-atukorala/bitz-server-debian) git
 repository. Also latest unsigned debian packages can be downloaded from
-[CI artifacts](http://jenkins.geniusse.com/job/bitz-server/).
+[CI artifacts](http://jenkins.geniusse.com/job/bitz-server-debian/).
 
