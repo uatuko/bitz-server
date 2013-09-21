@@ -63,17 +63,24 @@ namespace icap {
 
 			while ( i < ( buf_length - 1 ) ) {
 
+				// read a char
 				if ( ( c = socket->get() ) > 0 ) {
 
+					// check last read char for \r
 					if ( c_last == '\r' ) {
 
+						// check for \n
 						if ( c == '\n' ) {
 
+							// include \r\n in the read buffer?
 							if ( incl_endl ) {
 								buf[i] = c;
 								i++;
 							} else {
+
+								// remove \r
 								i--;
+
 							}
 
 							break;
@@ -106,35 +113,30 @@ namespace icap {
 			char c = '\0';
 			char c_last = '\0';
 
-			try {
 
-				while ( ( c = socket->get() ) > 0 ) {
+			while ( ( c = socket->get() ) > 0 ) {
 
-					if ( c_last == '\r' ) {
+				if ( c_last == '\r' ) {
 
-						if ( c == '\n' ) {
+					if ( c == '\n' ) {
 
-							if ( incl_endl ) {
-								line += c;
-							} else {
-								line.erase( line.size() - 1 );
-							}
-
-							break;
-
+						if ( incl_endl ) {
+							line += c;
+						} else {
+							line.erase( line.size() - 1 );
 						}
+
+						break;
 
 					}
 
-					line  += c;
-					c_last = c;
-
 				}
 
-			} catch ( psocksxx::sockexception &e ) {
-				// TODO: log error?
-				line = "";
+				line  += c;
+				c_last = c;
+
 			}
+
 
 			return line;
 
