@@ -3,7 +3,7 @@
 bitz-server \- An ICAP server
 .SH SYNOPSIS
 .B bitz-server
-[--version] [--help] [--usage] [--debug] [--config=<config file>]
+[\-\-version] [\-\-help] [\-\-usage] [\-\-debug] [\-\-config=<config file>]
 .SH DESCRIPTION
 .B bitz-server
 is an ICAP server implementation in C++. Starting from scratch,
@@ -19,17 +19,17 @@ easier to write (and faster to implement) such modules a python interface
 module is included.
 .SH OPTIONS
 .TP
-.B --version, -v
+.B \-\-version, \-v
 Prints version information
 .TP
-.B --help, --usage, -h
+.B \-\-help, \-\-usage, \-h
 Prints the synopsis
 .TP
-.B --debug
+.B \-\-debug
 Run the server in debug mode. This will force the server to run in the
 terminal rather than in the background.
 .TP
-.B --config=<config file>
+.B \-\-config=<config file>
 Set the alternative config file to use instead of the compiled default.
 .SH FILES
 .I /etc/bitz/bitz-server.conf
