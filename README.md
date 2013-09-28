@@ -40,6 +40,27 @@ there is hope to exploit python programming language.
 * Many thanks to Kenneth Oksanen for his support in finding and fixing bugs
 
 
+### Downloads
+You can download the source distributions from http://packages.geniusse.com/source/bitz-server/.
+
+
+#### Debian/Ubuntu packages
+First you should add the repository key to avoid warning.
+
+	$ wget -q -O - http://packages.geniusse.com/debian/packman.gpg.key | sudo apt-key add -
+
+Then add the following to your `/etc/apt/sources.list`;
+
+	$ deb http://packages.geniusse.com/debian/ [release] main
+
+where the `[release]` being wheezy, jessie, sid etc.
+
+Finally update your package list and install bitz-server;
+
+	$ sudo aptitude update
+	$ sudo aptitude install bitz-server
+
+
 ### Dependencies
 
 * [psocksxx >= 0.0.1](https://github.com/uditha-atukorala/psocksxx)
@@ -56,6 +77,9 @@ Known issues can be found [here](http://bugs.geniusse.com/buglist.cgi?query_form
 
 
 ### Version history
+
+__0.1.6__ - _28th September 2013_
+*   Few tweaks and minor changes distribution files (no functional changes)
 
 __0.1.5__ - _11th August 2013_
 *   Fixing modpy interface module string copy bug
@@ -129,17 +153,6 @@ Use the following to create the binaries with debug symbols
 	$ ./configure CXXFLAGS="-g -O0"
 
 
-##### OpenSSL (64 bit)
-
-If you compile OpenSSL (v1.0.1) on 64bit systems you might have to compile
-with `-fPIC` option. If you do that when configuring bitz-server pass in
-`LIBS=-ldl` to avoid linking errors.
-
-e.g.
-
-	$ ./configure LIBS=-ldl
-
-
 ##### config file
 
 The default config file location is `/etc/bitz/bitz-server.conf` but this can
@@ -153,12 +166,4 @@ e.g.
 ##### valgrind checks
 
 	$ valgrind --leak-check=full --read-var-info=yes --trace-children=yes --suppressions=test/valgrind.supp --log-file=valgrind.log ./src/bitz-server --debug
-
-
-##### Debian packaging
-
-If you are interested in debian packages, the debian sources can be found at
-[bitz-server-debian](https://github.com/uditha-atukorala/bitz-server-debian) git
-repository. Also latest unsigned debian packages can be downloaded from
-[CI artifacts](http://jenkins.geniusse.com/job/bitz-server-debian/).
 
