@@ -14,5 +14,6 @@ SUBDIRS = \
 
 # extra dist files
 EXTRA_DIST = \
+	changelog \
 	README.md
 
