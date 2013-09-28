@@ -38,6 +38,7 @@ namespace bitz {
 		req_handlers_t    _req_handlers;
 
 		virtual void load_req_handlers() throw();
+		virtual unsigned int serve_client( psocksxx::nsockstream * client_sock, unsigned int max_requests ) throw();
 
 	};
 

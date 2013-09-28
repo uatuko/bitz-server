@@ -53,15 +53,13 @@ namespace bitz {
 
 	void Worker::run( psocksxx::tcpnsockstream * server_sock, unsigned int max_requests ) throw() {
 
+		// logger
 		Logger &logger = Logger::instance();
 
+		// client socket stream
 		psocksxx::nsockstream * client_sock;
-		icap::RequestHeader * req_header;
-		icap::Response * response;
-		RequestHandler * req_handler;
 
-
-		do {
+		while ( max_requests > 0 ) {
 
 			logger.debug( std::string( "[worker] waiting for a connection" ) );
 
@@ -84,43 +82,13 @@ namespace bitz {
 
 			}
 
-			// request header
-			req_header  = icap::util::read_req_header( client_sock );
-			logger.debug( std::string( "[worker] request header:\r\n" ).append( req_header->raw_data() ) );
-
-			// try to find a handler for the request
-			req_handler = util::find_req_handler( _req_handlers, req_header->method() );
-
-			// sanity check
-			if ( req_handler != NULL ) {
-
-				logger.debug( std::string( "[worker] handling request: " ).append( req_header->method() ) );
-
-				// process the request and grab the response
-				response = req_handler->process( req_header, client_sock );
-
-			} else {
-
-				// unsupported request
-				logger.info( std::string( "[worker] unsupported request: " ).append( req_header->method() ) );
-				response = new icap::Response( new icap::ResponseHeader( icap::ResponseHeader::NOT_ALLOWED ) );
-
-			}
-
-			// send the response back to the client
-			icap::util::send_response( response, client_sock );
-
-			// cleanup
-			delete response;
-			delete req_header;
+			// handle client request(s)
+			max_requests = serve_client( client_sock, max_requests );
 
 			// destroy / close connection
 			delete client_sock;
 
-			// update request count
-			max_requests--;
-
-		} while ( max_requests > 0 );
+		};
 
 	}
 
@@ -142,6 +110,50 @@ namespace bitz {
 		// RESPMOD
 		_req_handlers["RESPMOD"] = new RespmodRequestHandler();
 		options_handler->register_handler( _req_handlers["RESPMOD"] );
+
+	}
+
+
+	unsigned int Worker::serve_client( psocksxx::nsockstream * client_sock, unsigned int max_requests ) throw() {
+
+		// logger
+		Logger &logger = Logger::instance();
+
+		icap::RequestHeader * req_header;
+		icap::Response * response;
+		RequestHandler * req_handler;
+
+		// request header
+		req_header  = icap::util::read_req_header( client_sock );
+		logger.debug( std::string( "[worker] request header:\r\n" ).append( req_header->raw_data() ) );
+
+		// try to find a handler for the request
+		req_handler = util::find_req_handler( _req_handlers, req_header->method() );
+
+		// sanity check
+		if ( req_handler != NULL ) {
+
+			logger.debug( std::string( "[worker] handling request: " ).append( req_header->method() ) );
+
+			// process the request and grab the response
+			response = req_handler->process( req_header, client_sock );
+
+		} else {
+
+			// unsupported request
+			logger.info( std::string( "[worker] unsupported request: " ).append( req_header->method() ) );
+			response = new icap::Response( new icap::ResponseHeader( icap::ResponseHeader::NOT_ALLOWED ) );
+
+		}
+
+		// send the response back to the client
+		icap::util::send_response( response, client_sock );
+
+		// cleanup
+		delete response;
+		delete req_header;
+
+		return --max_requests;
 
 	}
 
