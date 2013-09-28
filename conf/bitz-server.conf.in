@@ -26,7 +26,7 @@ req_handlers :
 			name   = "modpy";
 			module = "@pkglibdir@/modules/mod_py.so";
 		}
-	)
+	);
 },
 {
 	handler = "RESPMOD";
@@ -37,7 +37,7 @@ req_handlers :
 			name   = "modpy";
 			module = "@pkglibdir@/modules/mod_py.so";
 		}
-	)
+	);
 });
 
 
