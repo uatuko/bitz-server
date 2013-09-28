@@ -45,7 +45,7 @@ You can download the source distributions from http://packages.geniusse.com/sour
 
 
 #### Debian/Ubuntu packages
-First you should add the repository key to avoid warning.
+First you should add the repository key to avoid warnings.
 
 	$ wget -q -O - http://packages.geniusse.com/debian/packman.gpg.key | sudo apt-key add -
 
@@ -79,7 +79,7 @@ Known issues can be found [here](http://bugs.geniusse.com/buglist.cgi?query_form
 ### Version history
 
 __0.1.6__ - _28th September 2013_
-*   Few tweaks and minor changes distribution files (no functional changes)
+*   Few tweaks and minor changes to the distribution files (no functional changes)
 
 __0.1.5__ - _11th August 2013_
 *   Fixing modpy interface module string copy bug
