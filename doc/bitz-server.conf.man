@@ -9,7 +9,9 @@ obtains configuration data from a config file, the location of which is specifie
 at compile-time and can be overridden by command-line options during run-time.
 .SS Grammer
 Below is the BNF grammar for configuration files. Comments and include directives
-are not part of the grammar, so they are not included here.
+are not part of the grammar, so they are not included here. See libconfig manual
+at http://www.hyperrealm.com/libconfig/libconfig_manual.html#Configuration-File-Grammar
+for more details.
 .PP
 .RS
 .nf
@@ -36,7 +38,7 @@ Terminals are defined below as regular expressions:
 \\"([^\\"\\\\]|\\\\.)*\\"
 .TP
 .B name
-[A-Za-z\\*][-A-Za-z0-9_\\*]*
+[A-Za-z\\*][\-A-Za-z0-9_\\*]*
 .TP
 .B integer
 [\-+]?[0-9]+
