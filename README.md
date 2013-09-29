@@ -63,7 +63,7 @@ Finally update your package list and install bitz-server;
 
 ### Dependencies
 
-* [psocksxx >= 0.0.1](https://github.com/uditha-atukorala/psocksxx)
+* [psocksxx >= 0.0.2](https://github.com/uditha-atukorala/psocksxx)
 * [libconfig++ >= 1.4](http://www.hyperrealm.com/libconfig/)
 * log4cpp >= 1.0
 * python 2.7 (for modpy module)
