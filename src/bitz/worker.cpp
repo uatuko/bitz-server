@@ -167,6 +167,12 @@ namespace bitz {
 
 			}
 
+			// FIXME: this should be configurable and should default to close
+			// connection if the client doesn't send a connection header
+			if ( req_header->value( "Connection" ) == "keep-alive" ) {
+				response->header()->attach( "Connection" , "keep-alive" );
+			}
+
 			// send the response back to the client
 			icap::util::send_response( response, client_sock );
 
