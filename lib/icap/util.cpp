@@ -656,6 +656,9 @@ namespace icap {
 
 			}
 
+			// flush-out socket stream buffer
+			socket->flush();
+
 			return r_success;
 
 		}
