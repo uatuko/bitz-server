@@ -328,7 +328,7 @@ namespace icap {
 
 			try {
 				socket->write( data.c_str(), data.size() );
-			} catch( psocksxx::sockexception &e ) {
+			} catch ( psocksxx::sockexception &e ) {
 				// TODO: log errors
 				return false;
 			}

@@ -70,11 +70,11 @@ namespace bitz {
 
 		try {
 			config->readFile( config_file.c_str() );
-		} catch( const libconfig::FileIOException &ex ) {
+		} catch ( const libconfig::FileIOException &ex ) {
 			std::cerr << "[config] failed to read config file: " << config_file
 					<< ", exception: " << ex.what() << std::endl;
 			exit( EXIT_FAILURE );
-		} catch( const libconfig::ParseException &pex ) {
+		} catch ( const libconfig::ParseException &pex ) {
 			std::cerr << "[config] parse error at " << pex.getFile()
 					<< ":" << pex.getLine() << " - " << pex.getError() << std::endl;
 			exit( EXIT_FAILURE );
@@ -91,7 +91,7 @@ namespace bitz {
 			config->lookupValue( "max_workers", _config.max_workers );
 			config->lookupValue( "max_worker_requests", _config.max_worker_requests );
 
-		} catch( const libconfig::SettingNotFoundException &e ) {
+		} catch ( const libconfig::SettingNotFoundException &e ) {
 			std::cerr << "[config] failed to load core configs, "
 					<< e.getPath() << " : " << e.what() << std::endl;
 		}
@@ -121,7 +121,7 @@ namespace bitz {
 			try {
 				libconfig::Setting &setting = _lconfig->lookup( std::string( "modules." ).append( module ) );
 				setting.lookupValue( config, config_value );
-			} catch( const libconfig::SettingNotFoundException &e ) {
+			} catch ( const libconfig::SettingNotFoundException &e ) {
 				// TODO: log errors ??
 				std::cerr << "[config] " << e.getPath() << " : " << e.what() << std::endl;
 			}
