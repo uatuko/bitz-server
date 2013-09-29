@@ -126,48 +126,62 @@ namespace bitz {
 		// logger
 		Logger &logger = Logger::instance();
 
-		icap::RequestHeader * req_header;
+		icap::RequestHeader * req_header = NULL;
 		icap::Response * response;
 		RequestHandler * req_handler;
 
 
-		// request header
-		req_header  = icap::util::read_req_header( client_sock );
-		logger.debug( std::string( "[worker] request header:\r\n" ).append( req_header->raw_data() ) );
+		do {
 
-		// check timeout
-		if ( client_sock->timedout() ) {
-			logger.warn( "[worker] communication timed out..." );
-			return --max_requests;
+			// cleanup request header
+			if ( req_header != NULL ) {
+				delete req_header;
+			}
+
+			// request header
+			req_header  = icap::util::read_req_header( client_sock );
+			logger.debug( std::string( "[worker] request header:\r\n" ).append( req_header->raw_data() ) );
+
+			// check timeout
+			if ( client_sock->timedout() ) {
+				logger.warn( "[worker] communication timed out..." );
+				return --max_requests;
+			}
+
+			// try to find a handler for the request
+			req_handler = util::find_req_handler( _req_handlers, req_header->method() );
+
+			// sanity check
+			if ( req_handler != NULL ) {
+
+				logger.debug( std::string( "[worker] handling request: " ).append( req_header->method() ) );
+
+				// process the request and grab the response
+				response = req_handler->process( req_header, client_sock );
+
+			} else {
+
+				// unsupported request
+				logger.info( std::string( "[worker] unsupported request: " ).append( req_header->method() ) );
+				response = new icap::Response( new icap::ResponseHeader( icap::ResponseHeader::NOT_ALLOWED ) );
+
+			}
+
+			// send the response back to the client
+			icap::util::send_response( response, client_sock );
+
+			// cleanup
+			delete response;
+
+		} while ( ( --max_requests > 0 ) && ( req_header->value( "Connection" ) == "keep-alive" ) );
+
+
+		// cleanup request header
+		if ( req_header != NULL ) {
+			delete req_header;
 		}
 
-		// try to find a handler for the request
-		req_handler = util::find_req_handler( _req_handlers, req_header->method() );
-
-		// sanity check
-		if ( req_handler != NULL ) {
-
-			logger.debug( std::string( "[worker] handling request: " ).append( req_header->method() ) );
-
-			// process the request and grab the response
-			response = req_handler->process( req_header, client_sock );
-
-		} else {
-
-			// unsupported request
-			logger.info( std::string( "[worker] unsupported request: " ).append( req_header->method() ) );
-			response = new icap::Response( new icap::ResponseHeader( icap::ResponseHeader::NOT_ALLOWED ) );
-
-		}
-
-		// send the response back to the client
-		icap::util::send_response( response, client_sock );
-
-		// cleanup
-		delete response;
-		delete req_header;
-
-		return --max_requests;
+		return max_requests;
 
 	}
 
