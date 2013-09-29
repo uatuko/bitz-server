@@ -32,7 +32,8 @@ namespace bitz {
 		Worker();
 		virtual ~Worker();
 
-		virtual void run( psocksxx::tcpnsockstream * server_sock, unsigned int max_requests ) throw();
+		virtual void run( psocksxx::tcpnsockstream * server_sock,
+				unsigned int max_requests, unsigned int comm_timeout = 0 ) throw();
 
 	private:
 		req_handlers_t    _req_handlers;

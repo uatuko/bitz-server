@@ -31,8 +31,11 @@ namespace bitz {
 	Manager::Manager( unsigned short port, const std::string &address, int backlog ) throw( ManagerException ) {
 
 		// initialise manager
-		_manager.worker        = false;
-		_manager.max_workers   = 0;
+		_manager.worker              = false;
+		_manager.max_workers         = 0;
+		_manager.max_worker_requests = 0;
+		_manager.comm_timeout        = 0;
+
 		_manager.workers_count = 0;
 		_manager.worker_id     = 0;
 		_manager.socket        = NULL;
@@ -74,10 +77,11 @@ namespace bitz {
 	}
 
 
-	void Manager::spawn( unsigned int max_workers, unsigned int max_worker_requests ) throw( ManagerException ) {
+	void Manager::spawn( unsigned int max_workers, unsigned int max_worker_requests, unsigned int comm_timeout ) throw( ManagerException ) {
 
 		_manager.max_workers         = max_workers;
 		_manager.max_worker_requests = max_worker_requests;
+		_manager.comm_timeout        = comm_timeout;
 		_manager.worker_pool         = new worker_pool_t[max_workers];
 
 		// pre-fork workers
@@ -117,7 +121,7 @@ namespace bitz {
 			_manager.worker_pool[worker_id].worker_id  = worker_id;
 			_manager.worker_pool[worker_id].worker_pid = worker_pid;
 
-			_manager.worker_pool[worker_id].worker->run( _manager.socket, _manager.max_worker_requests );
+			_manager.worker_pool[worker_id].worker->run( _manager.socket, _manager.max_worker_requests, _manager.comm_timeout );
 			logger.info( std::string( "end of cycle, worker[" ).append( util::itoa( worker_id ) ).append( "]" ) );
 
 			delete _manager.worker_pool[worker_id].worker;

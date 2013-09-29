@@ -50,6 +50,7 @@ namespace bitz {
 			bool worker;
 			unsigned int max_workers;
 			unsigned int max_worker_requests;
+			unsigned int comm_timeout;
 			unsigned int workers_count;
 			unsigned int worker_id;
 
@@ -68,7 +69,10 @@ namespace bitz {
 		*/
 		virtual ~Manager();
 
-		virtual void spawn( unsigned int max_workers = BITZ_MAX_WORKERS, unsigned int max_worker_requests = BITZ_MAX_WORKER_REQUESTS ) throw( ManagerException );
+		virtual void spawn( unsigned int max_workers = BITZ_MAX_WORKERS,
+				unsigned int max_worker_requests = BITZ_MAX_WORKER_REQUESTS,
+				unsigned int comm_timeout = 0 ) throw( ManagerException );
+
 		virtual void shutdown( bool graceful = true ) throw();
 		virtual void reap_worker( pid_t worker_pid ) throw();
 		virtual void manager_workers() throw();

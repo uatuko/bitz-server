@@ -416,11 +416,11 @@ namespace bitz {
 		}
 
 
-		void start( int port, unsigned int children, int max_requests ) {
+		void start( int port, unsigned int children, int max_requests, int comm_timeout ) {
 
 			try {
 				globals.manager = new bitz::Manager( port );
-				globals.manager->spawn( children, max_requests );
+				globals.manager->spawn( children, max_requests, comm_timeout );
 			} catch ( bitz::ManagerException &mex ) {
 				syslog( LOG_ERR, "failed to start, exception: %s", mex.what() );
 				exit( EXIT_FAILURE );

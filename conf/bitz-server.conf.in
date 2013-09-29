@@ -14,6 +14,10 @@ max_workers         = 1;
 # maximum number of requests a worker will serve
 max_worker_requests = 100;
 
+# communication timeout value in seconds. set this value to
+# be 0 to disable timeouts.
+comm_timeout = 5;
+
 
 # request handlers
 req_handlers :

@@ -47,6 +47,7 @@ namespace bitz {
 		int port;
 		int max_workers;
 		int max_worker_requests;
+		int comm_timeout;
 		std::string pid_file;
 		std::string log_file;
 		std::string log_category;

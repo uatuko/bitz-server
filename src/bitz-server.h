@@ -95,8 +95,9 @@ namespace bitz {
 		*   @param port port number to listen to
 		*   @param children number of children to spawn
 		*   @param max_request maximum number of requests that a child will serve
+		*   @param comm_timeout communication timeout value in seconds
 		*/
-		void start( int port, unsigned int children, int max_requests );
+		void start( int port, unsigned int children, int max_requests, int comm_timeout );
 
 		/**
 		*   Run the server managing workers until a termination signal is received.

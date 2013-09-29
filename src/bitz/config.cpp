@@ -39,6 +39,7 @@ namespace bitz {
 		_config.max_workers         = 0;
 		_config.max_worker_requests = 0;
 
+		_config.comm_timeout = 0;
 
 		// defaults
 		_lconfig = NULL;
@@ -90,6 +91,8 @@ namespace bitz {
 
 			config->lookupValue( "max_workers", _config.max_workers );
 			config->lookupValue( "max_worker_requests", _config.max_worker_requests );
+
+			config->lookupValue( "comm_timeout", _config.comm_timeout );
 
 		} catch ( const libconfig::SettingNotFoundException &e ) {
 			std::cerr << "[config] failed to load core configs, "

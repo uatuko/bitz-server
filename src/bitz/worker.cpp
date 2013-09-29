@@ -51,7 +51,8 @@ namespace bitz {
 	}
 
 
-	void Worker::run( psocksxx::tcpnsockstream * server_sock, unsigned int max_requests ) throw() {
+	void Worker::run( psocksxx::tcpnsockstream * server_sock, unsigned int max_requests,
+			unsigned int comm_timeout ) throw() {
 
 		// logger
 		Logger &logger = Logger::instance();
@@ -70,6 +71,12 @@ namespace bitz {
 
 				// FIXME: log accepted client details (e.g. address, port etc.)
 				logger.debug( std::string( "[worker] new connection accepted on [...]" ) );
+
+				// set timeout value
+				if ( comm_timeout > 0 ) {
+					client_sock->timeout( comm_timeout, 0 );
+					// TODO: add debug logging
+				}
 
 			} catch ( psocksxx::sockexception &e ) {
 
@@ -123,9 +130,16 @@ namespace bitz {
 		icap::Response * response;
 		RequestHandler * req_handler;
 
+
 		// request header
 		req_header  = icap::util::read_req_header( client_sock );
 		logger.debug( std::string( "[worker] request header:\r\n" ).append( req_header->raw_data() ) );
+
+		// check timeout
+		if ( client_sock->timedout() ) {
+			logger.warn( "[worker] communication timed out..." );
+			return --max_requests;
+		}
 
 		// try to find a handler for the request
 		req_handler = util::find_req_handler( _req_handlers, req_header->method() );
