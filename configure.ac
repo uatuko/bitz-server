@@ -79,7 +79,7 @@ PKG_CHECK_MODULES([log4cpp], [log4cpp >= 1.0],,
 	AC_MSG_ERROR([log4cpp 1.0 or newer not found.])
 )
 PKG_CHECK_MODULES([psocksxx], [psocksxx >= 0.0.2],,
-	AC_MSG_ERROR([psocksxx 0.0.1 or newer not found.])
+	AC_MSG_ERROR([psocksxx 0.0.2 or newer not found.])
 )
 
 
