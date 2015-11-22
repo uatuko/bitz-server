@@ -20,6 +20,7 @@ before_install:
 install:
   - curl -L https://github.com/nukedzn/psocksxx/releases/download/v1.0.0/psocksxx-1.0.0.tar.gz | tar -zx -C /tmp
   - cd /tmp/psocksxx-* && ./configure --prefix=/tmp/root && make && make install
+  - cd ${TRAVIS_BUILD_DIR}
 
 before_script:
   - if [ $TRAVIS_OS_NAME == linux ]; then libtoolize; fi
