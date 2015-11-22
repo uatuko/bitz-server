@@ -1,6 +1,8 @@
 bitz-server
 ===========
 
+[![Build Status](https://travis-ci.org/uditha-atukorala/bitz-server.svg)](https://travis-ci.org/uditha-atukorala/bitz-server)
+
 An ICAP server implementation in C++
 
 ### Copyright and License
