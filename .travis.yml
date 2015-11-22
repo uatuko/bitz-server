@@ -15,7 +15,7 @@ compiler:
 before_install:
   - echo $LANG
   - echo $LC_ALL
-  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install libconfig-hr log4cpp; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install libconfig log4cpp; fi
 
 install:
   - curl -L https://github.com/nukedzn/psocksxx/releases/download/v1.0.0/psocksxx-1.0.0.tar.gz | tar -zx -C /tmp
