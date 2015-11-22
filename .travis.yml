@@ -29,7 +29,7 @@ before_script:
   - autoheader
   - autoconf
   - automake --add-missing
-  - PKG_CONFIG_PATH=/tmp/root ./configure
+  - PKG_CONFIG_PATH=/tmp/root/lib/pkgconfig ./configure
 
 script:
   - make distcheck
