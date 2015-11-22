@@ -19,8 +19,8 @@ before_install:
 install:
   - curl -L https://github.com/nukedzn/psocksxx/releases/download/v1.0.0/psocksxx-1.0.0.tar.gz | tar -zx -C /tmp
   - cd /tmp/psocksxx-* && ./configure --prefix=/tmp/root && make && make install
-  - if [ $TRAVIS_OS_NAME == linux ]; then curl -L http://www.hyperrealm.com/libconfig/libconfig-1.4.9.tar.gz | tar -zx -C /tmp fi
-  - if [ $TRAVIS_OS_NAME == linux ]; then cd /tmp/libconfig-* && ./configure --prefix=/tmp/root && make && make install fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then curl -L http://www.hyperrealm.com/libconfig/libconfig-1.4.9.tar.gz | tar -zx -C /tmp; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then cd /tmp/libconfig-* && ./configure --prefix=/tmp/root && make && make install; fi
   - cd ${TRAVIS_BUILD_DIR}
 
 before_script:
