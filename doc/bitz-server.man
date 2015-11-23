@@ -1,4 +1,4 @@
-.TH bitz-server 1 "March 2013" Linux "User Manuals"
+.TH bitz-server 1 "November 2015" Linux "User Manuals"
 .SH NAME
 bitz-server \- An ICAP server
 .SH SYNOPSIS
@@ -39,9 +39,9 @@ Default configuration file. See
 for further details.
 .RE
 .SH BUGS
-Please report all bugs and feature requests at <http://bugs.geniusse.com/>
+Please report all bugs and feature requests at <https://github.com/uditha-atukorala/bitz-server/issues>
 .SH AUTHOR
-Uditha Atukorala <udi at geniusse dot com>
+Uditha Atukorala <ua@nuked.zone>
 .SH "SEE ALSO"
 .BR bitz-server.conf (5)
 

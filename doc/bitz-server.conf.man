@@ -1,4 +1,4 @@
-.TH bitz-server.conf 5 "March 2013" Linux "File Formats Manual"
+.TH bitz-server.conf 5 "November 2015" Linux "File Formats Manual"
 .SH NAME
 bitz-server.conf \- bitz-server configuration file
 .SH SYNOPSIS
@@ -58,7 +58,7 @@ Terminals are defined below as regular expressions:
 ([\-+]([0-9]+)(\\.[0-9]*)?[eE][-+]?[0-9]+)
 .fi
 .SH AUTHOR
-Uditha Atukorala <udi at geniusse dot com>
+Uditha Atukorala <ua@nuked.zone>
 .SH "SEE ALSO"
 .BR bitz-server (1)
 
