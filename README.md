@@ -5,9 +5,10 @@ bitz-server
 
 An ICAP server implementation in C++
 
-### Copyright and License
 
-Copyright (C) 2012-2013 Uditha Atukorala.
+## Copyright and License
+
+Copyright (C) 2012-2015 Uditha Atukorala.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,7 +22,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 for more details.
 
 
-### The concept
+## The concept
 
 The main goal of this project is to create an ICAP server
 ([RFC 3507](http://www.ietf.org/rfc/rfc3507.txt)) implementation in C++
@@ -37,125 +38,59 @@ scanning etc. and to make it easier to write (and faster to implement) such modu
 there is hope to exploit python programming language.
 
 
-### Acknowledgements
+## Acknowledgements
 
 * Many thanks to Kenneth Oksanen for his support in finding and fixing bugs
 
 
-### Downloads
-You can download the source distributions from http://packages.geniusse.com/source/bitz-server/.
+## Downloads
+
+You can download the source distributions from https://github.com/uditha-atukorala/bitz-server/releases.
 
 
-#### Debian/Ubuntu packages
-First you should add the repository key to avoid warnings.
+## Dependencies
 
-	$ wget -q -O - http://packages.geniusse.com/debian/packman.gpg.key | sudo apt-key add -
-
-Then add the following to your `/etc/apt/sources.list`;
-
-	$ deb http://packages.geniusse.com/debian/ [release] main
-
-where the `[release]` being wheezy, jessie, sid etc.
-
-Finally update your package list and install bitz-server;
-
-	$ sudo aptitude update
-	$ sudo aptitude install bitz-server
-
-
-### Dependencies
-
-* [psocksxx >= 0.0.2](https://github.com/uditha-atukorala/psocksxx)
+* [psocksxx >= 0.0.2](https://nukedzn.github.io/psocksxx/)
 * [libconfig++ >= 1.4](http://www.hyperrealm.com/libconfig/)
 * log4cpp >= 1.0
 * python 2.7 (for modpy module)
 
 
-### Bugs and Feature Requests
+## Bugs and Feature Requests
 
-Please report all bugs and feature requests [here](http://bugs.geniusse.com/) under the
-[bitz-server](http://bugs.geniusse.com/enter_bug.cgi?product=bitz-server) project.
-Known issues can be found [here](http://bugs.geniusse.com/buglist.cgi?query_format=specific&order=relevance%20desc&bug_status=__open__&product=bitz-server&list_id=36).
+Please report all bugs and feature requests under [issues](https://github.com/uditha-atukorala/bitz-server/issues).
 
 
-### Version history
+## Compiling from source
 
-__0.1.6__ - _28th September 2013_
-*   Few tweaks and minor changes to the distribution files (no functional changes)
-
-__0.1.5__ - _11th August 2013_
-*   Fixing modpy interface module string copy bug
-
-__0.1.4__ - _01st August 2013_
-*   Code optimisations
-*   Fixing bug [#34](http://bugs.geniusse.com/show_bug.cgi?id=34)
-
-__0.1.3__ - _29th July 2013_
-*   Fixing bugs
-	[#31](http://bugs.geniusse.com/show_bug.cgi?id=31),
-	[#32](http://bugs.geniusse.com/show_bug.cgi?id=32)
-
-__0.1.2__ - _07th July 2013_
-*   Added a RESPMOD handler ([bug #16](http://bugs.geniusse.com/show_bug.cgi?id=16))
-*   Added Message Preview features ([bug #17](http://bugs.geniusse.com/show_bug.cgi?id=17))
-*   Code cleanup and optimisations
-*   Fixing bugs [#15](http://bugs.geniusse.com/show_bug.cgi?id=15),
-	[#23](http://bugs.geniusse.com/show_bug.cgi?id=23),
-	[#24](http://bugs.geniusse.com/show_bug.cgi?id=24),
-	[#25](http://bugs.geniusse.com/show_bug.cgi?id=25)
-
-__0.1.1__ - _06th March 2013_
-*   Fixing bugs [#19](http://bugs.geniusse.com/show_bug.cgi?id=19) and [#22](http://bugs.geniusse.com/show_bug.cgi?id=22)
-
-__0.1.0__ - _03rd March 2013_
-
-*   Daemonized version ([bug #18](http://bugs.geniusse.com/show_bug.cgi?id=18)), hence
-	the minor version bump. Server core is re-organised with bitz::server namespace to
-	be more cleaner and easier to read.
-*   Make it possible to pass in command-line options
-*   Closed a memory leak in modpy module
-*   Fixing bugs [#20](http://bugs.geniusse.com/show_bug.cgi?id=20) and [#21](http://bugs.geniusse.com/show_bug.cgi?id=21)
-
-
-__0.0.1__ - _24th February 2013_
-
-*   Proof of concept. An ICAP server with only a REQMOD handler. Includes a template
-	_echo_ module to demonstrate the pluggable module architecture and the _modpy_ module
-	to demonstrate the python interface.
-
----------------------------------------
-
-
-### Compiling from source
-
-First you need to initialise the autotools
+If you are using the github source then first you need to initialise autotools.
 
 	$ libtoolize (glibtoolize in OS X)
 	$ aclocal
 	$ autoheader
 	$ autoconf
-	$ automake --add-missing --foreign
-
-Or you can grab the latest source distribution tar from [CI artifacts](http://jenkins.geniusse.com/job/bitz-server/).
+	$ automake --add-missing
 
 After that you can use the usual `./configure && make`
 
 
-#### Notes
-##### modpy
+--------------------------------------------------------------------------------
+
+### Notes
+#### modpy
 This is the (long awaited) python interface module. It provides a template for any
 other python interface module implementations either as C++ module template or as
 a C++ interface for python modules.
 
 
-##### Debugging
+#### Debugging
 
 Use the following to create the binaries with debug symbols
 
 	$ ./configure CXXFLAGS="-g -O0"
 
 
-##### config file
+#### config file
 
 The default config file location is `/etc/bitz/bitz-server.conf` but this can
 changed using the `--with-config` option when you run `configure`.
@@ -165,7 +100,7 @@ e.g.
 	$ ./configure --with-config=/[path to source code]/conf/bitz-server.conf
 
 
-##### valgrind checks
+#### valgrind checks
 
 	$ valgrind --leak-check=full --read-var-info=yes --trace-children=yes --suppressions=test/valgrind.supp --log-file=valgrind.log ./src/bitz-server --debug
 
