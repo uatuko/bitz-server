@@ -1,3 +1,11 @@
+1.0.0 - 25th November 2015
+	*   [New] Configurable communication (socket) timeouts
+	*   [New] Support for persistent connections
+	*   [New] Use psocksxx as the socket library
+	*   Code restructure
+	*   Updated man pages
+	*   Fix issue #2
+
 0.1.6 - 28th September 2013
 	*   Few tweaks and minor changes to distribution files (no functional changes)
 
