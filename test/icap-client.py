@@ -14,16 +14,16 @@ SERVICE = 'icap://icap.server.net/sample-service'
 PORT    = 1344
 
 # OPTIONS
-print "----- OPTIONS -----"
+print("----- OPTIONS -----")
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-except socket.error, msg:
+except socket.error as msg:
 	sys.stderr.write("[ERROR] %s\n" % msg[1])
 	sys.exit(1)
 
 try:
 	sock.connect((HOST, PORT))
-except socket.error, msg:
+except socket.error as msg:
 	sys.stderr.write("[ERROR] %s\n" % msg[1])
 	sys.exit(2)
 
@@ -40,20 +40,20 @@ while len(data):
 	data = sock.recv(1024)
 sock.close()
 
-print string
+print(string)
 
 
 # REQMOD, GET
-print "----- REQMOD - GET -----"
+print("----- REQMOD - GET -----")
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-except socket.error, msg:
+except socket.error as msg:
 	sys.stderr.write("[ERROR] %s\n" % msg[1])
 	sys.exit(1)
 
 try:
 	sock.connect((HOST, PORT))
-except socket.error, msg:
+except socket.error as msg:
 	sys.stderr.write("[ERROR] %s\n" % msg[1])
 	sys.exit(2)
 
@@ -78,20 +78,20 @@ while len(data):
 	data = sock.recv(1024)
 sock.close()
 
-print string
+print(string)
 
 
 # REQMOD, POST
-print "----- REQMOD - POST -----"
+print("----- REQMOD - POST -----")
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-except socket.error, msg:
+except socket.error as msg:
 	sys.stderr.write("[ERROR] %s\n" % msg[1])
 	sys.exit(1)
 
 try:
 	sock.connect((HOST, PORT))
-except socket.error, msg:
+except socket.error as msg:
 	sys.stderr.write("[ERROR] %s\n" % msg[1])
 	sys.exit(2)
 
@@ -118,20 +118,20 @@ while len(data):
 	data = sock.recv(1024)
 sock.close()
 
-print string
+print(string)
 
 
 # REQMOD - Message preview
-print "----- REQMOD - Message preview -----"
+print("----- REQMOD - Message preview -----")
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-except socket.error, msg:
+except socket.error as msg:
 	sys.stderr.write("[ERROR] %s\n" % msg[1])
 	sys.exit(1)
 
 try:
 	sock.connect((HOST, PORT))
-except socket.error, msg:
+except socket.error as msg:
 	sys.stderr.write("[ERROR] %s\n" % msg[1])
 	sys.exit(2)
 
@@ -158,20 +158,20 @@ while len(data):
 	data = sock.recv(1024)
 sock.close()
 
-print string
+print(string)
 
 
 # RESPMOD
-print "----- RESPMOD -----"
+print("----- RESPMOD -----")
 try:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-except socket.error, msg:
+except socket.error as msg:
 	sys.stderr.write("[ERROR] %s\n" % msg[1])
 	sys.exit(1)
 
 try:
 	sock.connect((HOST, PORT))
-except socket.error, msg:
+except socket.error as msg:
 	sys.stderr.write("[ERROR] %s\n" % msg[1])
 	sys.exit(2)
 
@@ -204,7 +204,7 @@ while len(data):
 	data = sock.recv(1024)
 sock.close()
 
-print string
+print(string)
 
 
 sys.exit(0)

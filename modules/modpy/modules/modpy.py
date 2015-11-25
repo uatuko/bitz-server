@@ -6,15 +6,15 @@
 import bitz
 
 def init():
-	print "init() called";
+	print( "init() called" );
 
 def cleanup():
-	print "cleanup() called";
+	print( "cleanup() called" );
 
 def preview( request ):
 	request     = bitz.get_request( request );
 	req_payload = request['payload'];
-	print "preview payload: \r\n", req_payload;
+	print( "preview payload: \r\n", req_payload );
 
 	# response
 	if req_payload['ieof']:
@@ -27,7 +27,7 @@ def preview( request ):
 def modify( request ):
 	request     = bitz.get_request( request );
 	req_payload = request['payload'];
-	print "modify payload: \r\n", req_payload;
+	print( "modify payload: \r\n", req_payload );
 
 	# response
 	resp_payload = {};
