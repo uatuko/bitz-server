@@ -207,6 +207,9 @@ namespace bitz {
 
 	void Manager::manager_workers() throw() {
 
+		// logger
+		Logger &logger = Logger::instance();
+
 		if (! _manager.worker ) {
 
 			// check the worker count
@@ -215,8 +218,12 @@ namespace bitz {
 				// we are missing workers, find out who
 				for (unsigned int i = 0; i < _manager.max_workers; i++ ) {
 					if ( _manager.worker_pool[i].worker_pid == 0 ) {
-						// spawn a worker for the missing
-						spawn_worker( i );
+						try {
+							// spawn a worker for the missing
+							spawn_worker( i );
+						} catch ( ManagerException &mex ) {
+							logger.warn( std::string( "[manager] failed to spawn worker[" ).append( util::itoa( i ) ).append( "], exception: ").append( mex.what() ) );
+						}
 					}
 				}
 
