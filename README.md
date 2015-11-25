@@ -50,7 +50,7 @@ You can download the source distributions from https://github.com/uditha-atukora
 
 ## Dependencies
 
-* [psocksxx >= 0.0.2](https://nukedzn.github.io/psocksxx/)
+* [psocksxx >= 0.0.6](https://nukedzn.github.io/psocksxx/)
 * [libconfig++ >= 1.4](http://www.hyperrealm.com/libconfig/)
 * log4cpp >= 1.0
 * python 2.7 (for modpy module)
