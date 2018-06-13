@@ -49,6 +49,7 @@ AC_PROG_LIBTOOL
 
 # Language
 AC_LANG(C++)
+AX_CXX_COMPILE_STDCXX_11()
 
 # Options
 AC_ARG_WITH([config],
