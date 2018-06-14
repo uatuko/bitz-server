@@ -21,6 +21,7 @@
 #define BITZ_MANAGER_H
 
 #include <unistd.h>
+#include <spdlog/spdlog.h>
 #include <psocksxx/tcpnsockstream.h>
 
 #include "manager_exception.h"
@@ -79,7 +80,8 @@ namespace bitz {
 
 
 	private:
-		manager_t         _manager;
+		manager_t _manager;
+		std::shared_ptr<spdlog::logger> _logger;
 
 		virtual void spawn_worker( unsigned int worker_id ) throw( ManagerException );
 

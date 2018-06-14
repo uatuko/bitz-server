@@ -18,7 +18,6 @@
  */
 
 #include "config.h"
-#include "logger.h"
 
 #include <iostream>
 #include <cstdlib>

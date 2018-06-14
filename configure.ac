@@ -76,9 +76,6 @@ PKG_PROG_PKG_CONFIG
 PKG_CHECK_MODULES([libconfig], [libconfig++ >= 1.4],,
 	AC_MSG_ERROR([libconfig++ 1.4 or newer not found.])
 )
-PKG_CHECK_MODULES([log4cpp], [log4cpp >= 1.0],,
-	AC_MSG_ERROR([log4cpp 1.0 or newer not found.])
-)
 PKG_CHECK_MODULES([psocksxx], [psocksxx >= 0.0.6],,
 	AC_MSG_ERROR([psocksxx 0.0.6 or newer not found.])
 )

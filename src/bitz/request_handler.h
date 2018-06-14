@@ -25,6 +25,7 @@
 #include <icap/response.h>
 #include <icap/request.h>
 #include <psocksxx/iosockstream.h>
+#include <spdlog/spdlog.h>
 
 
 namespace bitz {
@@ -124,6 +125,7 @@ namespace bitz {
 	private:
 
 		req_handler_t _req_handler;
+		std::shared_ptr<spdlog::logger> _logger;
 
 	};
 

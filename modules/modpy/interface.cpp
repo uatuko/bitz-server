@@ -19,10 +19,11 @@
 
 #include "interface.h"
 
-#include <bitz/logger.h>
 #include <icap/request.h>
 #include <icap/response.h>
-#include <iostream>
+#include <spdlog/spdlog.h>
+
+static auto _logger = spdlog::get( "bitz-server" );
 
 
 PyObject * bitz_get_request( PyObject * self, PyObject * pyrequest ) {
@@ -31,9 +32,7 @@ PyObject * bitz_get_request( PyObject * self, PyObject * pyrequest ) {
 	PyObject * pypayload;
 	icap::Request * request;
 
-	// logger
-	bitz::Logger &logger = bitz::Logger::instance();
-	logger.debug( "[modpy.interface] get_request()" );
+	_logger->debug( "[modpy.interface] get_request()" );
 
 	// initialise return dictionary
 	pyreturn = PyDict_New();
@@ -65,7 +64,7 @@ PyObject * bitz_get_request( PyObject * self, PyObject * pyrequest ) {
 		Py_DECREF( pypayload );
 
 	} else {
-		logger.warn( "[modpy.interface] failed to get request object pointer" );
+		_logger->warn( "[modpy.interface] failed to get request object pointer" );
 	}
 
 	return pyreturn;
@@ -80,15 +79,13 @@ PyObject * bitz_get_response_from_status( PyObject * self, PyObject * args ) {
 
 	unsigned int resp_status;
 
-	// logger
-	bitz::Logger &logger = bitz::Logger::instance();
-	logger.debug( "[modpy.interface] get_response_from_status()" );
+	_logger->debug( "[modpy.interface] get_response_from_status()" );
 
 	// parse args
 	if ( PyArg_ParseTuple( args, "I", &resp_status ) ) {
 		response = new icap::Response( (icap::ResponseHeader::status_t) resp_status );
 	} else {
-		logger.warn( "[modpy.interface] failed to parse arguments" );
+		_logger->warn( "[modpy.interface] failed to parse arguments" );
 		response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
 	}
 
@@ -114,9 +111,7 @@ PyObject * bitz_get_response( PyObject * self, PyObject * args ) {
 	Py_ssize_t pybuflen;
 
 
-	// logger
-	bitz::Logger &logger = bitz::Logger::instance();
-	logger.debug( "[modpy.interface] get_response()" );
+	_logger->debug( "[modpy.interface] get_response()" );
 
 	// parse args
 	if ( PyArg_ParseTuple( args, "IO!", &resp_status, &PyDict_Type, &pypayload ) ) {
@@ -142,7 +137,7 @@ PyObject * bitz_get_response( PyObject * self, PyObject * args ) {
 		response->payload( payload );
 
 	} else {
-		logger.warn( "[modpy.interface] failed to parse arguments" );
+		_logger->warn( "[modpy.interface] failed to parse arguments" );
 	}
 
 	// sanity check

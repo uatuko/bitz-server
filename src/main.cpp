@@ -18,12 +18,13 @@
  */
 
 #include <cstdlib>
+#include <iostream>
 
 #include <config.h>
 #include "bitz-server.h"
 #include "bitz/config.h"
-#include "bitz/logger.h"
 #include "bitz/util.h"
+#include "spdlog/spdlog.h"
 
 
 int main( int argc, char **argv ) {
@@ -64,8 +65,8 @@ int main( int argc, char **argv ) {
 	}
 
 	// initialise the logger
-	bitz::Logger &logger = bitz::Logger::instance( config.log_file, config.log_category );
-	logger.info( std::string( PACKAGE_STRING ) + " initialised" );
+	auto logger = spdlog::stdout_color_st( "bitz-server" );
+	logger->info( "{} initialised", PACKAGE_STRING );
 
 	// start the server
 	bitz::server::start( config.port, config.max_workers, config.max_worker_requests, config.comm_timeout );
