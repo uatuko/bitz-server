@@ -84,6 +84,9 @@ int main( int argc, char **argv ) {
 	// start the server
 	bitz::server::start( config.port, config.max_workers, config.max_worker_requests, config.comm_timeout );
 
+	// flush logs
+	logger->flush();
+
 	// run the server
 	bitz::server::run();
 
