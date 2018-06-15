@@ -76,7 +76,7 @@ namespace bitz {
 
 		virtual void shutdown( bool graceful = true ) throw();
 		virtual void reap_worker( pid_t worker_pid ) throw();
-		virtual void manager_workers() throw();
+		virtual void manage_workers() throw();
 
 
 	private:

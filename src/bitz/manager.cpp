@@ -197,7 +197,7 @@ namespace bitz {
 	}
 
 
-	void Manager::manager_workers() throw() {
+	void Manager::manage_workers() throw() {
 
 		if (! _manager.worker ) {
 

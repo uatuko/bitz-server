@@ -455,7 +455,7 @@ namespace bitz {
 				sigprocmask( SIG_UNBLOCK, &mask, NULL );
 
 				// manage workers
-				globals.manager->manager_workers();
+				globals.manager->manage_workers();
 
 				// block termination signals
 				sigprocmask( SIG_BLOCK, &mask, &oldmask );
