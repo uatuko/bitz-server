@@ -41,14 +41,11 @@ namespace bitz {
 		void init() {
 
 			// initialise defaults
-			globals.pid_handle  = -1;
+			globals.pid         = -1;
+			globals.pidfd       = -1;
 			globals.manager     = NULL;
 			globals.terminating = 0;
 			globals.daemon      = false;
-
-			// logger (syslog)
-			setlogmask( LOG_UPTO( LOG_INFO ) );
-			openlog( PACKAGE_NAME, LOG_CONS, LOG_USER );
 
 			// signal handlers
 			init_signal_handlers();
@@ -198,18 +195,9 @@ namespace bitz {
 
 		void daemonize( const char *rundir, const char *pidfile ) {
 
-			pid_t pid, sid;
+			pid_t pid;
 			long i;
 			char str[10];
-
-			// notify
-			syslog( LOG_NOTICE, "starting daemon (version %s)", PACKAGE_VERSION );
-
-			// check parent process id value
-			if ( getppid() == 1 ) {
-				// we are already a daemon
-				return;
-			}
 
 			/* fork daemon */
 			pid = fork();
@@ -222,49 +210,67 @@ namespace bitz {
 				exit( EXIT_SUCCESS );
 			}
 
-
-			/* child (a.k.a daemon) continues */
-
-			// set file permissions (750)
-			umask( 027 );
-
 			// get a new process group
-			sid = setsid();
-			if ( sid < 0 ) {
+			if ( setsid() < 0 ) {
 				exit(EXIT_FAILURE);
 			}
 
-			// route I/O connections
-			close( STDIN_FILENO );
-			close( STDOUT_FILENO );
-			close( STDERR_FILENO );
+
+			// 2nd fork (to make PID != SID)
+			pid = fork();
+			if ( pid < 0 ) {
+				exit( EXIT_FAILURE );
+			}
+
+			// exit the parent
+			if ( pid > 0 ) {
+				exit( EXIT_SUCCESS );
+			}
+
+
+			/* child (a.k.a daemon) continues */
+			// set file permissions (750)
+			umask( 027 );
 
 			// change running directory
 			chdir( rundir );
 
+			// close all open file descriptors
+			for ( int fd = sysconf( _SC_OPEN_MAX ); fd > 0; fd-- ) {
+				close( fd );
+			}
+
+
+			// logger (syslog)
+			setlogmask( LOG_UPTO( LOG_INFO ) );
+			openlog( PACKAGE_NAME, LOG_CONS, LOG_USER );
+
+			// notify
+			syslog( LOG_NOTICE, "starting daemon (version %s)", PACKAGE_VERSION );
+
 
 			/* lock pid file to ensure we have only one copy */
 
-			globals.pid_handle = open( pidfile, O_RDWR | O_CREAT, 0600 );
-			if ( globals.pid_handle == -1 ) {
+			globals.pidfd = open( pidfile, O_RDWR | O_CREAT, 0600 );
+			if ( globals.pidfd == -1 ) {
 				syslog( LOG_ERR, "could not open pid lock file: %s", pidfile );
 				exit( EXIT_FAILURE );
 			}
 
-			if ( lockf( globals.pid_handle, F_TLOCK, 0 ) == -1 ) {
+			if ( lockf( globals.pidfd, F_TLOCK, 0 ) == -1 ) {
 				syslog( LOG_ERR, "could not lock pid lock file: %s", pidfile);
 				exit( EXIT_FAILURE );
 			}
 
 			// get and format pid
-			sprintf( str, "%d\n", getpid() );
+			globals.pid = getpid();
+			sprintf( str, "%d\n", globals.pid );
 
 			// write pid to lockfile
-			write( globals.pid_handle, str, strlen( str ) );
+			write( globals.pidfd, str, strlen( str ) );
 
 			// update status
 			globals.daemon = true;
-
 
 		}
 
@@ -272,13 +278,13 @@ namespace bitz {
 		void shutdown() {
 
 			// notify
-			if ( globals.daemon && ( getppid() == 1 ) ) {
+			if ( globals.daemon && ( getpid() == globals.pid ) ) {
 				syslog( LOG_NOTICE, "shutting down daemon (version %s)", PACKAGE_VERSION );
 			}
 
 			// close pid file
-			if ( globals.pid_handle != -1 ) {
-				close( globals.pid_handle );
+			if ( globals.pidfd != -1 ) {
+				close( globals.pidfd );
 			}
 
 			// close logger (syslog)
