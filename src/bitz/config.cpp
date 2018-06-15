@@ -19,7 +19,6 @@
 
 #include "config.h"
 
-#include <iostream>
 #include <cstdlib>
 
 
@@ -42,6 +41,9 @@ namespace bitz {
 
 		// defaults
 		_lconfig = NULL;
+
+		// logger
+		_logger = spdlog::get( "bitz-server" );
 
 	}
 
@@ -71,12 +73,10 @@ namespace bitz {
 		try {
 			config->readFile( config_file.c_str() );
 		} catch ( const libconfig::FileIOException &ex ) {
-			std::cerr << "[config] failed to read config file: " << config_file
-					<< ", exception: " << ex.what() << std::endl;
+			_logger->error( "[config] failed to read config file: {}, exception: {}",  config_file, ex.what() );
 			exit( EXIT_FAILURE );
 		} catch ( const libconfig::ParseException &pex ) {
-			std::cerr << "[config] parse error at " << pex.getFile()
-					<< ":" << pex.getLine() << " - " << pex.getError() << std::endl;
+			_logger->error( "[config] parse error at {}:{} - {}", pex.getFile(), pex.getLine(), pex.getError() );
 			exit( EXIT_FAILURE );
 		}
 
@@ -94,8 +94,7 @@ namespace bitz {
 			config->lookupValue( "comm_timeout", _config.comm_timeout );
 
 		} catch ( const libconfig::SettingNotFoundException &e ) {
-			std::cerr << "[config] failed to load core configs, "
-					<< e.getPath() << " : " << e.what() << std::endl;
+			_logger->error( "[config] failed to load core configs, {} : {}", e.getPath(), e.what() );
 		}
 
 		// cache configs
@@ -124,12 +123,11 @@ namespace bitz {
 				libconfig::Setting &setting = _lconfig->lookup( std::string( "modules." ).append( module ) );
 				setting.lookupValue( config, config_value );
 			} catch ( const libconfig::SettingNotFoundException &e ) {
-				// TODO: log errors ??
-				std::cerr << "[config] " << e.getPath() << " : " << e.what() << std::endl;
+				_logger->error( "[config] {} : {}", e.getPath(), e.what() );
 			}
 
 		} else {
-			std::cout << "[config] 'modules' configs not found" << std::endl;
+			_logger->info( "[config] 'modules' configs not found" );
 		}
 
 		return config_value;
@@ -142,16 +140,14 @@ namespace bitz {
 		int i, j;
 		std::string s;
 
-		std::cout << "[config] looking for req_handlers... ";
+		_logger->trace( "[config] looking for req_handlers" );
 		if ( _lconfig->exists( "req_handlers" ) ) {
-
-			std::cout << "found ";
 
 			libconfig::Setting &req_handlers = _lconfig->lookup( "req_handlers" );
 			_config.req_handlers_count       = req_handlers.getLength();
 			_config.req_handlers             = new req_handlers_config_t[_config.req_handlers_count];
 
-			std::cout << "(" << _config.req_handlers_count << ")" << std::endl;
+			_logger->debug( "[config] found {} request handlers", _config.req_handlers_count );
 
 			try {
 
@@ -161,29 +157,28 @@ namespace bitz {
 					_config.req_handlers[i].class_name = (const char *) req_handlers[i]["class"];
 
 					// read request handler modules config
-					std::cout << "[config] looking for " << _config.req_handlers[i].name << " modules... ";
+					_logger->debug( "[config] looking for {} modules", _config.req_handlers[i].name );
 					if ( req_handlers[i].exists( "modules" ) ) {
-						std::cout << "found ";
 
 						_config.req_handlers[i].modules_count   = req_handlers[i]["modules"].getLength();
 						_config.req_handlers[i].modules         = new modules_config_t[_config.req_handlers[i].modules_count];
 
-						std::cout << "(" << _config.req_handlers[i].modules_count << ")" << std::endl;
+						_logger->debug( "[config] found {} modules for {}", _config.req_handlers[i].modules_count, _config.req_handlers[i].name );
 						for ( j = 0; j < _config.req_handlers[i].modules_count; j++ ) {
 							_config.req_handlers[i].modules[j].name   = (const char *) req_handlers[i]["modules"][j]["name"];
 							_config.req_handlers[i].modules[j].module = (const char *) req_handlers[i]["modules"][j]["module"];
 						}
 					} else {
-						std::cout << "not found" << std::endl;
+						_logger->info( "[config] no modules found for {}", _config.req_handlers[i].name );
 					}
 				}
 
 			} catch ( const libconfig::SettingNotFoundException &ex ) {
-				std::cerr << "[config] Error: " << ex.getPath() << ex.what() << std::endl;
+				_logger->error( "[config] {} : {}", ex.getPath(), ex.what() );
 			}
 
 		} else {
-			std::cout << "not found" << std::endl;
+			_logger->info( "[config] no request handlers found" );
 		}
 
 	}

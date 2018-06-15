@@ -99,9 +99,10 @@ namespace bitz {
 			pid_t worker_pid;
 			int status;
 
-			std::cout << "[" << getpid() << "] inside zombie deleter: ";
+			auto logger = spdlog::get( "bitz-server" );
+			logger->trace( "[{}] inside zombie reaper", getpid() );
 			while ( ( worker_pid = waitpid( WAIT_ANY, &status, WNOHANG ) ) > 0 ) {
-				std::cout << "child " << worker_pid << " terminated with status " << status << std::endl;
+				logger->trace( "[reaper] child {} terminated with status {}", worker_pid, status );
 
 				if ( globals.manager != NULL ) {
 					globals.manager->reap_worker( worker_pid );
@@ -133,7 +134,8 @@ namespace bitz {
 
 		void sigterm_handler( int sig, siginfo_t *siginfo, void *context ) {
 
-			std::cout << "[" << getpid() << "] inside SIGTERM handler" << std::endl;
+			auto logger = spdlog::get( "bitz-server" );
+			logger->trace( "[{}] inside SIGTERM handler", getpid() );
 			termination_handler( sig, siginfo, context );
 
 		}
@@ -161,7 +163,8 @@ namespace bitz {
 
 		void sigquit_handler( int sig, siginfo_t *siginfo, void *context ) {
 
-			std::cout << "[" << getpid() << "] inside SIGQUIT handler" << std::endl;
+			auto logger = spdlog::get( "bitz-server" );
+			logger->trace( "[{}] inside SIGQUIT handler", getpid() );
 			termination_handler( sig, siginfo, context );
 
 		}
@@ -189,7 +192,8 @@ namespace bitz {
 
 		void sigint_handler(  int sig, siginfo_t *siginfo, void *context ) {
 
-			std::cout << "[" << getpid() << "] inside SIGQINT handler" << std::endl;
+			auto logger = spdlog::get( "bitz-server" );
+			logger->trace( "[{}] inside SIGQINT handler", getpid() );
 			termination_handler( sig, siginfo, context );
 
 		}
@@ -300,12 +304,15 @@ namespace bitz {
 
 		void termination_handler( int sig, siginfo_t * sig_info, void * context ) {
 
-			std::cout << "[" << getpid() << "] inside termination handler" << std::endl;
+			pid_t pid = getpid();
+			auto logger = spdlog::get( "bitz-server" );
+			logger->trace( "[{}] inside termination handler", pid );
 
 			// exit by re-raising the signal if termination
 			// already in progress
 			if ( globals.terminating ) {
-				std::cout << "[" << getpid() << "] already terminating" << std::endl;
+				logger->warn( "[{}] already terminating", pid );
+
 				raise( sig );
 			}
 
