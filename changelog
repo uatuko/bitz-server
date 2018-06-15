@@ -1,3 +1,6 @@
+2.0.0 - 15th June 2018
+	*   Use spdlog instead of log4cpp as the logger (issue #6)
+
 1.0.2 - 19th November 2017
 	*   Fix broken v1.0.1 release
 
