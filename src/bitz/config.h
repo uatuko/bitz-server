@@ -51,7 +51,6 @@ namespace bitz {
 		int comm_timeout;
 		std::string pid_file;
 		std::string log_file;
-		std::string log_category;
 		unsigned int req_handlers_count;
 
 		req_handlers_config_t * req_handlers;

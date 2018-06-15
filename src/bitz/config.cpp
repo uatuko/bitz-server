@@ -30,7 +30,6 @@ namespace bitz {
 		_config.port            = 1344;
 		_config.pid_file        = "/dev/null";
 		_config.log_file        = "/dev/null";
-		_config.log_category    = "bitz";
 		_config.req_handlers_count = 0;
 		_config.req_handlers       = NULL;
 
@@ -86,7 +85,6 @@ namespace bitz {
 			config->lookupValue( "port", _config.port );
 			config->lookupValue( "pid_file", _config.pid_file );
 			config->lookupValue( "log_file", _config.log_file );
-			config->lookupValue( "log_category", _config.log_category );
 
 			config->lookupValue( "max_workers", _config.max_workers );
 			config->lookupValue( "max_worker_requests", _config.max_worker_requests );
