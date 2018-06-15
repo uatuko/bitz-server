@@ -29,6 +29,8 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 
+#include <spdlog/spdlog.h>
+
 #include <config.h>
 #include "bitz-server.h"
 
@@ -286,6 +288,9 @@ namespace bitz {
 			if ( globals.pidfd != -1 ) {
 				close( globals.pidfd );
 			}
+
+			// flush logs
+			spdlog::get( "bitz-server" )->flush();
 
 			// close logger (syslog)
 			closelog();
