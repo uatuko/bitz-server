@@ -21,7 +21,6 @@
 #include "interface.h"
 
 #include <bitz/config.h>
-#include <bitz/logger.h>
 
 
 namespace bitz {
@@ -34,6 +33,9 @@ namespace bitz {
 		// initialise Py::config_t values
 		_config.module_name = "modpy";
 		_config.module_path = "";
+
+		// logger
+		_logger = spdlog::get( "bitz-server" );
 
 		// load configs
 		load_configs();
@@ -92,21 +94,19 @@ namespace bitz {
 		PyObject * pymethod;
 		PyObject * pyreturn;
 
-		// logger
-		Logger &logger = Logger::instance();
 
 		// python core
 		Py_Initialize();
 
 		// bitz python module
 		if ( Py_InitModule( "bitz", bitz_methods ) == NULL ) {
-			logger.warn( "[modpy] failed to init C interface module: bitz" );
+			_logger->warn( "[modpy] failed to init C interface module: bitz" );
 		}
 
 		// setup python environment
 		if ( _config.module_path != "" ) {
 
-			logger.debug( std::string( "[modpy] appending to sys.path, module_path: " ).append( _config.module_path ) );
+			_logger->debug( std::string( "[modpy] appending to sys.path, module_path: " ).append( _config.module_path ) );
 
 			sys_path      = PySys_GetObject( (char *) "path" );
 			pymodule_path = PyString_FromString( _config.module_path.c_str() );
@@ -115,14 +115,14 @@ namespace bitz {
 		}
 
 		// load the interface module
-		logger.debug( std::string( "[modpy] interface module: " ).append( _config.module_name ) );
+		_logger->debug( std::string( "[modpy] interface module: " ).append( _config.module_name ) );
 
 		pymodule_name = PyString_FromString( _config.module_name.c_str() );
 		_pymodule     = PyImport_Import( pymodule_name );
 
 		if ( _pymodule != NULL ) {
 
-			logger.debug( "[modpy] interface module loaded successfully" );
+			_logger->debug( "[modpy] interface module loaded successfully" );
 
 			// call init() in the interface module
 			pymethod = PyObject_GetAttrString( _pymodule, "init" );
@@ -131,13 +131,13 @@ namespace bitz {
 				pyreturn = PyObject_CallObject( pymethod, NULL );
 				Py_DECREF( pyreturn );
 			} else {
-				logger.warn ( "[modpy] failed to call init() in interface module" );
+				_logger->warn ( "[modpy] failed to call init() in interface module" );
 			}
 
 			Py_DECREF( pymethod );
 
 		} else {
-			logger.warn( "[modpy] failed to load interface module" );
+			_logger->warn( "[modpy] failed to load interface module" );
 		}
 
 
@@ -154,9 +154,6 @@ namespace bitz {
 		PyObject * pymethod;
 		PyObject * pyreturn;
 
-		// logger
-		Logger &logger = Logger::instance();
-
 
 		// cleanup
 		if ( _pymodule != NULL ) {
@@ -168,7 +165,7 @@ namespace bitz {
 				pyreturn = PyObject_CallObject( pymethod, NULL );
 				Py_DECREF( pyreturn );
 			} else {
-				logger.warn ( "[modpy] failed to call cleanup() in interface module" );
+				_logger->warn ( "[modpy] failed to call cleanup() in interface module" );
 			}
 
 			Py_DECREF( pymethod );
@@ -199,9 +196,6 @@ namespace bitz {
 		PyObject * pyargs;
 		PyObject * pyrequest, * pyresponse;
 
-		// logger
-		Logger &logger = Logger::instance();
-
 		// initialise the response object
 		response = NULL;
 
@@ -231,18 +225,18 @@ namespace bitz {
 						response = static_cast<icap::Response *>(p);
 
 					} else {
-						logger.warn( std::string( "[modpy] invalid capsule response, method: " ).append( method ) );
+						_logger->warn( std::string( "[modpy] invalid capsule response, method: " ).append( method ) );
 					}
 
 					Py_DECREF( pyresponse );
 
 				} else {
-					logger.warn( std::string( "[modpy] response is NULL, method: " ).append( method ) );
+					_logger->warn( std::string( "[modpy] response is NULL, method: " ).append( method ) );
 				}
 
 
 			} else {
-				logger.warn ( std::string( "[modpy] failed to call the method in interface module, method: " ).append( method ) );
+				_logger->warn ( std::string( "[modpy] failed to call the method in interface module, method: " ).append( method ) );
 			}
 
 			// cleanup

@@ -18,7 +18,6 @@
  */
 
 #include "manager.h"
-#include "logger.h"
 #include "util.h"
 
 #include <cstdlib>
@@ -55,20 +54,19 @@ namespace bitz {
 			throw ManagerException( std::string( "failed to initialise socket, " ).append( e.what() ) );
 		}
 
-		Logger &logger = Logger::instance();
-		logger.debug( "manager initialised" );
+		// logger
+		_logger = spdlog::get( "bitz-server" );
+		_logger->debug( "manager initialised" );
 
 	}
 
 
 	Manager::~Manager() {
 
-		Logger &logger = Logger::instance();
-
 		if ( _manager.worker ) {
-			logger.debug( "[worker] cleaning up manager" );
+			_logger->debug( "[worker] cleaning up manager" );
 		} else {
-			logger.debug( "[manager] shutting down manager" );
+			_logger->debug( "[manager] shutting down manager" );
 		}
 
 		delete [] _manager.worker_pool;
@@ -102,7 +100,6 @@ namespace bitz {
 
 	void Manager::spawn_worker( unsigned int worker_id ) throw( ManagerException ) {
 
-		Logger &logger = Logger::instance();
 		pid_t worker_pid;
 
 		// create a worker child
@@ -122,7 +119,7 @@ namespace bitz {
 			_manager.worker_pool[worker_id].worker_pid = worker_pid;
 
 			_manager.worker_pool[worker_id].worker->run( _manager.socket, _manager.max_worker_requests, _manager.comm_timeout );
-			logger.info( std::string( "end of cycle, worker[" ).append( util::itoa( worker_id ) ).append( "]" ) );
+			_logger->info( std::string( "end of cycle, worker[" ).append( util::itoa( worker_id ) ).append( "]" ) );
 
 			delete _manager.worker_pool[worker_id].worker;
 			_exit( EXIT_SUCCESS );
@@ -130,7 +127,7 @@ namespace bitz {
 		} else {
 
 			/* manager */
-			logger.info( std::string( "[manager] worker spawned with pid: " ).append( util::itoa( worker_pid) ) );
+			_logger->info( std::string( "[manager] worker spawned with pid: " ).append( util::itoa( worker_pid) ) );
 
 			_manager.workers_count++;
 
@@ -146,12 +143,9 @@ namespace bitz {
 
 	void Manager::shutdown( bool graceful ) throw() {
 
-		// logger
-		Logger &logger = Logger::instance();
-
 		if ( _manager.worker ) {
 
-			logger.info( "[worker] manager shutdown request received" );
+			_logger->info( "[worker] manager shutdown request received" );
 
 			/* worker: cleanup */
 			delete _manager.worker_pool[_manager.worker_id].worker;
@@ -159,21 +153,21 @@ namespace bitz {
 		} else {
 
 			/* manager: stop all child processes */
-			logger.info( "[manager] shutdown request received" );
+			_logger->info( "[manager] shutdown request received" );
 
 			for (unsigned int i = 0; i < _manager.max_workers; i++ ) {
 				if ( _manager.worker_pool[i].worker_pid != 0 ) {
 					if ( graceful ) {
 						kill( _manager.worker_pool[i].worker_pid, SIGTERM );
-						logger.debug( std::string( "[manager] sending SIGTERM to worker[" ).append( util::itoa( i ) )
+						_logger->debug( std::string( "[manager] sending SIGTERM to worker[" ).append( util::itoa( i ) )
 								.append( "], pid: " ).append( util::itoa( _manager.worker_pool[i].worker_pid ) ) );
 					} else {
 						kill( _manager.worker_pool[i].worker_pid, SIGKILL );
-						logger.debug( std::string( "[manager] sending SIGKILL to worker[" ).append( util::itoa( i ) )
+						_logger->debug( std::string( "[manager] sending SIGKILL to worker[" ).append( util::itoa( i ) )
 								.append( "], pid: " ).append( util::itoa( _manager.worker_pool[i].worker_pid ) ) );
 					}
 				} else {
-					logger.debug( std::string( "[manager] worker[" ).append( util::itoa( i ) ).append( "] already closed" ) );
+					_logger->debug( std::string( "[manager] worker[" ).append( util::itoa( i ) ).append( "] already closed" ) );
 				}
 			}
 		}
@@ -183,9 +177,7 @@ namespace bitz {
 
 	void Manager::reap_worker( pid_t worker_pid ) throw() {
 
-		// logger
-		Logger &logger = Logger::instance();
-		logger.debug( std::string( "reaping worker, pid: " ).append( util::itoa( worker_pid ) ) );
+		_logger->debug( std::string( "reaping worker, pid: " ).append( util::itoa( worker_pid ) ) );
 
 		if (! _manager.worker ) {
 			for (unsigned int i = 0; i < _manager.max_workers; i++ ) {
@@ -205,10 +197,7 @@ namespace bitz {
 	}
 
 
-	void Manager::manager_workers() throw() {
-
-		// logger
-		Logger &logger = Logger::instance();
+	void Manager::manage_workers() throw() {
 
 		if (! _manager.worker ) {
 
@@ -222,7 +211,7 @@ namespace bitz {
 							// spawn a worker for the missing
 							spawn_worker( i );
 						} catch ( ManagerException &mex ) {
-							logger.warn( std::string( "[manager] failed to spawn worker[" ).append( util::itoa( i ) ).append( "], exception: ").append( mex.what() ) );
+							_logger->warn( std::string( "[manager] failed to spawn worker[" ).append( util::itoa( i ) ).append( "], exception: ").append( mex.what() ) );
 						}
 					}
 				}

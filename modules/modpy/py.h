@@ -23,6 +23,7 @@
 #include <Python.h>
 
 #include <bitz/modifier.h>
+#include <spdlog/spdlog.h>
 
 
 namespace bitz {
@@ -44,6 +45,7 @@ namespace bitz {
 	private:
 		config_t _config;
 		PyObject * _pymodule;
+		std::shared_ptr<spdlog::logger> _logger;
 
 		void load_configs() throw();
 		void init_python() throw();

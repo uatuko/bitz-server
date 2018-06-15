@@ -22,8 +22,8 @@
 #include <config.h>
 #include "bitz-server.h"
 #include "bitz/config.h"
-#include "bitz/logger.h"
 #include "bitz/util.h"
+#include "spdlog/spdlog.h"
 
 
 int main( int argc, char **argv ) {
@@ -33,6 +33,12 @@ int main( int argc, char **argv ) {
 
 	// read command line options
 	bitz::server::options_t opt = bitz::server::read_options( argc, argv );
+
+	// logger
+	auto logger = spdlog::stdout_color_st( "bitz-server" );
+	if ( opt.debug_flag == 1 ) {
+		spdlog::set_level( spdlog::level::debug );
+	}
 
 	// initialise configurations
 	bitz::Config &server_config = bitz::Config::instance();
@@ -48,27 +54,38 @@ int main( int argc, char **argv ) {
 
 	// create directories
 	if ( ( opt.debug_flag != 1 ) && (! bitz::util::mkdirp( bitz::util::dirpath( config.pid_file ) ) ) ) {
-		std::cerr << "[core] failed to create run dir" << std::endl;
+		logger->critical( "[core] failed to create run dir" );
 		exit( EXIT_FAILURE );
 	}
 
 	if (! bitz::util::mkdirp( bitz::util::dirpath( config.log_file ) ) ) {
-		std::cerr << "[core] failed to create log dir" << std::endl;
+		logger->critical( "[core] failed to create log dir" );
 		exit( EXIT_FAILURE );
 	}
 
 
 	// daemonize
 	if ( opt.debug_flag != 1 ) {
+
+		// close stdout logger
+		spdlog::drop( "bitz-server" );
+
+		// daemonize
 		bitz::server::daemonize( bitz::util::dirpath( config.pid_file ).c_str(), config.pid_file.c_str() );
+
+		// open a file logger
+		logger = spdlog::rotating_logger_mt( "bitz-server", config.log_file, ( 1048576 * 1024 ), 7 );
+
+	} else {
+		logger->info( "{} initialised", PACKAGE_STRING );
 	}
 
-	// initialise the logger
-	bitz::Logger &logger = bitz::Logger::instance( config.log_file, config.log_category );
-	logger.info( std::string( PACKAGE_STRING ) + " initialised" );
 
 	// start the server
 	bitz::server::start( config.port, config.max_workers, config.max_worker_requests, config.comm_timeout );
+
+	// flush logs
+	logger->flush();
 
 	// run the server
 	bitz::server::run();

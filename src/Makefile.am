@@ -1,12 +1,15 @@
 ## src/
 AUTOMAKE_OPTIONS        = subdir-objects
-AM_CPPFLAGS             = -I$(top_srcdir)/lib ${libconfig_CFLAGS} ${log4cpp_CFLAGS} ${psocksxx_CFLAGS}
+AM_CPPFLAGS             = -std=c++11 \
+	-I$(top_srcdir)/lib \
+	${libconfig_CFLAGS} \
+	${psocksxx_CFLAGS}
 
 bitzincludedir          = $(pkgincludedir)
 sbin_PROGRAMS           = bitz-server
-bitz_server_LDFLAGS     = -ldl -export-dynamic
+bitz_server_LDFLAGS     = -ldl -lpthread -export-dynamic
 bitz_server_LDADD       = $(top_builddir)/lib/icap/libicap.la \
-	${libconfig_LIBS} ${log4cpp_LIBS} \
+	${libconfig_LIBS} \
 	${psocksxx_LIBS}
 
 bitz_server_SOURCES     = main.cpp \
@@ -14,7 +17,6 @@ bitz_server_SOURCES     = main.cpp \
 	bitz/exception.h bitz/exception.cpp \
 	bitz/manager_exception.h bitz/manager_exception.cpp \
 	bitz/config.h bitz/config.cpp \
-	bitz/logger.h bitz/logger.cpp \
 	bitz/common.h \
 	bitz/util.h bitz/util.cpp \
 	bitz/manager.h bitz/manager.cpp \
@@ -27,6 +29,5 @@ bitz_server_SOURCES     = main.cpp \
 
 bitzinclude_HEADERS     = \
 	bitz/config.h \
-	bitz/logger.h \
 	bitz/modifier.h
 

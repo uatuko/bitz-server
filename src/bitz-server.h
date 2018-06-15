@@ -23,6 +23,7 @@
 #include "bitz/manager.h"
 
 #include <csignal>
+#include <sys/types.h>
 
 
 namespace bitz {
@@ -34,7 +35,8 @@ namespace bitz {
 		*   by the init() method.
 		*/
 		struct server_t {
-			int pid_handle;
+			pid_t pid;
+			int pidfd;
 			volatile sig_atomic_t terminating;
 			bool daemon;
 

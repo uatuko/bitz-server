@@ -19,7 +19,6 @@
 
 #include "request_handler.h"
 #include "config.h"
-#include "logger.h"
 #include "util.h"
 
 #include <dlfcn.h>
@@ -37,6 +36,9 @@ namespace bitz {
 		// update variables
 		_req_handler.method = method;
 
+		// logger
+		_logger = spdlog::get( "bitz-server" );
+
 		// load modifier modules
 		load_modules();
 
@@ -52,8 +54,7 @@ namespace bitz {
 			delete [] _handlers;
 		}
 
-		Logger &logger = Logger::instance();
-		logger.debug( std::string( "[req] exiting request handler [" ).append( _req_handler.method ).append( "]" ) );
+		_logger->debug( std::string( "[req] exiting request handler [" ).append( _req_handler.method ).append( "]" ) );
 
 	}
 
@@ -65,12 +66,8 @@ namespace bitz {
 
 	icap::Response * RequestHandler::process( icap::RequestHeader * req_header, psocksxx::iosockstream * socket ) throw() {
 
-
 		icap::Request  * request;
 		icap::Response * response = NULL;
-
-		// logger
-		Logger &logger = Logger::instance();
 
 
 		// request
@@ -79,22 +76,22 @@ namespace bitz {
 		// read request data
 		if (! icap::util::read_req_data( request, socket ) ) {
 
-			logger.warn( "[req] failed to read request data" );
+			_logger->warn( "[req] failed to read request data" );
 			response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
 
 		} else {
 
-			logger.debug( std::string( "[req] payload.req-hdr:\r\n").append( request->payload().req_header ) );
-			logger.debug( std::string( "[req] payload.req-body:\r\n").append( request->payload().req_body ) );
-			logger.debug( std::string( "[req] payload.res-hdr:\r\n").append( request->payload().res_header ) );
-			logger.debug( std::string( "[req] payload.res-body:\r\n").append( request->payload().res_body ) );
+			_logger->debug( std::string( "[req] payload.req-hdr:\r\n").append( request->payload().req_header ) );
+			_logger->debug( std::string( "[req] payload.req-body:\r\n").append( request->payload().req_body ) );
+			_logger->debug( std::string( "[req] payload.res-hdr:\r\n").append( request->payload().res_header ) );
+			_logger->debug( std::string( "[req] payload.res-body:\r\n").append( request->payload().res_body ) );
 
 
 			// check for message preview
 			if ( request->preview_size() >= 0 ) {
 
 				// process preview
-				logger.debug( std::string( "[req] message preview request, preview: " ).append( util::itoa( request->preview_size() ) ) );
+				_logger->debug( std::string( "[req] message preview request, preview: " ).append( util::itoa( request->preview_size() ) ) );
 				response = process_preview( request, socket );
 
 			}
@@ -108,7 +105,7 @@ namespace bitz {
 			if ( response == NULL ) {
 
 				// process modify
-				logger.debug( "[req] modify request" );
+				_logger->debug( "[req] modify request" );
 				response = process_modify( request );
 
 			}
@@ -120,7 +117,7 @@ namespace bitz {
 
 		// sanity check
 		if ( response == NULL ) {
-			logger.warn( "[req] no valid response from modifiers, creating a server error (500) response" );
+			_logger->warn( "[req] no valid response from modifiers, creating a server error (500) response" );
 			response = new icap::Response( icap::ResponseHeader::SERVER_ERROR );
 		}
 
@@ -131,18 +128,15 @@ namespace bitz {
 
 	bool RequestHandler::load_modifier( const std::string &file, Modifier::symbols_t &symbols ) throw() {
 
-		// logger
-		Logger &logger = Logger::instance();
-
 		// vars
 		const char* dlsym_error;
 
 		// load the modifier module
-		logger.debug( "[req] loading modifier: " + file );
+		_logger->debug( "[req] loading modifier: " + file );
 		symbols.modifier = dlopen( file.c_str(), RTLD_LAZY | RTLD_LOCAL );
 
 		if (! symbols.modifier ) {
-			logger.warn( std::string( "[req] failed to load modifier: " ).append( file ).append( dlerror() ) );
+			_logger->warn( std::string( "[req] failed to load modifier: " ).append( file ).append( dlerror() ) );
 			return false;
 		}
 
@@ -154,7 +148,7 @@ namespace bitz {
 		dlsym_error    = dlerror();
 
 		if ( dlsym_error ) {
-			logger.warn( std::string( "[req] failed to load create symbol: " ).append( dlsym_error ) );
+			_logger->warn( std::string( "[req] failed to load create symbol: " ).append( dlsym_error ) );
 			return false;
 		}
 
@@ -162,7 +156,7 @@ namespace bitz {
 		dlsym_error     = dlerror();
 
 		if ( dlsym_error ) {
-			logger.warn( std::string( "[req] failed to load destroy symbol: " ).append( dlsym_error ) );
+			_logger->warn( std::string( "[req] failed to load destroy symbol: " ).append( dlsym_error ) );
 			return false;
 		}
 
@@ -223,12 +217,9 @@ namespace bitz {
 
 		int i = 0;
 
-		// logger
-		Logger &logger = Logger::instance();
-
 		for ( i = 0; i < _handlers_count; i++ ) {
 
-			logger.debug( std::string( "[req] unloading module: " ).append( _handlers[i].name ) );
+			_logger->debug( std::string( "[req] unloading module: " ).append( _handlers[i].name ) );
 
 			// unload
 			unload_modifier( _handlers[i].symbols.modifier );
@@ -246,9 +237,6 @@ namespace bitz {
 		int i = 0;
 		bool continue_status = false;
 
-		// logger
-		Logger &logger = Logger::instance();
-
 
 		/*
 		*  Loop through loaded modifier modules and grab responses
@@ -262,17 +250,17 @@ namespace bitz {
 
 			// sanity check
 			if ( _handlers[i].name == "" ) {
-				logger.info( "[req] modifier not loaded, not trying to get a response" );
+				_logger->info( "[req] modifier not loaded, not trying to get a response" );
 				continue;
 			}
 
 			// grab the response from modifier
-			logger.debug( std::string( "[req] getting preview response from modifier: " ).append( _handlers[i].name ) );
+			_logger->debug( std::string( "[req] getting preview response from modifier: " ).append( _handlers[i].name ) );
 			modifier = _handlers[i].symbols.create();
 			response = modifier->preview( request );
 
 			// cleanup
-			logger.debug( std::string( "[req] cleaning up modifier: " ).append( _handlers[i].name ) );
+			_logger->debug( std::string( "[req] cleaning up modifier: " ).append( _handlers[i].name ) );
 			_handlers[i].symbols.destroy( modifier );
 
 			// check response status
@@ -309,7 +297,7 @@ namespace bitz {
 			}
 
 			// we shouldn't have got this far
-			logger.info( std::string( "[req] unrecognised preview response from modifier: " ).append( _handlers[i].name ) );
+			_logger->info( std::string( "[req] unrecognised preview response from modifier: " ).append( _handlers[i].name ) );
 
 		}
 
@@ -325,9 +313,6 @@ namespace bitz {
 
 		int i = 0;
 
-		// logger
-		Logger &logger = Logger::instance();
-
 
 		/*
 		*  Loop through loaded modifier modules and grab responses
@@ -339,22 +324,22 @@ namespace bitz {
 
 			// sanity check
 			if ( _handlers[i].name == "" ) {
-				logger.info( "[req] modifier not loaded, not trying to get a response" );
+				_logger->info( "[req] modifier not loaded, not trying to get a response" );
 				continue;
 			}
 
 			// grab the response from modifier
-			logger.debug( std::string( "[req] getting modify response from modifier: " ).append( _handlers[i].name ) );
+			_logger->debug( std::string( "[req] getting modify response from modifier: " ).append( _handlers[i].name ) );
 			modifier = _handlers[i].symbols.create();
 			response = modifier->modify( request );
 
 			// cleanup
-			logger.debug( std::string( "[req] cleaning up modifier: " ).append( _handlers[i].name ) );
+			_logger->debug( std::string( "[req] cleaning up modifier: " ).append( _handlers[i].name ) );
 			_handlers[i].symbols.destroy( modifier );
 
 			// status 200 OK means content modified
 			if ( response->header()->status() == icap::ResponseHeader::OK ) {
-				logger.debug( "[req] OK response received, not getting responses from other modifiers" );
+				_logger->debug( "[req] OK response received, not getting responses from other modifiers" );
 				break;
 			}
 
@@ -369,15 +354,11 @@ namespace bitz {
 
 		bool status = false;
 
-		// logger
-		Logger &logger = Logger::instance();
-
-
 		// sanity check
 		if ( request->payload().ieof ) {
 
 			// we can process a '100 Continue' only if an 'ieof' is not received
-			logger.warn( "[req] illegal '100 Continue' response" );
+			_logger->warn( "[req] illegal '100 Continue' response" );
 
 		} else {
 

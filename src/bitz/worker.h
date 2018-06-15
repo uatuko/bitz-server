@@ -20,6 +20,7 @@
 #ifndef BITZ_WORKER_H
 #define BITZ_WORKER_H
 
+#include <spdlog/spdlog.h>
 #include <psocksxx/tcpnsockstream.h>
 
 #include "common.h"
@@ -36,7 +37,8 @@ namespace bitz {
 				unsigned int max_requests, unsigned int comm_timeout = 0 ) throw();
 
 	private:
-		req_handlers_t    _req_handlers;
+		req_handlers_t _req_handlers;
+		std::shared_ptr<spdlog::logger> _logger;
 
 		virtual void load_req_handlers() throw();
 		virtual unsigned int serve_client( psocksxx::nsockstream * client_sock, unsigned int max_requests ) throw();

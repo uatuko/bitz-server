@@ -22,6 +22,7 @@
 
 #include <string>
 #include <libconfig.h++>
+#include <spdlog/spdlog.h>
 
 
 #ifndef BITZ_SERVER_CONFIG_FILE
@@ -50,7 +51,6 @@ namespace bitz {
 		int comm_timeout;
 		std::string pid_file;
 		std::string log_file;
-		std::string log_category;
 		unsigned int req_handlers_count;
 
 		req_handlers_config_t * req_handlers;
@@ -80,6 +80,7 @@ namespace bitz {
 	private:
 		config_t _config;
 		libconfig::Config * _lconfig;
+		std::shared_ptr<spdlog::logger> _logger;
 
 		Config();
 		~Config();
