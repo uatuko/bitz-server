@@ -1,0 +1,7 @@
+
+set(PACKAGE_NAME ${CMAKE_PROJECT_NAME})
+set(PACKAGE_STRING "${CMAKE_PROJECT_NAME} ${PROJECT_VERSION}")
+set(PACKAGE_VERSION ${PROJECT_VERSION})
+
+configure_file(config-cmake.h.in config.h @ONLY)
+
