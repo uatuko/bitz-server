@@ -40,10 +40,13 @@ add_library(icap
 
 target_include_directories(icap PRIVATE
 	${CMAKE_BINARY_DIR}/include
+)
+
+target_include_directories(icap PUBLIC
 	${psocksxx_INCLUDE_DIRS}
 )
 
-target_link_libraries(icap PRIVATE
+target_link_libraries(icap PUBLIC
 	${psocksxx_LDFLAGS}
 )
 

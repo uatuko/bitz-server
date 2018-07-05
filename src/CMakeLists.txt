@@ -21,9 +21,12 @@ set_target_properties(bitz-server PROPERTIES
 
 target_include_directories(bitz-server PRIVATE
 	${CMAKE_BINARY_DIR}/include
+	${spdlog_INCLUDE_DIRS}
+)
+
+target_include_directories(bitz-server PUBLIC
 	${CMAKE_SOURCE_DIR}/lib
 	${psocksxx_INCLUDE_DIRS}
-	${spdlog_INCLUDE_DIRS}
 )
 
 target_link_libraries(bitz-server

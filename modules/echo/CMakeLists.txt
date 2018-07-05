@@ -5,8 +5,7 @@ add_library(mod_echo MODULE
 
 set_target_properties(mod_echo PROPERTIES PREFIX "")
 
-target_include_directories(mod_echo PRIVATE
-	${CMAKE_SOURCE_DIR}/lib
+target_include_directories(mod_echo PUBLIC
 	${CMAKE_SOURCE_DIR}/src
 )
 

@@ -8,11 +8,12 @@ if(python_FOUND)
 	set_target_properties(mod_py PROPERTIES PREFIX "")
 
 	target_include_directories(mod_py PRIVATE
-		${CMAKE_SOURCE_DIR}/lib
-		${CMAKE_SOURCE_DIR}/src
 		${python_INCLUDE_DIRS}
-		${libconfig_INCLUDE_DIRS}
 		${spdlog_INCLUDE_DIRS}
+	)
+
+	target_include_directories(mod_py PUBLIC
+		${CMAKE_SOURCE_DIR}/src
 	)
 
 	target_link_libraries(mod_py PRIVATE ${python_LDFLAGS})
