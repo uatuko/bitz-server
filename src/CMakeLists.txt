@@ -21,6 +21,7 @@ target_include_directories(bitz-server PRIVATE
 	${CMAKE_BINARY_DIR}/include
 	${CMAKE_SOURCE_DIR}/lib
 	${psocksxx_INCLUDE_DIRS}
+	${spdlog_INCLUDE_DIRS}
 )
 
 target_link_libraries(bitz-server

@@ -34,5 +34,6 @@ Makefile.in
 *.pyc
 
 # project specific
-build/*
+build/
+external/
 

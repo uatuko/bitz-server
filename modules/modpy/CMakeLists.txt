@@ -12,6 +12,7 @@ if(python_FOUND)
 		${CMAKE_SOURCE_DIR}/src
 		${python_INCLUDE_DIRS}
 		${libconfig_INCLUDE_DIRS}
+		${spdlog_INCLUDE_DIRS}
 	)
 
 	target_link_libraries(mod_py PRIVATE ${python_LDFLAGS})

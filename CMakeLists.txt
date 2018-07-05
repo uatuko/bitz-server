@@ -5,10 +5,7 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(FindPkgConfig)
-pkg_check_modules(psocksxx REQUIRED psocksxx>=0.0.6)
-pkg_check_modules(libconfig REQUIRED libconfig++>=1.4)
-pkg_check_modules(python python>=2.7)
+include(cmake/dependencies.cmake)
 
 add_subdirectory(conf)
 add_subdirectory(doc)
