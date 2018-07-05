@@ -43,12 +43,17 @@ target_include_directories(icap PRIVATE
 	${psocksxx_INCLUDE_DIRS}
 )
 
+target_link_libraries(icap PRIVATE
+	${psocksxx_LDFLAGS}
+)
+
 set_target_properties(
 	icap
 	PROPERTIES
 		VERSION   ${ICAP_VERSION}
 		SOVERSION ${ICAP_SOVERSION}
 )
+
 
 include(GNUInstallDirs)
 install(
