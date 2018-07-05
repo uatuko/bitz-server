@@ -16,6 +16,7 @@ if(python_FOUND)
 	)
 
 	target_link_libraries(mod_py PRIVATE ${python_LDFLAGS})
+	target_link_libraries(mod_py PUBLIC bitz-server)
 
 
 	install(

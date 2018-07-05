@@ -10,7 +10,7 @@ target_include_directories(mod_echo PRIVATE
 	${CMAKE_SOURCE_DIR}/src
 )
 
-target_link_libraries(mod_echo
+target_link_libraries(mod_echo PUBLIC
 	bitz-server
 )
 
