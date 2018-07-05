@@ -11,6 +11,16 @@ pkg_check_modules(libconfig REQUIRED libconfig++>=1.4)
 pkg_check_modules(python python>=2.7)
 pkg_check_modules(spdlog spdlog>=0.17.0)
 
+if(NOT python_FOUND)
+	# pkg-config couldn't find Python, try find_package()
+	find_package(PythonLibs)
+	if(PYTHONLIBS_FOUND)
+		set(python_FOUND TRUE)
+		set(python_INCLUDE_DIRS ${PYTHON_INCLUDE_DIRS})
+		set(python_LDFLAGS ${PYTHON_LIBRARIES})
+	endif()
+endif()
+
 
 add_library(spdlog INTERFACE IMPORTED)
 if(NOT spdlog_FOUND)
