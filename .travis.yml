@@ -19,16 +19,10 @@ install:
   - cd ${TRAVIS_BUILD_DIR}
 
 before_script:
-  - if [ $TRAVIS_OS_NAME == linux ]; then libtoolize; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then glibtoolize; fi
-  - aclocal
-  - autoheader
-  - autoconf
-  - automake --add-missing
-  - export PKG_CONFIG_PATH=/tmp/root/lib/pkgconfig && ./configure
+  - PKG_CONFIG_PATH=/tmp/root/lib/pkgconfig cmake -H. -Bbuild -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release
 
 script:
-  - make distcheck
+  - cmake --build build
 
 os:
   - linux
