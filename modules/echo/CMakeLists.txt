@@ -10,6 +10,10 @@ target_include_directories(mod_echo PRIVATE
 	${CMAKE_SOURCE_DIR}/src
 )
 
+target_link_libraries(mod_echo
+	bitz-server
+)
+
 
 install(
 	TARGETS mod_echo

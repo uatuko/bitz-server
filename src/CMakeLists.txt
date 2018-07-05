@@ -15,7 +15,9 @@ add_executable(bitz-server
 	bitz/modifier.cpp
 )
 
-set_target_properties(bitz-server PROPERTIES LINK_FLAGS "-export-dynamic")
+set_target_properties(bitz-server PROPERTIES
+	ENABLE_EXPORTS on
+)
 
 target_include_directories(bitz-server PRIVATE
 	${CMAKE_BINARY_DIR}/include
