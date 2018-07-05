@@ -20,10 +20,11 @@
 #include <cstdlib>
 
 #include <config.h>
+#include <spdlog/spdlog.h>
+
 #include "bitz-server.h"
 #include "bitz/config.h"
 #include "bitz/util.h"
-#include "spdlog/spdlog.h"
 
 
 int main( int argc, char **argv ) {
