@@ -12,3 +12,14 @@ install(
 	RENAME bitz-server.conf.5
 )
 
+
+if(DOXYGEN_FOUND)
+	configure_file(doxygen.cfg.in doxygen.cfg @ONLY)
+	add_custom_target(doxygen
+		COMMAND Doxygen::doxygen doxygen.cfg
+		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+		COMMENT "Generating doxygen docs"
+		VERBATIM
+	)
+endif()
+

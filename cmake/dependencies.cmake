@@ -22,6 +22,9 @@ if(NOT python_FOUND)
 endif()
 
 
+find_package(Doxygen)
+
+
 add_library(spdlog INTERFACE IMPORTED)
 if(NOT spdlog_FOUND)
 	externalproject_add(gabime_spdlog
