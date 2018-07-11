@@ -7,7 +7,7 @@ bitz-server.conf \- bitz-server configuration file
 .BR bitz-server (1)
 obtains configuration data from a config file, the location of which is specified
 at compile-time and can be overridden by command-line options during run-time.
-.SS Grammer
+.SS Grammar
 Below is the BNF grammar for configuration files. Comments and include directives
 are not part of the grammar, so they are not included here. See libconfig manual
 at http://www.hyperrealm.com/libconfig/libconfig_manual.html#Configuration-File-Grammar
