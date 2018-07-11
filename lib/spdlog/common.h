@@ -183,6 +183,6 @@ using filename_t = std::string;
     }                                                                                                                                      \
     catch (...)                                                                                                                            \
     {                                                                                                                                      \
-        _err_handler("Unknown exeption in logger");                                                                                        \
+        _err_handler("Unknown exception in logger");                                                                                        \
     }
 } // namespace spdlog
