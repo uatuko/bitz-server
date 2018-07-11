@@ -9,7 +9,7 @@ set_directory_properties(PROPERTIES
 pkg_check_modules(psocksxx REQUIRED psocksxx>=0.0.6)
 pkg_check_modules(libconfig REQUIRED libconfig++>=1.4)
 pkg_check_modules(python python>=2.7)
-pkg_check_modules(pkgconfig::spdlog spdlog>=0.17.0)
+pkg_check_modules(pc_spdlog spdlog>=0.17.0)
 
 if(NOT python_FOUND)
 	# pkg-config couldn't find Python, try find_package()
@@ -27,7 +27,7 @@ find_package(Doxygen)
 
 # spdlog
 add_library(spdlog INTERFACE IMPORTED)
-if(NOT pkgconfig::spdlog_FOUND)
+if(NOT pc_spdlog_FOUND)
 	externalproject_add(gabime_spdlog
 		GIT_REPOSITORY     https://github.com/gabime/spdlog.git
 		GIT_TAG            v0.17.0
@@ -47,7 +47,7 @@ if(NOT pkgconfig::spdlog_FOUND)
 	add_dependencies(spdlog gabime_spdlog)
 else()
 	set_target_properties(spdlog PROPERTIES
-		INTERFACE_INCLUDE_DIRECTORIES ${pkgconfig::spdlog_INCLUDE_DIRS}
+		INTERFACE_INCLUDE_DIRECTORIES ${pc_spdlog_INCLUDE_DIRS}
 	)
 endif()
 
