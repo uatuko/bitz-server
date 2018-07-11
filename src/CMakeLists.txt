@@ -29,11 +29,15 @@ target_include_directories(bitz-server PUBLIC
 	${psocksxx_INCLUDE_DIRS}
 )
 
-target_link_libraries(bitz-server
+target_link_libraries(bitz-server PRIVATE
 	dl pthread
-	icap
+	spdlog
 	${psocksxx_LDFLAGS}
 	${libconfig_LDFLAGS}
+)
+
+target_link_libraries(bitz-server PUBLIC
+	icap
 )
 
 

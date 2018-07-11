@@ -16,7 +16,7 @@ if(python_FOUND)
 		${CMAKE_SOURCE_DIR}/src
 	)
 
-	target_link_libraries(mod_py PRIVATE ${python_LDFLAGS})
+	target_link_libraries(mod_py PRIVATE spdlog ${python_LDFLAGS})
 	target_link_libraries(mod_py PUBLIC bitz-server)
 
 
