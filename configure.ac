@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([bitz-server], [2.0.0], [https://github.com/uditha-atukorala/bitz-server/issues])
+AC_INIT([bitz-server], [2.0.1], [https://github.com/uditha-atukorala/bitz-server/issues])
 AC_CONFIG_AUX_DIR([aux-build])
 AC_CONFIG_MACRO_DIR([aux-build/m4])
 AC_CONFIG_HEADERS([include/config.h])

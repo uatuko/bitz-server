@@ -1,3 +1,6 @@
+2.0.1 - 11th July 2018
+	*   Fix spelling mistakes
+
 2.0.0 - 15th June 2018
 	*   Use spdlog instead of log4cpp as the logger (issue #6)
 
