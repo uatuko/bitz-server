@@ -20,10 +20,11 @@
 #ifndef BITZ_SERVER_H
 #define BITZ_SERVER_H
 
-#include "bitz/manager.h"
+#include "bitz/evloop.h"
 
 #include <csignal>
 #include <sys/types.h>
+#include <memory>
 
 
 namespace bitz {
@@ -40,7 +41,7 @@ namespace bitz {
 			volatile sig_atomic_t terminating;
 			bool daemon;
 
-			bitz::Manager * manager;
+			std::unique_ptr<bitz::EvLoop> evloop;
 		};
 
 		/**
@@ -52,19 +53,8 @@ namespace bitz {
 		};
 
 		void init();
-		void init_signal_handlers();
-		void init_sigchld_handler();
-		void init_sigterm_handler();
-		void init_sigquit_handler();
-		void init_sigint_handler();
-		void sigchld_handler( int sig, siginfo_t * sig_info, void * context );
-		void sigterm_handler( int sig, siginfo_t * sig_info, void * context );
-		void sigquit_handler( int sig, siginfo_t * sig_info, void * context );
-		void sigint_handler( int sig, siginfo_t * sig_info, void * context );
-
 		void daemonize( const char * run_dir, const char * pid_file );
 		void shutdown();
-		void termination_handler( int sig, siginfo_t * sig_info, void * context );
 
 		/**
 		*   Read command line options and return a options_t structure.

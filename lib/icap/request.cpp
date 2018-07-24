@@ -24,6 +24,11 @@
 
 namespace icap {
 
+	Request::Request() : _header( 0 ) {
+		//
+	}
+
+
 	Request::Request( RequestHeader * req_header ) {
 
 		_header  = req_header;
@@ -78,6 +83,46 @@ namespace icap {
 
 		return size;
 
+	}
+
+
+	void Request::read( char* buf, size_t size ) {
+		if ( !_header ) {
+			// read header
+			char c = _data.back();
+			auto lendl = _data.rfind( "\r\n" );
+
+			for ( size_t idx = 0; idx < size; idx++ ) {
+				_data += buf[idx];
+
+				// look for \r\n
+				if ( c == '\r' && buf[idx] == '\n' ) {
+					// if we have \r\n\r\n then that's the end of header
+					if ( lendl != std::string::npos && ( ( _data.size() - lendl ) == 4 ) ) {
+						// end of header
+						// FIXME: use smart pointers
+						_header = new RequestHeader( _data );
+
+						// done reading header, continue with body if there's more data
+						idx++;
+						return read_body( ( buf + idx ), size - idx );
+					} else {
+						lendl = _data.size() - 2;  // update last \r\n index
+					}
+				}
+
+				c = buf[idx];
+			}
+
+		} else {
+			// read body
+			read_body( buf, size );
+		}
+	}
+
+
+	void Request::read_body( char* buf, size_t size ) {
+		// TODO:
 	}
 
 } /* end of namespace icap */

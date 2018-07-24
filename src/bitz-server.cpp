@@ -26,8 +26,6 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <syslog.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
 
 #include <spdlog/spdlog.h>
 
@@ -45,18 +43,10 @@ namespace bitz {
 			// initialise defaults
 			globals.pid         = -1;
 			globals.pidfd       = -1;
-			globals.manager     = NULL;
 			globals.terminating = 0;
 			globals.daemon      = false;
 
-			// signal handlers
-			init_signal_handlers();
-
-		}
-
-
-		void init_signal_handlers() {
-
+			// block signals
 			sigset_t ignore_mask;
 
 			// set signal mask - signals we want to block
@@ -65,136 +55,6 @@ namespace bitz {
 			sigaddset(&ignore_mask, SIGTTOU);				// ignore Tty background writes
 			sigaddset(&ignore_mask, SIGTTIN);				// ignore Tty background reads
 			sigprocmask(SIG_BLOCK, &ignore_mask, NULL);		// block the above specified signals
-
-			init_sigchld_handler();
-			init_sigterm_handler();
-			init_sigquit_handler();
-			init_sigint_handler();
-
-		}
-
-
-		void init_sigchld_handler() {
-
-			struct sigaction sa;
-
-			// block all other signals
-			sigfillset( &sa.sa_mask );
-
-			// signal handler proc
-			sa.sa_sigaction = &sigchld_handler;
-
-			// flags
-			sa.sa_flags = SA_SIGINFO;
-
-			if ( sigaction( SIGCHLD, &sa, NULL ) < 0 ) {
-				exit( EXIT_FAILURE );
-			}
-
-		}
-
-
-		void sigchld_handler( int sig, siginfo_t *siginfo, void *context ) {
-
-			pid_t worker_pid;
-			int status;
-
-			auto logger = spdlog::get( "bitz-server" );
-			logger->trace( "[{}] inside zombie reaper", getpid() );
-			while ( ( worker_pid = waitpid( WAIT_ANY, &status, WNOHANG ) ) > 0 ) {
-				logger->trace( "[reaper] child {} terminated with status {}", worker_pid, status );
-
-				if ( globals.manager != NULL ) {
-					globals.manager->reap_worker( worker_pid );
-				}
-			}
-
-		}
-
-
-		void init_sigterm_handler() {
-
-			struct sigaction sa;
-
-			// block all other signals
-			sigfillset( &sa.sa_mask );
-
-			// signal handler proc
-			sa.sa_sigaction = &sigterm_handler;
-
-			// flags
-			sa.sa_flags = SA_SIGINFO;
-
-			if ( sigaction( SIGTERM, &sa, NULL ) < 0 ) {
-				exit( EXIT_FAILURE );
-			}
-
-		}
-
-
-		void sigterm_handler( int sig, siginfo_t *siginfo, void *context ) {
-
-			auto logger = spdlog::get( "bitz-server" );
-			logger->trace( "[{}] inside SIGTERM handler", getpid() );
-			termination_handler( sig, siginfo, context );
-
-		}
-
-
-		void init_sigquit_handler() {
-
-			struct sigaction sa;
-
-			// block all other signals
-			sigfillset( &sa.sa_mask );
-
-			// signal handler proc
-			sa.sa_sigaction = &sigquit_handler;
-
-			// flags
-			sa.sa_flags = SA_SIGINFO;
-
-			if ( sigaction( SIGQUIT, &sa, NULL ) < 0 ) {
-				exit( EXIT_FAILURE );
-			}
-
-		}
-
-
-		void sigquit_handler( int sig, siginfo_t *siginfo, void *context ) {
-
-			auto logger = spdlog::get( "bitz-server" );
-			logger->trace( "[{}] inside SIGQUIT handler", getpid() );
-			termination_handler( sig, siginfo, context );
-
-		}
-
-
-		void init_sigint_handler() {
-
-			struct sigaction sa;
-
-			// block all other signals
-			sigfillset( &sa.sa_mask );
-
-			// signal handler proc
-			sa.sa_sigaction = &sigint_handler;
-
-			// flags
-			sa.sa_flags = SA_SIGINFO;
-
-			if ( sigaction( SIGINT, &sa, NULL ) < 0 ) {
-				exit( EXIT_FAILURE );
-			}
-
-		}
-
-
-		void sigint_handler(  int sig, siginfo_t *siginfo, void *context ) {
-
-			auto logger = spdlog::get( "bitz-server" );
-			logger->trace( "[{}] inside SIGQINT handler", getpid() );
-			termination_handler( sig, siginfo, context );
 
 		}
 
@@ -302,44 +162,6 @@ namespace bitz {
 		}
 
 
-		void termination_handler( int sig, siginfo_t * sig_info, void * context ) {
-
-			pid_t pid = getpid();
-			auto logger = spdlog::get( "bitz-server" );
-			logger->trace( "[{}] inside termination handler", pid );
-
-			// exit by re-raising the signal if termination
-			// already in progress
-			if ( globals.terminating ) {
-				logger->warn( "[{}] already terminating", pid );
-
-				raise( sig );
-			}
-
-			// update termination status
-			globals.terminating = 1;
-
-
-			if ( globals.manager != NULL ) {
-
-				// shutdown the manager
-				globals.manager->shutdown();
-
-				// clean-up
-				delete globals.manager;
-
-			}
-
-			// cleanup
-			shutdown();
-
-			// re-raise the signal after reactivating the signal's default action
-			signal( sig, SIG_DFL );
-			raise( sig );
-
-		}
-
-
 		options_t read_options( int argc, char **argv ) {
 
 			int optidx, optchar;
@@ -436,49 +258,20 @@ namespace bitz {
 
 		void start( int port, unsigned int children, int max_requests, int comm_timeout ) {
 
-			try {
-				globals.manager = new bitz::Manager( port );
-				globals.manager->spawn( children, max_requests, comm_timeout );
-			} catch ( bitz::ManagerException &mex ) {
-				syslog( LOG_ERR, "failed to start, exception: %s", mex.what() );
-				exit( EXIT_FAILURE );
-			}
+			globals.evloop = std::make_unique<bitz::EvLoop>();
+			globals.evloop->start( port );
 
 		}
 
 
 		void run() {
 
-			sigset_t mask, oldmask;
-
 			// sanity check
-			if ( globals.manager == NULL ) {
+			if ( !globals.evloop ) {
 				return;
 			}
 
-			// block termination signals until we are ready
-			sigemptyset( &mask );
-			sigaddset( &mask, SIGTERM );
-			sigaddset( &mask, SIGQUIT );
-			sigaddset( &mask, SIGINT );
-			sigprocmask ( SIG_BLOCK, &mask, &oldmask );
-
-			// loop until a termination signal is received
-			while (! globals.terminating ) {
-
-				// capture any signals
-				sigsuspend( &oldmask );
-
-				// unblock termination signals
-				sigprocmask( SIG_UNBLOCK, &mask, NULL );
-
-				// manage workers
-				globals.manager->manage_workers();
-
-				// block termination signals
-				sigprocmask( SIG_BLOCK, &mask, &oldmask );
-
-			}
+			globals.evloop->run();
 
 		}
 
