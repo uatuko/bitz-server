@@ -19,6 +19,7 @@ matrix:
       addons:
         apt:
           sources:
+            - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-6.0
           packages:
             - clang-6.0
@@ -30,7 +31,7 @@ matrix:
 before_install:
   - echo $LANG
   - echo $LC_ALL
-  - echo ``$CXX --version`
+  - echo `$CXX --version`
 
 install:
   - curl -L https://github.com/nukedzn/psocksxx/releases/download/v1.1.1/psocksxx-1.1.1.tar.gz | tar -zx -C /tmp
