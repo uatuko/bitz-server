@@ -24,9 +24,9 @@ matrix:
           packages:
             - clang-6.0
     - os: osx
-      env: CXX=g++ CC=gcc
+      compiler: gcc
     - os: osx
-      env: CXX=clang++ CC=clang
+      compiler: clang
 
 before_install:
   - echo $LANG
