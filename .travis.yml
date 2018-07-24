@@ -1,21 +1,43 @@
-language: cpp
-
 sudo: false
+language: generic
 
-compiler:
-  - gcc
-  - clang
+cache:
+  apt: true
+
+matrix:
+  include:
+    - os: linux
+      env: CXX=g++-5 CC=gcc-5
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+    - os: linux
+      env: CXX=clang++-6.0 CC=clang-6.0
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-6.0
+          packages:
+            - clang-6.0
+    - os: osx
+      env: CXX=g++ CC=gcc
+    - os: osx
+      env: CXX=clang++ CC=clang
 
 before_install:
   - echo $LANG
   - echo $LC_ALL
-  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install libconfig; fi
+  - echo ``$CXX --version`
 
 install:
   - curl -L https://github.com/nukedzn/psocksxx/releases/download/v1.1.1/psocksxx-1.1.1.tar.gz | tar -zx -C /tmp
   - cd /tmp/psocksxx-* && ./configure --prefix=/tmp/root && make && make install
   - if [ $TRAVIS_OS_NAME == linux ]; then curl -L http://www.hyperrealm.com/packages/libconfig-1.4.10.tar.gz | tar -zx -C /tmp; fi
   - if [ $TRAVIS_OS_NAME == linux ]; then cd /tmp/libconfig-* && ./configure --prefix=/tmp/root && make && make install; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install libconfig; fi
   - cd ${TRAVIS_BUILD_DIR}
 
 before_script:
@@ -23,8 +45,4 @@ before_script:
 
 script:
   - cmake --build build
-
-os:
-  - linux
-  - osx
 
