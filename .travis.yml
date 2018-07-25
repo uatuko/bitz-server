@@ -8,6 +8,7 @@ matrix:
   include:
     - os: linux
       env: CXX=g++-5 CC=gcc-5
+      compiler: gcc
       addons:
         apt:
           sources:
@@ -16,6 +17,7 @@ matrix:
             - g++-5
     - os: linux
       env: CXX=clang++-6.0 CC=clang-6.0
+      compiler: clang
       addons:
         apt:
           sources:
@@ -25,8 +27,10 @@ matrix:
             - clang-6.0
     - os: osx
       compiler: gcc
+      env: CXX=g++ CC=gcc
     - os: osx
       compiler: clang
+      env: CXX=clang++ CC=clang
 
 before_install:
   - echo $LANG
