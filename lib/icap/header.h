@@ -25,6 +25,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <list>
 #include <functional>
 
 
@@ -39,23 +40,40 @@ namespace icap {
 		/* headers iterator type */
 		typedef headers_t::iterator headers_index_t;
 
-		/* encapsulated header type */
-		typedef std::map<std::string, int> encapsulated_header_t;
-
-		/* encapsulated header iterator type */
-		typedef encapsulated_header_t::iterator encapsulated_header_index_t;
-
 		/* encapsulated header data type */
 		typedef std::pair<std::string, int> encapsulated_header_data_t;
 
-		/**
-		*   Binary compare structure to compare two encapsulated header
-		*   entity (data) values. Used for sorting.
-		*/
-		struct encapsulated_header_compare
-			: std::binary_function<icap::Header::encapsulated_header_data_t, icap::Header::encapsulated_header_data_t, bool> {
-			inline bool operator()( const icap::Header::encapsulated_header_data_t &lhs, const icap::Header::encapsulated_header_data_t &rhs ) {
-				return lhs.second < rhs.second;
+		struct encapsulated_entity_t {
+			std::string name;
+			size_t offset;
+			bool valid;
+
+			encapsulated_entity_t() : offset( 0 ), valid( false ) {}
+
+			bool operator <( const encapsulated_entity_t &e ) const {
+				if ( valid && e.valid ) {
+					return offset < e.offset;
+				}
+
+				return valid;
+			}
+		};
+
+		struct encapsulated_header_t {
+			encapsulated_entity_t req_header;
+			encapsulated_entity_t res_header;
+			encapsulated_entity_t req_body;
+			encapsulated_entity_t res_body;
+			encapsulated_entity_t opt_body;
+			encapsulated_entity_t null_body;
+
+			encapsulated_header_t() {
+				req_header.name = "req-hdr";
+				res_header.name = "res-hdr";
+				req_body.name = "req-body";
+				res_body.name = "res-body";
+				opt_body.name = "opt-body";
+				null_body.name = "null-body";
 			}
 		};
 
@@ -74,18 +92,9 @@ namespace icap {
 		*   if the header is not found.
 		*
 		*   @param key header key
-		*   @return header value 
+		*   @return header value
 		*/
 		const std::string value( const std::string &key ) throw();
-
-		/**
-		*   Return Encapsulated header value for the given entity
-		*   or -1 if the given entity is invalid.
-		*
-		*   @param entity encapsulated header entity
-		*   @return -1 | encapsulated header value
-		*/
-		const int encapsulated_header( const std::string &entity ) throw();
 
 		/**
 		*   Attach header data into the header
@@ -157,8 +166,17 @@ namespace icap {
 	protected:
 		headers_t _headers;
 		encapsulated_header_t _encapsulated;
+		std::list<encapsulated_entity_t*> _encapsel;
 
 	private:
+
+		static bool encapsulated_entity_compare( const encapsulated_entity_t* a, const encapsulated_entity_t* b ) {
+			if ( a->valid && b->valid ) {
+				return a->offset < b->offset;
+			}
+
+			return a->valid;
+		}
 
 	};
 

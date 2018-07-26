@@ -28,13 +28,13 @@ namespace icap {
 
 	Header::Header() {
 
-		// initialise defaults
-		_encapsulated["req-hdr"]   = -1;
-		_encapsulated["req-body"]  = -1;
-		_encapsulated["res-hdr"]   = -1;
-		_encapsulated["res-body"]  = -1;
-		_encapsulated["opt-body"]  = -1;
-		_encapsulated["null-body"] = -1;
+		// initialise encapsulated entity list
+		_encapsel.push_back( &_encapsulated.req_header );
+		_encapsel.push_back( &_encapsulated.req_body );
+		_encapsel.push_back( &_encapsulated.res_header );
+		_encapsel.push_back( &_encapsulated.res_body );
+		_encapsel.push_back( &_encapsulated.opt_body );
+		_encapsel.push_back( &_encapsulated.null_body );
 
 	}
 
@@ -60,20 +60,6 @@ namespace icap {
 	}
 
 
-	const int Header::encapsulated_header( const std::string &entity ) throw() {
-
-		Header::encapsulated_header_index_t idx;
-
-		idx = _encapsulated.find( entity );
-		if ( idx == _encapsulated.end() ) {
-			return -1;
-		}
-
-		return idx->second;
-
-	}
-
-
 	void Header::attach( std::string key, std::string value ) throw() {
 
 		// trim
@@ -95,7 +81,6 @@ namespace icap {
 		std::vector<std::string> list_data;
 		std::vector<std::string> entity_data;
 
-		encapsulated_header_index_t idx;
 		bool r_status = true;
 
 		// grab the entity list [ req-hdr=0, null-body=170 ]
@@ -108,15 +93,23 @@ namespace icap {
 
 			if ( entity_data.size() == 2 ) {
 
-				idx = _encapsulated.find( util::trim( entity_data.at( 0 ) ) );
-				if ( idx != _encapsulated.end() ) {
-					idx->second = atoi( util::trim( entity_data.at( 1 ) ).c_str() );
+				auto entity = util::trim( entity_data.at( 0 ) );
+				for ( encapsulated_entity_t* e : _encapsel ) {
+					if ( e->name == entity ) {
+						e->offset = atoi( util::trim( entity_data.at( 1 ) ).c_str() );
+						e->valid = true;
+						break;
+					}
 				}
 
 			} else {
 				r_status = false;
 			}
 		}
+
+
+		// sort encapsulated entiry list
+		_encapsel.sort( encapsulated_entity_compare );
 
 		return r_status;
 
@@ -140,23 +133,16 @@ namespace icap {
 		*   OPTIONS response encapsulated_list: optbody
 		*/
 
-		Header::encapsulated_header_index_t idx;
 		std::string encaps_header = "";
 
-		// FIXME: chances are that we will always get the correct order
-		//        but should consider sorting
-		for ( idx = _encapsulated.begin(); idx != _encapsulated.end(); idx++ ) {
-
-			if ( idx->second > 0 ) {
-
+		for ( encapsulated_entity_t* e : _encapsel ) {
+			if ( e->valid ) {
 				if ( encaps_header != "" ) {
 					encaps_header.append( ", " );
 				}
 
-				encaps_header.append( idx->first ).append( "=" ).append( util::itoa( idx->second ) );
-
+				encaps_header.append( e->name ).append( "=" ).append( util::itoa( e->offset ) );
 			}
-
 		}
 
 		// sanity check
@@ -176,44 +162,51 @@ namespace icap {
 
 		// request header
 		if ( payload.req_header.size() > 0 ) {
-			_encapsulated["req-hdr"] = data_length;
+			_encapsulated.req_header.offset = data_length;
 			data_offset = data_length;
 			data_length += payload.req_header.size();
 		}
 
 		// request body (POST data)
 		if ( payload.req_body.size() > 0 ) {
-			_encapsulated["req-body"] = data_length;
+			_encapsulated.req_body.offset = data_length;
 			data_offset = data_length;
 			data_length += payload.req_body.size();
 		}
 
 		// response header
 		if ( payload.res_header.size() > 0 ) {
-			_encapsulated["res-hdr"] = data_length;
+			_encapsulated.res_header.offset = data_length;
 			data_offset = data_length;
 			data_length += payload.res_header.size();
 		}
 
 		// response body
 		if ( payload.res_body.size() > 0 ) {
-			_encapsulated["res-body"] = data_length;
+			_encapsulated.res_body.offset = data_length;
 			data_offset = data_length;
 			data_length += payload.res_body.size();
 		}
 
 		// null-body
 		if ( data_offset == 0 ) {
-			_encapsulated["null-body"] = data_length;
+			_encapsulated.null_body.offset = data_length;
 		}
+
+
+		// sort encapsulated entity list
+		_encapsel.sort( encapsulated_entity_compare );
 
 	}
 
 
 	std::vector<Header::encapsulated_header_data_t> Header::sort_encapsulated_header() {
 
-		std::vector<Header::encapsulated_header_data_t> data( _encapsulated.begin(), _encapsulated.end() );
-		std::sort(data.begin(), data.end(), encapsulated_header_compare());
+		// FIXME: use std::list
+		std::vector<Header::encapsulated_header_data_t> data;
+		for ( auto e : _encapsel ) {
+			data.push_back( encapsulated_header_data_t{ e->name, ( e->valid ? e->offset : -1 ) } );
+		}
 
 		return data;
 
