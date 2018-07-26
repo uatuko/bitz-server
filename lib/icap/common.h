@@ -34,6 +34,9 @@ namespace icap {
 		std::string res_header;    /**< response header */
 		std::string res_body;      /**< response body   */
 		bool ieof;                 /**< boolen flag to store the presence of "ieof" */
+		size_t offset;             /**< payload read offset    */
+
+		payload_t() : offset( 0 ), ieof( false ) {};
 	};
 
 } /* end of namespace icap */

@@ -162,6 +162,8 @@ namespace icap {
 		*/
 		virtual std::vector<encapsulated_header_data_t> sort_encapsulated_header();
 
+		virtual std::list<encapsulated_entity_t*> encapsel();
+
 
 	protected:
 		headers_t _headers;

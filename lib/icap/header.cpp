@@ -212,5 +212,15 @@ namespace icap {
 
 	}
 
+
+	std::list<Header::encapsulated_entity_t*> Header::encapsel() {
+		std::list<encapsulated_entity_t*> encapsel( _encapsel );
+		encapsel.remove_if( []( auto e ) {
+			return !e->valid;
+		} );
+
+		return encapsel;
+	}
+
 }
 
