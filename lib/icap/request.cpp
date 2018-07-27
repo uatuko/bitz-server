@@ -19,8 +19,6 @@
 
 #include "request.h"
 
-#include <cstdlib>
-
 
 namespace icap {
 
@@ -30,16 +28,7 @@ namespace icap {
 
 
 	Request::Request( RequestHeader * req_header ) {
-
 		_header  = req_header;
-
-		// initialise defaults
-		_payload.req_header = "";
-		_payload.req_body   = "";
-		_payload.res_header = "";
-		_payload.res_body   = "";
-		_payload.ieof       = false;
-
 	}
 
 
@@ -86,7 +75,7 @@ namespace icap {
 	}
 
 
-	void Request::read( char* buf, size_t size ) {
+	void Request::read( const char* buf, size_t size ) {
 		if ( !_header ) {
 			// read header
 			char c = _data.back();
@@ -100,12 +89,13 @@ namespace icap {
 					// if we have \r\n\r\n then that's the end of header
 					if ( lendl != std::string::npos && ( ( _data.size() - lendl ) == 4 ) ) {
 						// end of header
+
 						// FIXME: use smart pointers
 						_header = new RequestHeader( _data );
 
 						// done reading header, continue with body if there's more data
 						idx++;
-						return read_body( ( buf + idx ), size - idx );
+						return read_payload( ( buf + idx ), size - idx );
 					} else {
 						lendl = _data.size() - 2;  // update last \r\n index
 					}
@@ -116,13 +106,66 @@ namespace icap {
 
 		} else {
 			// read body
-			read_body( buf, size );
+			read_payload( buf, size );
 		}
 	}
 
 
-	void Request::read_body( char* buf, size_t size ) {
-		// TODO:
+	void Request::read_payload( const char* buf, size_t size ) {
+
+		size_t bytes = 0;
+		auto encapsel = _header->encapsel();
+
+		for ( auto it = encapsel.begin(); it != encapsel.end(); it++ ) {
+			auto nit = std::next( it );
+			auto e = *it;
+
+			if ( e->offset > _payload.offset ) {
+				continue;
+			}
+
+			if ( nit == encapsel.end() ) {
+				bytes = size;
+			} else {
+				bytes = (*nit)->offset - _payload.offset;
+				if ( bytes > size ) { bytes = size; }
+			}
+
+			/* read payload data */
+			// if this is the last entity, then check for chunked content
+			if ( nit == encapsel.end() ) {
+				if ( e->name == "req-body" ) {
+					// TODO: read chunked
+				} else if ( e->name == "res-body" ) {
+					// TODO: read chunked
+				} else {
+					// null-body is the only other valid possibility
+				}
+			} else {
+				if ( e->name == "req-hdr" ) {
+					_payload.req_header.append( buf, bytes );
+				} else if ( e->name == "req-body" ) {
+					_payload.req_body.append( buf, bytes );
+				} else if ( e->name == "res-hdr" ) {
+					_payload.res_header.append( buf, bytes );
+				} else if ( e->name == "res-body" ) {
+					_payload.res_body.append( buf, bytes );
+				}
+			}
+
+			// update counters
+			_payload.offset += bytes;
+			size -= bytes;
+
+			if ( size == 0 ) {
+				// no more data to read
+				break;
+			} else {
+				// update pointer to the buffer for next read cycle
+				buf += bytes;
+			}
+		}
+
 	}
 
 } /* end of namespace icap */

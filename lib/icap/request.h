@@ -61,10 +61,10 @@ namespace icap {
 		*/
 		const int preview_size() throw();
 
-		void read( char* buffer, size_t size );
+		void read( const char* buf, size_t size );
 
 	private:
-		void read_body( char* buf, size_t size );
+		void read_payload( const char* buf, size_t size );
 
 		RequestHeader * _header;
 		payload_t _payload;
