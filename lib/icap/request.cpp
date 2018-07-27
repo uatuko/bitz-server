@@ -66,7 +66,7 @@ namespace icap {
 		if (! s_size.empty() ) {
 
 			// convert string to integer
-			size = atoi( s_size.c_str() );
+			size = std::stoi( s_size );
 
 		}
 
