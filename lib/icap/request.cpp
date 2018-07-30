@@ -18,6 +18,7 @@
  */
 
 #include "request.h"
+#include "util.h"
 
 
 namespace icap {
@@ -92,6 +93,7 @@ namespace icap {
 
 						// FIXME: use smart pointers
 						_header = new RequestHeader( _data );
+						_data   = "";
 
 						// done reading header, continue with body if there's more data
 						idx++;
@@ -113,6 +115,11 @@ namespace icap {
 
 	void Request::read_payload( const char* buf, size_t size ) {
 
+		// sanity checks
+		if ( size == 0 ) {
+			return;
+		}
+
 		size_t bytes = 0;
 		auto encapsel = _header->encapsel();
 
@@ -120,13 +127,13 @@ namespace icap {
 			auto nit = std::next( it );
 			auto e = *it;
 
-			if ( e->offset > _payload.offset ) {
-				continue;
-			}
-
 			if ( nit == encapsel.end() ) {
 				bytes = size;
 			} else {
+				if ( _payload.offset >= (*nit)->offset ) {
+					continue;
+				}
+
 				bytes = (*nit)->offset - _payload.offset;
 				if ( bytes > size ) { bytes = size; }
 			}
@@ -134,12 +141,20 @@ namespace icap {
 			/* read payload data */
 			// if this is the last entity, then check for chunked content
 			if ( nit == encapsel.end() ) {
-				if ( e->name == "req-body" ) {
-					// TODO: read chunked
-				} else if ( e->name == "res-body" ) {
-					// TODO: read chunked
-				} else {
-					// null-body is the only other valid possibility
+				auto b = bytes;
+				while ( b > 0 ) {
+					const chunk_t chunk = read_chunked( buf + ( bytes - b ), b );
+					if ( !chunk.partial && chunk.size > 0 ) {
+						if ( e->name == "req-body" ) {
+							_payload.req_body += chunk.data;
+						} else if ( e->name == "res-body" ) {
+							_payload.res_body += chunk.data;
+						} else {
+							// null-body is the only other valid possibility
+						}
+					}
+
+					b -= chunk.offset;
 				}
 			} else {
 				if ( e->name == "req-hdr" ) {
@@ -166,6 +181,63 @@ namespace icap {
 			}
 		}
 
+	}
+
+
+	const chunk_t &Request::read_chunked( const char* buf, size_t size ) {
+		if ( !_chunk.partial ) {
+			// this is a new chunk
+			_chunk = chunk_t{};
+			_data  = "";
+		}
+
+		if ( _chunk.size == 0 ) {
+			size_t pos = seek_endl( buf, size, _data.back() );
+			if ( pos > 1 ) {
+				size_t i = seekc( buf, ( pos - 1 ), ';' );
+				if ( i > 0 ) {
+					_chunk.size = util::hextodec( std::string( buf, i ) );
+					std::string s = std::string( ( buf + i + 1 ), ( pos - 1 - i ) );
+					_chunk.extension = util::trim( s );
+				} else {
+					_chunk.size = util::hextodec( std::string( buf, ( pos - 1 ) ) );
+				}
+			}
+
+			_data.append( buf, pos + 1 );
+		}
+
+//		_chunk.offset += size;
+		_chunk.offset = size;
+		return _chunk;
+	}
+
+
+	size_t Request::seek_endl( const char* buf, size_t size, char c ) {
+		size_t pos = 0;
+		for ( size_t i = 0; i < size; i++ ) {
+			if ( c == '\r' && buf[i] == '\n' ) {
+				pos = i;
+				break;
+			}
+
+			c = buf[i];
+		}
+
+		return pos;
+	}
+
+
+	size_t Request::seekc( const char* buf, size_t size, char c ) {
+		size_t pos = 0;
+		for ( size_t i = 0; i < size; i++ ) {
+			if ( buf[i] == c ) {
+				pos = i;
+				break;
+			}
+		}
+
+		return pos;
 	}
 
 } /* end of namespace icap */

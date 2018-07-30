@@ -39,6 +39,16 @@ namespace icap {
 		payload_t() : offset( 0 ), ieof( false ) {};
 	};
 
+	struct chunk_t {
+		bool         partial;
+		size_t       size;
+		size_t       offset;
+		std::string  extension;
+		std::string  data;
+
+		chunk_t() : partial( true ), size( 0 ), offset( 0 ) {};
+	};
+
 } /* end of namespace icap */
 
 #endif /* !ICAP_COMMON_H */

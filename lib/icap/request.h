@@ -65,11 +65,17 @@ namespace icap {
 
 	private:
 		void read_payload( const char* buf, size_t size );
+		const chunk_t &read_chunked( const char* buf, size_t size );
+
+		size_t seek_endl( const char* buf, size_t size, char c );
+		size_t seekc( const char* buf, size_t size, char c );
+
 
 		RequestHeader * _header;
 		payload_t _payload;
 
 		std::string _data;
+		chunk_t _chunk;
 
 	};
 
