@@ -39,14 +39,20 @@ namespace icap {
 		payload_t() : offset( 0 ), ieof( false ) {};
 	};
 
-	struct chunk_t {
-		bool         partial;
-		size_t       size;
-		size_t       offset;
-		std::string  extension;
-		std::string  data;
+	enum chunk_status_t {
+		unknown = -1,
+		partial,
+		eoc
+	};
 
-		chunk_t() : partial( true ), size( 0 ), offset( 0 ) {};
+	struct chunk_t {
+		chunk_status_t  status;
+		size_t          size;
+		size_t          overflow;
+		std::string     extension;
+		std::string     data;
+
+		chunk_t() : status( chunk_status_t::unknown ), size( 0 ), overflow( 0 ) {};
 	};
 
 } /* end of namespace icap */

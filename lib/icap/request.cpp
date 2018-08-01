@@ -144,7 +144,7 @@ namespace icap {
 				auto b = bytes;
 				while ( b > 0 ) {
 					const chunk_t chunk = read_chunked( buf + ( bytes - b ), b );
-					if ( !chunk.partial && chunk.size > 0 ) {
+					if ( chunk.status == chunk_status_t::eoc ) {
 						if ( e->name == "req-body" ) {
 							_payload.req_body += chunk.data;
 						} else if ( e->name == "res-body" ) {
@@ -152,9 +152,13 @@ namespace icap {
 						} else {
 							// null-body is the only other valid possibility
 						}
+
+						if ( chunk.extension == "ieof" ) {
+							_payload.ieof = true;
+						}
 					}
 
-					b -= chunk.offset;
+					b = chunk.overflow;
 				}
 			} else {
 				if ( e->name == "req-hdr" ) {
@@ -185,59 +189,101 @@ namespace icap {
 
 
 	const chunk_t &Request::read_chunked( const char* buf, size_t size ) {
-		if ( !_chunk.partial ) {
+		if ( _chunk.status == chunk_status_t::eoc ) {
 			// this is a new chunk
 			_chunk = chunk_t{};
 			_data  = "";
 		}
 
-		if ( _chunk.size == 0 ) {
-			size_t pos = seek_endl( buf, size, _data.back() );
-			if ( pos > 1 ) {
-				size_t i = seekc( buf, ( pos - 1 ), ';' );
+		if ( _chunk.size == 0 && _chunk.status == chunk_status_t::unknown ) {
+			size_t offset = seek_endl( buf, size, _data.back() );
+			if ( offset > 0 ) {
+				size_t i = seekc( buf, ( offset - 2 ), ';' );
 				if ( i > 0 ) {
 					_chunk.size = util::hextodec( std::string( buf, i ) );
-					std::string s = std::string( ( buf + i + 1 ), ( pos - 1 - i ) );
+					std::string s = std::string( ( buf + i ), ( offset - 2 - i ) );
 					_chunk.extension = util::trim( s );
 				} else {
-					_chunk.size = util::hextodec( std::string( buf, ( pos - 1 ) ) );
+					_chunk.size = util::hextodec( std::string( buf, ( offset - 2 ) ) );
 				}
+
+				_data = "";
+				_chunk.status = chunk_status_t::partial;
+			} else {
+				if ( offset == 0 ) { offset = size; }
+				_data.append( buf, offset );
 			}
 
-			_data.append( buf, pos + 1 );
+			buf += offset;
+			size -= offset;
 		}
 
-//		_chunk.offset += size;
-		_chunk.offset = size;
+		if ( _chunk.status == chunk_status_t::unknown ) {
+			// there won't be any overflow at this point
+			return _chunk;
+		}
+
+
+		size_t bytes = ( _chunk.size - _chunk.data.size() );
+		if ( bytes > size ) {
+			bytes = size;
+		};
+
+		_chunk.data.append( buf, bytes );
+		buf += bytes;
+		size -= bytes;
+
+		if ( ( _chunk.size - _chunk.data.size() ) <= 0 )  {
+			size_t offset = seek_endl( buf, size, _data.back() );
+			if ( offset > 0 ) {
+				// FIXME: offset can't be > 2 here, should that be checked?
+				if ( _chunk.size == _chunk.data.size() ) {
+					_chunk.status = chunk_status_t::eoc;
+				} else {
+					// FIXME: error reading chunk
+				}
+
+				_data = "";
+			} else {
+				// adjust offset, it'll be 0 when we get here
+				offset = size;
+				_data.append( buf, offset );
+			}
+
+			buf += offset;
+			size -= offset;
+		}
+
+		_chunk.overflow = size;
 		return _chunk;
 	}
 
 
 	size_t Request::seek_endl( const char* buf, size_t size, char c ) {
-		size_t pos = 0;
+		size_t offset = 0;
 		for ( size_t i = 0; i < size; i++ ) {
 			if ( c == '\r' && buf[i] == '\n' ) {
-				pos = i;
+				offset = i + 1;
 				break;
 			}
 
 			c = buf[i];
 		}
 
-		return pos;
+		return offset;
 	}
 
 
 	size_t Request::seekc( const char* buf, size_t size, char c ) {
-		size_t pos = 0;
+		size_t offset = 0;
 		for ( size_t i = 0; i < size; i++ ) {
 			if ( buf[i] == c ) {
-				pos = i;
+				offset = i + 1;
 				break;
 			}
 		}
 
-		return pos;
+		return offset;
 	}
 
 } /* end of namespace icap */
