@@ -107,7 +107,7 @@ namespace icap {
 				c = buf[idx];
 			}
 
-		} else if ( _status == status_t::header ) {
+		} else if ( _status >= status_t::header && _status < status_t::eor ) {
 			// read body
 			read_payload( buf, size );
 		} else {
@@ -147,6 +147,8 @@ namespace icap {
 			}
 
 			/* read payload data */
+			_status = status_t::payload;
+
 			// if this is the last entity, then check for chunked content
 			if ( nit == encapsel.end() ) {
 				auto b = bytes;

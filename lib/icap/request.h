@@ -33,6 +33,7 @@ namespace icap {
 			unknown = -2,
 			error = -1,
 			header,
+			payload,
 			eor,
 		};
 
