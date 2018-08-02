@@ -6,7 +6,6 @@
 #include <memory>
 
 #include <uv.h>
-#include <spdlog/spdlog.h>
 #include <icap/request.h>
 #include <icap/response.h>
 
