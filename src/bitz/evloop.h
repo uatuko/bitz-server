@@ -33,16 +33,8 @@ namespace bitz {
 
 	private:
 
-		static void alloc_cb( uv_handle_t* handle, size_t suggested_size, uv_buf_t* buf );
-		static void connection_cb( uv_stream_t* server, int status );
-		static void read_cb( uv_stream_t* stream, ssize_t nread, const uv_buf_t* buf );
-		static void shutdown_cb( uv_shutdown_t* req, int status );
-
-
 		std::unique_ptr<uv_loop_t> _loop;
 		std::unique_ptr<uv_tcp_t> _server;
-
-		std::shared_ptr<spdlog::logger> _logger;
 
 	};
 
