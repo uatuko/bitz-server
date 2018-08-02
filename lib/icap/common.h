@@ -39,10 +39,10 @@ namespace icap {
 		payload_t() : offset( 0 ), ieof( false ) {};
 	};
 
-	enum chunk_status_t {
+	enum struct chunk_status_t {
 		unknown = -1,
 		partial,
-		eoc
+		eoc,
 	};
 
 	struct chunk_t {
