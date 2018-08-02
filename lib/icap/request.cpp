@@ -23,7 +23,7 @@
 
 namespace icap {
 
-	Request::Request() : _header( 0 ) {
+	Request::Request() : _header( 0 ), _status( status_t::unknown ) {
 		//
 	}
 
@@ -77,7 +77,7 @@ namespace icap {
 
 
 	void Request::read( const char* buf, size_t size ) {
-		if ( !_header ) {
+		if ( _status == status_t::unknown && !_header ) {
 			// read header
 			char c = _data.back();
 			auto lendl = _data.rfind( "\r\n" );
@@ -93,6 +93,7 @@ namespace icap {
 
 						// FIXME: use smart pointers
 						_header = new RequestHeader( _data );
+						_status = status_t::header;
 						_data   = "";
 
 						// done reading header, continue with body if there's more data
@@ -106,10 +107,17 @@ namespace icap {
 				c = buf[idx];
 			}
 
-		} else {
+		} else if ( _status == status_t::header ) {
 			// read body
 			read_payload( buf, size );
+		} else {
+			// TODO: error?
 		}
+	}
+
+
+	Request::status_t Request::status() {
+		return _status;
 	}
 
 
@@ -156,6 +164,8 @@ namespace icap {
 						if ( chunk.extension == "ieof" ) {
 							_payload.ieof = true;
 						}
+
+						_status = status_t::eor;
 					}
 
 					b = chunk.overflow;
@@ -178,6 +188,9 @@ namespace icap {
 
 			if ( size == 0 ) {
 				// no more data to read
+				if ( ( _payload.offset == (*nit)->offset ) && ( (*nit)->name == "null-body" ) ) {
+					_status = status_t::eor;
+				}
 				break;
 			} else {
 				// update pointer to the buffer for next read cycle

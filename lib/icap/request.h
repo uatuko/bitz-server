@@ -28,6 +28,14 @@ namespace icap {
 
 	class Request {
 	public:
+
+		enum struct status_t {
+			unknown = -2,
+			error = -1,
+			header,
+			eor,
+		};
+
 		Request();
 		Request( RequestHeader * req_header );
 		virtual ~Request();
@@ -63,6 +71,8 @@ namespace icap {
 
 		void read( const char* buf, size_t size );
 
+		status_t status();
+
 	private:
 		void read_payload( const char* buf, size_t size );
 		const chunk_t &read_chunked( const char* buf, size_t size );
@@ -70,6 +80,8 @@ namespace icap {
 		size_t seek_endl( const char* buf, size_t size, char c );
 		size_t seekc( const char* buf, size_t size, char c );
 
+
+		status_t _status;
 
 		RequestHeader * _header;
 		payload_t _payload;
