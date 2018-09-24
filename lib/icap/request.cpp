@@ -91,7 +91,7 @@ namespace icap {
 					if ( lendl != std::string::npos && ( ( _data.size() - lendl ) == 4 ) ) {
 						// end of header
 
-						// FIXME: use smart pointers
+						// FIXME: use smart pointers (or no pointers), this is leaking memory
 						_header = new RequestHeader( _data );
 						_status = status_t::header;
 						_data   = "";

@@ -33,6 +33,7 @@ namespace icap {
 	*/
 	RequestHeader::RequestHeader( const std::string &raw_data ) : Header() {
 
+		// FIXME: consider using  move semantics for `raw_data`
 		// initialise defaults
 		_request.method   = "";
 		_request.uri      = "";
