@@ -67,7 +67,30 @@ namespace bitz {
 		}
 
 		data->request->read( buf->base, nread );
-		// TODO: process request
+		switch ( data->request->status() ) {
+			case icap::Request::status_t::error: {
+				logger()->error( "[evloop] icap request error" );
+				// TODO: handle errors
+				break;
+			}
+			case icap::Request::status_t::header:
+			case icap::Request::status_t::payload: {
+				logger()->debug( "[evloop] icap header/payload" );
+				break;
+			}
+			case icap::Request::status_t::eor: {
+				logger()->debug( "[evloop] icap eor" );
+				break;
+			}
+			case icap::Request::status_t::unknown: {
+				// ignore
+				break;
+			}
+			default: {
+				logger()->info( "[evloop] unhandled icap request status ({})", static_cast<int>( data->request->status() ) );
+				break;
+			}
+		}
 
 	}
 
