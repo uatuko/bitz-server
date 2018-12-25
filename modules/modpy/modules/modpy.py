@@ -31,8 +31,13 @@ def modify( request ):
 
 	# response
 	resp_payload = {};
-	resp_payload['req_header'] = req_payload['req_header'];
-	resp_payload['req_body']   = req_payload['req_body'];
+	if request['request'] == 'REQMOD':
+		resp_payload['req_header'] = req_payload['req_header'];
+		resp_payload['req_body']   = req_payload['req_body'];
+	else:
+		resp_payload['req_header'] = '';
+		resp_payload['req_body']   = '';
+
 	resp_payload['res_header'] = req_payload['res_header'];
 	resp_payload['res_body']   = req_payload['res_body'];
 	resp_payload['ieof']       = True;

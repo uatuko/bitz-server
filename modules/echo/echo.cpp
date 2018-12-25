@@ -32,8 +32,12 @@ namespace bitz {
 		icap::payload_t payload;
 
 		// copy payload from request
-		payload.req_header = request->payload().req_header;
-		payload.req_body   = request->payload().req_body;
+		if ( request->header()->method() == "REQMOD" ) {
+			payload.req_header = request->payload().req_header;
+			payload.req_body   = request->payload().req_body;
+		}
+
+		// response body should only have content for RESPMOD requests
 		payload.res_header = request->payload().res_header;
 		payload.res_body   = request->payload().res_body;
 
