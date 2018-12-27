@@ -140,20 +140,17 @@ namespace icap {
 		*   OPTIONS response encapsulated_list: optbody
 		*/
 
-		Header::encapsulated_header_index_t idx;
 		std::string encaps_header = "";
 
-		// FIXME: chances are that we will always get the correct order
-		//        but should consider sorting
-		for ( idx = _encapsulated.begin(); idx != _encapsulated.end(); idx++ ) {
+		for ( auto& idx : sort_encapsulated_header() ) {
 
-			if ( idx->second > 0 ) {
+			if ( idx.second >= 0 ) {
 
 				if ( encaps_header != "" ) {
 					encaps_header.append( ", " );
 				}
 
-				encaps_header.append( idx->first ).append( "=" ).append( util::itoa( idx->second ) );
+				encaps_header.append( idx.first ).append( "=" ).append( util::itoa( idx.second ) );
 
 			}
 
