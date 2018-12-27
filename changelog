@@ -1,3 +1,9 @@
+2.0.2 - 25th December 2018
+	* Fix modules to return valid icap responses (issue #10)
+
+2.0.1 - 11th July 2018
+	*   Fix spelling mistakes
+
 2.0.0 - 15th June 2018
 	*   Use spdlog instead of log4cpp as the logger (issue #6)
 
