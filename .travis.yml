@@ -2,11 +2,6 @@ language: cpp
 
 sudo: false
 
-addons:
-  apt:
-    packages:
-      - liblog4cpp5-dev
-
 compiler:
   - gcc
   - clang
@@ -14,7 +9,7 @@ compiler:
 before_install:
   - echo $LANG
   - echo $LC_ALL
-  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install libconfig log4cpp; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install libconfig; fi
 
 install:
   - curl -L https://github.com/nukedzn/psocksxx/releases/download/v1.1.1/psocksxx-1.1.1.tar.gz | tar -zx -C /tmp
